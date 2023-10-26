@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "749989547258",
+    "project_id": "mahakalcoalapp-cad55",
+    "storage_bucket": "mahakalcoalapp-cad55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749989547258:android:2a9b4f34a029e8db6e8d43",
+        "android_client_info": {
+          "package_name": "com.mahakalcoalapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0-7OPyUS05lAk8hno6XR6izmUc-juDa0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
