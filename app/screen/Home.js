@@ -7,8 +7,10 @@ import {
   Modal,
   Pressable,
   Button,
+  Alert,
+  FlatList,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from '../component/Header';
 import {
   responsiveHeight as hp,
@@ -21,11 +23,14 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import ThemeButton from '../component/ThemeButton';
 import {launchCamera} from 'react-native-image-picker';
 import DatePicker from 'react-native-date-picker';
-
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
+import {globalImagePath} from '../assets/Images/gloableImagePath';
+import {colors} from '../assets/colors/colors';
+import {Card} from 'react-native-paper';
 const Home = () => {
   const [formVisible, setFormVisible] = useState(false);
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
   const [items, setItems] = useState([
     {label: 'Apple', value: 'apple'},
     {label: 'Banana', value: 'banana'},
@@ -44,6 +49,39 @@ const Home = () => {
   const [valueStatus, setValueStatus] = useState(null);
   const [date, setDate] = useState(new Date());
   const [openDate, setOpenDate] = useState(false);
+  const [openList, setOpenList] = useState([]);
+  console.log(openList, 'res');
+
+  const handlePostData = async () => {
+    if (!fullName || !vehicleNumber || !companyName || !images || !status) {
+      Alert.alert('Please field all data');
+      return;
+    }
+    try {
+      const dataList = await firestore().collection('open').add({
+        fullName,
+        vehicleNumber,
+        companyName,
+        images,
+        status,
+      });
+      Alert.alert('List added succussfully');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    handleGetData();
+  }, []);
+  const handleGetData = async () => {
+    try {
+      const querySnap = await firestore().collection('open').get();
+      const res = (await querySnap).docs.map(docsSnap => docsSnap.data())
+      setOpenList(res)
+    } catch (error) {
+      console.log(error,"error")
+    }
+  };
   const handleOpenCamera = () => {
     launchCamera({quality: 0.5}, fileObj => {
       console.log(fileObj.assets[0].uri);
@@ -86,11 +124,10 @@ const Home = () => {
     <View style={{flex: 1}}>
       <Header title={'Open List'} />
       <View style={styles.container}>
+        {/* <FlatList
+      renderItem={} /> */}
         <TouchableOpacity style={styles.AddRow} onPress={handleOpenModal}>
-          <Image
-            style={styles.AddList}
-            source={require('../assets/Images/plus.png')}
-          />
+          <Image style={styles.AddList} source={globalImagePath.plus} />
         </TouchableOpacity>
       </View>
       <Modal visible={formVisible} onDismiss={handleCloseModal} transparent>
@@ -144,33 +181,21 @@ const Home = () => {
                   marginBottom: hp(2),
                 }}>
                 <Image
-                  source={require('../assets/Images/camera.png')}
+                  source={globalImagePath.camera}
                   style={{height: hp(10), width: hp(10)}}
                 />
               </TouchableOpacity>
               <DropDownPicker
                 style={[styles.bottomSpace, {backgroundColor: '#f5f5f5'}]}
                 open={open}
-                value={value}
+                value={companyName}
                 items={items}
                 setOpen={setOpen}
-                setValue={setValue}
+                setValue={setCompanyName}
                 setItems={setItems}
               />
-              {/* <Button title="Open" onPress={() => setOpenDate(true)} />
-              <DatePicker
-                modal
-                open={openDate}
-                date={date}
-                onConfirm={date => {
-                  setOpenDate(false);
-                  setDate(date);
-                }}
-                onCancel={() => {
-                  setOpen(false);
-                }}
-              /> */}
-              <ThemeButton children={'Submit'} />
+
+              <ThemeButton onPress={handlePostData} children={'Submit'} />
             </View>
           </View>
         </View>
@@ -187,15 +212,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   AddList: {
-    height: hp(7),
-    width: hp(7),
+    height: hp(3),
+    width: hp(3),
     resizeMode: 'contain',
+    tintColor: '#fff',
   },
   AddRow: {
     position: 'absolute',
     bottom: hp(2),
     right: hp(2),
-    tintColor: '#f5f5f5',
+    height: hp(7),
+    width: hp(7),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 100,
+    backgroundColor: colors.primary,
+    elevation: 8,
   },
   parentContainer: {
     flex: 1,
