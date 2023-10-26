@@ -14,6 +14,7 @@ import React, {useEffect, useState} from 'react';
 import Header from '../component/Header';
 import {
   responsiveHeight as hp,
+  responsiveFontSize as rfs,
   responsiveWidth as wp,
 } from 'react-native-responsive-dimensions';
 import ThemeInput from '../component/ThemeInput';
@@ -27,48 +28,77 @@ import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import {globalImagePath} from '../assets/Images/gloableImagePath';
 import {colors} from '../assets/colors/colors';
-import {Card} from 'react-native-paper';
+import {Card, Title} from 'react-native-paper';
+import uuid from 'react-native-uuid';
+import FastImage from 'react-native-fast-image';
 const Home = () => {
   const [formVisible, setFormVisible] = useState(false);
   const [open, setOpen] = useState(false);
+  const [fullName, setFullName] = useState('');
+  const [vehicleNumber, setVehicleNumber] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [images, setImages] = useState('');
+  const [openStatus, setOpenStatus] = useState(false);
+  const [valueStatus, setValueStatus] = useState(null);
+  const [date, setDate] = useState(new Date());
+  const [openDate, setOpenDate] = useState(false);
+  const [openList, setOpenList] = useState([]);
+  const [uid, setUid] = useState(uuid.v4());
+  const [itemStatus, setItemStatus] = useState([
+    {label: 'Open', value: 'Open'},
+    {label: 'Close', value: 'Close'},
+  ]);
   const [items, setItems] = useState([
     {label: 'Apple', value: 'apple'},
     {label: 'Banana', value: 'banana'},
     {label: 'Apple', value: 'apple1'},
     {label: 'Apple', value: 'apple2'},
   ]);
-  const [fullName, setFullName] = useState('');
-  const [vehicleNumber, setVehicleNumber] = useState('');
-  const [companyName, setCompanyName] = useState('');
-  const [images, setImages] = useState('../assets/Images/camera.png');
-  const [status, setStatus] = useState([
-    {label: 'Open', value: 'Open'},
-    {label: 'Close', value: 'Close'},
-  ]);
-  const [openStatus, setOpenStatus] = useState(false);
-  const [valueStatus, setValueStatus] = useState(null);
-  const [date, setDate] = useState(new Date());
-  const [openDate, setOpenDate] = useState(false);
-  const [openList, setOpenList] = useState([]);
-  console.log(openList, 'res');
+  const [error, setError] = useState({field: '', message: ''});
 
+  console.log(error.message, 'abc');
+  useEffect(() => {});
   const handlePostData = async () => {
-    if (!fullName || !vehicleNumber || !companyName || !images || !status) {
-      Alert.alert('Please field all data');
+    const listError = {field: '', message: ''};
+    if (fullName === '') {
+      listError.field = 'fullName';
+      listError.message = 'full name required!';
+      setError(listError);
+      return
+    } else if (companyName === '') {
+      listError.field = 'companyName';
+      listError.message = 'company name name required!';
+      setError(listError);
+    } else if (vehicleNumber === '') {
+      listError.field = 'vehicleNumber';
+      listError.message = 'vehicle number name name required!';
+      setError(listError);
+      return
+    } else if (valueStatus === '') {
+      listError.field = 'valueStatus';
+      listError.message = 'status name required!';
+      setError(listError);
+    } else if (images === '') {
+      listError.field = 'images';
+      listError.message = 'image name required!';
+      setError(listError);
       return;
     }
+
     try {
       const dataList = await firestore().collection('open').add({
         fullName,
         vehicleNumber,
         companyName,
         images,
-        status,
+        valueStatus,
+        uid,
       });
       Alert.alert('List added succussfully');
     } catch (error) {
       console.log(error);
     }
+    setFormVisible(false);
   };
   useEffect(() => {
     handleGetData();
@@ -76,10 +106,11 @@ const Home = () => {
   const handleGetData = async () => {
     try {
       const querySnap = await firestore().collection('open').get();
-      const res = (await querySnap).docs.map(docsSnap => docsSnap.data())
-      setOpenList(res)
+      const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
+
+      setOpenList(res);
     } catch (error) {
-      console.log(error,"error")
+      console.log(error, 'error');
     }
   };
   const handleOpenCamera = () => {
@@ -120,12 +151,41 @@ const Home = () => {
   const handleCloseModal = () => {
     setFormVisible(false);
   };
+  const renderItem = ({item}) => {
+    return (
+      <View style={styles.card}>
+        <Text style={styles.label}>
+          Company Name:- <Text style={styles.regTxt}>{item.companyName}</Text>
+        </Text>
+        <Text style={styles.label}>
+          Full Name:- <Text style={styles.regTxt}>{item.fullName}</Text>
+        </Text>
+        <Text style={styles.label}>
+          Vehicle Name:-{' '}
+          <Text style={[styles.regTxt, {textTransform: 'uppercase'}]}>
+            {item.vehicleNumber}
+          </Text>
+        </Text>
+        <Text style={styles.label}>
+          Status:-{' '}
+          <Text style={[styles.regTxt, {textTransform: 'uppercase'}]}>
+            {item.valueStatus}
+          </Text>
+        </Text>
+        <Image source={{uri: item.images}} style={styles.images} />
+      </View>
+    );
+  };
   return (
     <View style={{flex: 1}}>
       <Header title={'Open List'} />
       <View style={styles.container}>
-        {/* <FlatList
-      renderItem={} /> */}
+        <FlatList
+          refreshing
+          keyExtractor={item => item.uid}
+          data={openList}
+          renderItem={renderItem}
+        />
         <TouchableOpacity style={styles.AddRow} onPress={handleOpenModal}>
           <Image style={styles.AddList} source={globalImagePath.plus} />
         </TouchableOpacity>
@@ -157,22 +217,34 @@ const Home = () => {
                 placeholder={'Full Name'}
                 onChangeText={txt => setFullName(txt)}
               />
+              {error.field === 'fullName' && (
+                <Text style={styles.errorMsg}>{error.message}</Text>
+              )}
+
               <ThemeInput
                 style={styles.bottomSpace}
                 value={vehicleNumber}
                 placeholder={'Vehicle Number'}
                 onChangeText={txt => setVehicleNumber(txt)}
               />
+              {error.field === 'vehicleNumber' && (
+                <Text style={styles.errorMsg}>{error.message}</Text>
+              )}
 
               <DropDownPicker
                 style={[styles.bottomSpace, {backgroundColor: '#f5f5f5'}]}
                 open={openStatus}
                 value={valueStatus}
-                items={status}
+                items={itemStatus}
+                placeholder="Status"
                 setOpen={setOpenStatus}
                 setValue={setValueStatus}
-                setItems={setStatus}
+                setItems={setItemStatus}
               />
+              {error.field === 'valueStatus' && (
+                <Text style={styles.errorMsg}>{error.message}</Text>
+              )}
+
               <TouchableOpacity
                 onPress={() => handleOpenCamera()}
                 style={{
@@ -181,10 +253,13 @@ const Home = () => {
                   marginBottom: hp(2),
                 }}>
                 <Image
-                  source={globalImagePath.camera}
-                  style={{height: hp(10), width: hp(10)}}
+                  source={images ? {uri: images} : globalImagePath.camera}
+                  style={images ? styles.VImages : styles.normalImage}
                 />
               </TouchableOpacity>
+              {error.field === 'images' && (
+                <Text style={styles.errorMsg}>{error.message}</Text>
+              )}
               <DropDownPicker
                 style={[styles.bottomSpace, {backgroundColor: '#f5f5f5'}]}
                 open={open}
@@ -194,6 +269,9 @@ const Home = () => {
                 setValue={setCompanyName}
                 setItems={setItems}
               />
+              {error.field === 'companyName' && (
+                <Text style={styles.errorMsg}>{error.message}</Text>
+              )}
 
               <ThemeButton onPress={handlePostData} children={'Submit'} />
             </View>
@@ -236,5 +314,38 @@ const styles = StyleSheet.create({
   },
   bottomSpace: {
     marginBottom: hp(2),
+  },
+  card: {
+    padding: hp(2),
+    margin: hp(2),
+    borderWidth: 0.5,
+  },
+  label: {
+    fontSize: rfs(2),
+    fontWeight: '500',
+    textTransform: 'capitalize',
+  },
+  regTxt: {
+    fontSize: rfs(2),
+    fontWeight: '400',
+    textTransform: 'capitalize',
+  },
+  images: {
+    height: hp(20),
+    width: '100%',
+    marginTop: hp(2),
+  },
+  normalImage: {
+    height: hp(10),
+    width: hp(10),
+    resizeMode: 'cover',
+  },
+  VImages: {
+    height: hp(20),
+    width: '100%',
+    resizeMode: 'cover',
+  },
+  errorMsg: {
+    color: 'red',
   },
 });

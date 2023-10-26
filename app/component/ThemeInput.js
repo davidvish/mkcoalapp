@@ -9,6 +9,7 @@ const ThemeInput = ({
   numberOfLines,
   placeholder,
   value,
+  error
 }) => {
   return (
     <TextInput
@@ -18,6 +19,7 @@ const ThemeInput = ({
       style={[styles.input, style]}
       numberOfLines={numberOfLines}
       placeholder={placeholder}
+      error={error}
       mode="outlined"
     />
   );
