@@ -9,6 +9,7 @@ import {
   Button,
   Alert,
   FlatList,
+  SafeAreaView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from '../../component/Header';
@@ -87,8 +88,8 @@ const Home = () => {
   const handlePostData = async () => {
     let id = index + 1;
     const listError = {field: '', message: '', min: ''};
-    if (name === '') {
-      listError.field = 'name';
+    if (number === '' && number > 9) {
+      listError.field = 'number';
       listError.message = 'full name required!';
       setError(listError);
       return;
@@ -101,17 +102,13 @@ const Home = () => {
       listError.message = 'vehicle number name name required!';
       setError(listError);
       return;
-    } else if (status === '') {
-      listError.field = 'status';
-      listError.message = 'status name required!';
-      setError(listError);
-    } else if (images === '') {
-      listError.min < 10;
+    }  else if (images === '') {
       listError.field = 'images';
       listError.message = 'image name required!';
       setError(listError);
       return;
-    } else if (number === '') {
+    } else if (number === '' && number > 9) {
+     
       listError.field = 'number';
       listError.message = 'phone number required!';
       setError(listError);
@@ -244,7 +241,7 @@ const Home = () => {
         </TouchableOpacity>
       </View>
       <Modal visible={formVisible} onDismiss={handleCloseModal} transparent>
-        <View style={styles.parentContainer}>
+        <SafeAreaView style={styles.parentContainer}>
           <Pressable
             onPress={handleCloseModal}
             style={{height: '100%', width: '100%'}}></Pressable>
@@ -353,7 +350,7 @@ const Home = () => {
               />
             </View>
           </View>
-        </View>
+        </SafeAreaView>
       </Modal>
     </View>
   );
