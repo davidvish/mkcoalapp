@@ -5,10 +5,10 @@ import {
   responsiveFontSize as rfs,
 } from 'react-native-responsive-dimensions';
 
-const ThemeButton = ({children, style, onPress}) => {
+const ThemeButton = ({children, style, onPress,btnStyle,disabled}) => {
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
-      <Text style={styles.btnTxt}>{children}</Text>
+    <TouchableOpacity disabled={disabled} style={[styles.button, style]} onPress={onPress}>
+      <Text style={[styles.btnTxt,btnStyle]}>{children}</Text>
     </TouchableOpacity>
   );
 };

@@ -11,39 +11,43 @@ import {
   FlatList,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import Header from '../component/Header';
+import Header from '../../component/Header';
 import {
   responsiveHeight as hp,
   responsiveFontSize as rfs,
   responsiveWidth as wp,
 } from 'react-native-responsive-dimensions';
-import ThemeInput from '../component/ThemeInput';
+import ThemeInput from '../../component/ThemeInput';
 import DropDown from 'react-native-paper-dropdown';
-import DropDownList from '../component/DropDown';
+import DropDownList from '../../component/DropDown';
 import DropDownPicker from 'react-native-dropdown-picker';
-import ThemeButton from '../component/ThemeButton';
+import ThemeButton from '../../component/ThemeButton';
 import {launchCamera} from 'react-native-image-picker';
 import DatePicker from 'react-native-date-picker';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
-import {globalImagePath} from '../assets/Images/gloableImagePath';
-import {colors} from '../assets/colors/colors';
-import {Card, Title} from 'react-native-paper';
+import {globalImagePath} from '../../assets/Images/gloableImagePath';
+import {colors} from '../../assets/colors/colors';
+import {useIsFocused} from '@react-navigation/native';
 import uuid from 'react-native-uuid';
 import FastImage from 'react-native-fast-image';
+import {styles} from './style';
 const Home = () => {
   const [formVisible, setFormVisible] = useState(false);
   const [open, setOpen] = useState(false);
-  const [fullName, setFullName] = useState('');
+  const [name, setName] = useState('');
   const [vehicleNumber, setVehicleNumber] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [images, setImages] = useState('');
   const [openStatus, setOpenStatus] = useState(false);
-  const [valueStatus, setValueStatus] = useState(null);
-  const [date, setDate] = useState(new Date());
-  const [openDate, setOpenDate] = useState(false);
+  const [status, setStatus] = useState('Open');
+  const [disabled, setDisable] = useState(false);
+  const [dateTime, setDateTime] = useState();
+  const [number, setNumber] = useState('');
   const [openList, setOpenList] = useState([]);
-  const [uid, setUid] = useState(uuid.v4());
+  const [uid, setUid] = useState(uuid.v4().toString());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [index, setIndex] = useState(0);
   const [itemStatus, setItemStatus] = useState([
     {label: 'Open', value: 'Open'},
     {label: 'Close', value: 'Close'},
@@ -56,15 +60,38 @@ const Home = () => {
   ]);
   const [error, setError] = useState({field: '', message: ''});
 
-  console.log(error.message, 'abc');
-  useEffect(() => {});
+  useEffect(() => {
+    var date = new Date().getDate(); //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear(); //Current Year
+    var hours = new Date().getHours(); //Current Hours
+    var min = new Date().getMinutes(); //Current Minutes
+    var sec = new Date().getSeconds(); //Current Seconds
+    setDateTime(
+      date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
+    );
+    setDisable(
+      !name || !vehicleNumber || !images || !companyName  || !number,
+    );
+  });
+
+  const handleBlankField = () => {
+    setName(''),
+      setNumber(''),
+      setDateTime(''),
+      setImages(''),
+      setCompanyName(''),
+      
+      setVehicleNumber('');
+  };
   const handlePostData = async () => {
-    const listError = {field: '', message: ''};
-    if (fullName === '') {
-      listError.field = 'fullName';
+    let id = index + 1;
+    const listError = {field: '', message: '', min: ''};
+    if (name === '') {
+      listError.field = 'name';
       listError.message = 'full name required!';
       setError(listError);
-      return
+      return;
     } else if (companyName === '') {
       listError.field = 'companyName';
       listError.message = 'company name name required!';
@@ -73,36 +100,46 @@ const Home = () => {
       listError.field = 'vehicleNumber';
       listError.message = 'vehicle number name name required!';
       setError(listError);
-      return
-    } else if (valueStatus === '') {
-      listError.field = 'valueStatus';
+      return;
+    } else if (status === '') {
+      listError.field = 'status';
       listError.message = 'status name required!';
       setError(listError);
     } else if (images === '') {
+      listError.min < 10;
       listError.field = 'images';
       listError.message = 'image name required!';
+      setError(listError);
+      return;
+    } else if (number === '') {
+      listError.field = 'number';
+      listError.message = 'phone number required!';
       setError(listError);
       return;
     }
 
     try {
       const dataList = await firestore().collection('open').add({
-        fullName,
+        name,
         vehicleNumber,
         companyName,
         images,
-        valueStatus,
+        status,
+        number,
+        dateTime,
+        id,
         uid,
       });
       Alert.alert('List added succussfully');
     } catch (error) {
       console.log(error);
     }
+    handleBlankField();
     setFormVisible(false);
   };
   useEffect(() => {
     handleGetData();
-  }, []);
+  }, [useIsFocused]);
   const handleGetData = async () => {
     try {
       const querySnap = await firestore().collection('open').get();
@@ -113,12 +150,19 @@ const Home = () => {
       console.log(error, 'error');
     }
   };
+  const onRefresh = () => {
+    //set isRefreshing to true
+    setIsRefreshing(true);
+    handleGetData();
+    // and set isRefreshing to false at the end of your callApiMethod()
+    setIsRefreshing(false);
+  };
   const handleOpenCamera = () => {
     launchCamera({quality: 0.5}, fileObj => {
       console.log(fileObj.assets[0].uri);
       const uploadTask = storage()
         .ref()
-        .child(`/items/${Date.now()}`)
+        .child(`/open/${Date.now()}`)
         .putFile(fileObj.assets[0].uri.split('file://')[1]);
       uploadTask.on(
         'state_changed',
@@ -127,7 +171,7 @@ const Home = () => {
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           //console.log('Upload is ' + progress + '% done');
           if (progress == 100) {
-            alert('uploaded');
+            // alert('uploaded');
           }
         },
         error => {
@@ -155,10 +199,17 @@ const Home = () => {
     return (
       <View style={styles.card}>
         <Text style={styles.label}>
-          Company Name:- <Text style={styles.regTxt}>{item.companyName}</Text>
+          Full Name:- <Text style={styles.regTxt}>{item.name}</Text>
         </Text>
         <Text style={styles.label}>
-          Full Name:- <Text style={styles.regTxt}>{item.fullName}</Text>
+          Phone Number:- <Text style={styles.regTxt}>{item.number}</Text>
+        </Text>
+        <Text style={styles.label}>
+          Company Name:- <Text style={styles.regTxt}>{item.companyName}</Text>
+        </Text>
+
+        <Text style={styles.label}>
+          Dispatch Date :- <Text style={styles.regTxt}>{item.dateTime}</Text>
         </Text>
         <Text style={styles.label}>
           Vehicle Name:-{' '}
@@ -169,7 +220,7 @@ const Home = () => {
         <Text style={styles.label}>
           Status:-{' '}
           <Text style={[styles.regTxt, {textTransform: 'uppercase'}]}>
-            {item.valueStatus}
+            {item.status}
           </Text>
         </Text>
         <Image source={{uri: item.images}} style={styles.images} />
@@ -181,8 +232,10 @@ const Home = () => {
       <Header title={'Open List'} />
       <View style={styles.container}>
         <FlatList
-          refreshing
-          keyExtractor={item => item.uid}
+          extraData={openList}
+          onRefresh={onRefresh}
+          refreshing={isRefreshing}
+          keyExtractor={(item, index) => item.uid}
           data={openList}
           renderItem={renderItem}
         />
@@ -213,16 +266,26 @@ const Home = () => {
               }}>
               <ThemeInput
                 style={styles.bottomSpace}
-                value={fullName}
+                value={name}
                 placeholder={'Full Name'}
-                onChangeText={txt => setFullName(txt)}
+                onChangeText={txt => setName(txt)}
               />
-              {error.field === 'fullName' && (
+              {error.field === 'name' && (
+                <Text style={styles.errorMsg}>{error.message}</Text>
+              )}
+              <ThemeInput
+                style={styles.bottomSpace}
+                value={number}
+                keyboardType={'number-pad'}
+                placeholder={'Phone Number'}
+                onChangeText={txt => setNumber(txt)}
+              />
+              {error.field === 'number' && (
                 <Text style={styles.errorMsg}>{error.message}</Text>
               )}
 
               <ThemeInput
-                style={styles.bottomSpace}
+                style={[styles.bottomSpace, {textTransform: 'uppercase'}]}
                 value={vehicleNumber}
                 placeholder={'Vehicle Number'}
                 onChangeText={txt => setVehicleNumber(txt)}
@@ -231,17 +294,25 @@ const Home = () => {
                 <Text style={styles.errorMsg}>{error.message}</Text>
               )}
 
-              <DropDownPicker
+              <ThemeInput
+                style={[styles.bottomSpace, {textTransform: 'uppercase',color:'#000'}]}
+                value={status}
+                disabled={true}
+                // placeholder={'Status'}
+                onChangeText={txt => setStatus(txt)}
+              />
+
+              {/* <DropDownPicker
                 style={[styles.bottomSpace, {backgroundColor: '#f5f5f5'}]}
                 open={openStatus}
-                value={valueStatus}
+                value={status}
                 items={itemStatus}
                 placeholder="Status"
                 setOpen={setOpenStatus}
-                setValue={setValueStatus}
+                setValue={setStatus}
                 setItems={setItemStatus}
-              />
-              {error.field === 'valueStatus' && (
+              /> */}
+              {error.field === 'status' && (
                 <Text style={styles.errorMsg}>{error.message}</Text>
               )}
 
@@ -273,7 +344,13 @@ const Home = () => {
                 <Text style={styles.errorMsg}>{error.message}</Text>
               )}
 
-              <ThemeButton onPress={handlePostData} children={'Submit'} />
+              <ThemeButton
+                disabled={disabled ? true : false}
+                style={{backgroundColor: disabled ? '#ccc' : colors.primary}}
+                onPress={handlePostData}
+                children={'Submit'}
+                btnStyle={{color: '#fff'}}
+              />
             </View>
           </View>
         </View>
@@ -283,69 +360,3 @@ const Home = () => {
 };
 
 export default Home;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  AddList: {
-    height: hp(3),
-    width: hp(3),
-    resizeMode: 'contain',
-    tintColor: '#fff',
-  },
-  AddRow: {
-    position: 'absolute',
-    bottom: hp(2),
-    right: hp(2),
-    height: hp(7),
-    width: hp(7),
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 100,
-    backgroundColor: colors.primary,
-    elevation: 8,
-  },
-  parentContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0 ,0 ,0.5)',
-    paddingHorizontal: wp(8),
-  },
-  bottomSpace: {
-    marginBottom: hp(2),
-  },
-  card: {
-    padding: hp(2),
-    margin: hp(2),
-    borderWidth: 0.5,
-  },
-  label: {
-    fontSize: rfs(2),
-    fontWeight: '500',
-    textTransform: 'capitalize',
-  },
-  regTxt: {
-    fontSize: rfs(2),
-    fontWeight: '400',
-    textTransform: 'capitalize',
-  },
-  images: {
-    height: hp(20),
-    width: '100%',
-    marginTop: hp(2),
-  },
-  normalImage: {
-    height: hp(10),
-    width: hp(10),
-    resizeMode: 'cover',
-  },
-  VImages: {
-    height: hp(20),
-    width: '100%',
-    resizeMode: 'cover',
-  },
-  errorMsg: {
-    color: 'red',
-  },
-});

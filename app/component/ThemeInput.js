@@ -9,7 +9,10 @@ const ThemeInput = ({
   numberOfLines,
   placeholder,
   value,
-  error
+  error,
+  keyboardType,
+  disabled,
+  onBlur
 }) => {
   return (
     <TextInput
@@ -20,7 +23,10 @@ const ThemeInput = ({
       numberOfLines={numberOfLines}
       placeholder={placeholder}
       error={error}
+      disabled={disabled}
+      keyboardType={keyboardType}
       mode="outlined"
+      onBlur={onBlur}
     />
   );
 };
