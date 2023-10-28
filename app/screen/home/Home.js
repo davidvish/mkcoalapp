@@ -229,17 +229,17 @@ const Home = () => {
     <View style={{flex: 1}}>
       <Header title={'Open List'} />
       <View style={styles.container}>
-        <TextInput
+        {/* <TextInput
           style={{marginVertical: hp(2)}}
           onChangeText={handleSearchList}
           placeholder="Search Open list"
-        />
+        /> */}
         <FlatList
-          extraData={searchItem}
+          extraData={openList}
           onRefresh={onRefresh}
           refreshing={isRefreshing}
           keyExtractor={(item, index) => item.dateTime}
-          data={searchItem}
+          data={openList}
           renderItem={renderItem}
         />
         <TouchableOpacity style={styles.AddRow} onPress={handleOpenModal}>
