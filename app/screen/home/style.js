@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
+      paddingHorizontal:hp(2)
     },
     AddList: {
       height: hp(3),
@@ -39,8 +40,8 @@ export const styles = StyleSheet.create({
     },
     card: {
       padding: hp(2),
-      margin: hp(2),
       borderWidth: 0.5,
+      marginBottom:hp(2)
     },
     label: {
       fontSize: rfs(2),

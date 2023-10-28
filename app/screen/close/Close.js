@@ -44,15 +44,15 @@ const Close = () => {
   const [disabled, setDisable] = useState(false);
   const [dateTime, setDateTime] = useState();
   const [number, setNumber] = useState('');
-  const [openList, setOpenList] = useState([]);
+  const [closeList, setCloseList] = useState([]);
   const [uid, setUid] = useState(uuid.v4().toString());
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [index, setIndex] = useState(0);
   const [items, setItems] = useState([
-    {label: 'Apple', value: 'apple'},
-    {label: 'Banana', value: 'banana'},
-    {label: 'Apple', value: 'apple1'},
-    {label: 'Apple', value: 'apple2'},
+    {label: 'Wipro', value: 'Wipro'},
+    {label: 'Tata', value: 'Tata'},
+    {label: 'Rinira', value: 'Rinira'},
+    {label: 'Infosys', value: 'Infosys'},
   ]);
   const [error, setError] = useState({field: '', message: ''});
 
@@ -134,7 +134,7 @@ const Close = () => {
       const querySnap = await firestore().collection('close').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
 
-      setOpenList(res);
+      setCloseList(res);
     } catch (error) {
       console.log(error, 'error');
     }
@@ -221,11 +221,11 @@ const Close = () => {
       <Header title={'Close List'} />
       <View style={styles.container}>
         <FlatList
-          extraData={openList}
+          extraData={closeList}
           onRefresh={onRefresh}
           refreshing={isRefreshing}
           keyExtractor={(item, index) => item.uid}
-          data={openList}
+          data={closeList}
           renderItem={renderItem}
         />
         <TouchableOpacity style={styles.AddRow} onPress={handleOpenModal}>

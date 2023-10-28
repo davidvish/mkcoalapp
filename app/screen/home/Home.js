@@ -33,6 +33,8 @@ import {useIsFocused} from '@react-navigation/native';
 import uuid from 'react-native-uuid';
 import FastImage from 'react-native-fast-image';
 import {styles} from './style';
+import moment from 'moment';
+import {TextInput} from 'react-native-paper';
 const Home = () => {
   const [formVisible, setFormVisible] = useState(false);
   const [open, setOpen] = useState(false);
@@ -49,31 +51,22 @@ const Home = () => {
   const [uid, setUid] = useState(uuid.v4().toString());
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [index, setIndex] = useState(0);
-  const [itemStatus, setItemStatus] = useState([
-    {label: 'Open', value: 'Open'},
-    {label: 'Close', value: 'Close'},
-  ]);
+  const [searchItem, setSearchItem] = useState([]);
+  console.log(searchItem, 'search');
   const [items, setItems] = useState([
-    {label: 'Apple', value: 'apple'},
-    {label: 'Banana', value: 'banana'},
-    {label: 'Apple', value: 'apple1'},
-    {label: 'Apple', value: 'apple2'},
+    {label: 'Wipro', value: 'Wipro'},
+    {label: 'Tata', value: 'Tata'},
+    {label: 'Rinira', value: 'Rinira'},
+    {label: 'Infosys', value: 'Infosys'},
   ]);
   const [error, setError] = useState({field: '', message: ''});
 
   useEffect(() => {
-    var date = new Date().getDate(); //Current Date
-    var month = new Date().getMonth() + 1; //Current Month
-    var year = new Date().getFullYear(); //Current Year
-    var hours = new Date().getHours(); //Current Hours
-    var min = new Date().getMinutes(); //Current Minutes
-    var sec = new Date().getSeconds(); //Current Seconds
-    setDateTime(
-      date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
-    );
-    setDisable(
-      !name || !vehicleNumber || !images || !companyName  || !number,
-    );
+    let scheduledDeparture_Time = new Date();
+    // console.log(scheduledDeparture_Time.toString(), scheduledDeparture_Time.toGMTString())
+    let dt2 = moment(scheduledDeparture_Time);
+    setDateTime(dt2.format('DD/MM/YYYY HH:mm A'));
+    setDisable(!name || !vehicleNumber || !images || !companyName || !number);
   });
 
   const handleBlankField = () => {
@@ -82,7 +75,6 @@ const Home = () => {
       setDateTime(''),
       setImages(''),
       setCompanyName(''),
-      
       setVehicleNumber('');
   };
   const handlePostData = async () => {
@@ -102,13 +94,12 @@ const Home = () => {
       listError.message = 'vehicle number name name required!';
       setError(listError);
       return;
-    }  else if (images === '') {
+    } else if (images === '') {
       listError.field = 'images';
       listError.message = 'image name required!';
       setError(listError);
       return;
     } else if (number === '' && number > 9) {
-     
       listError.field = 'number';
       listError.message = 'phone number required!';
       setError(listError);
@@ -135,6 +126,7 @@ const Home = () => {
     setFormVisible(false);
   };
   useEffect(() => {
+    handleSearchList();
     handleGetData();
   }, [useIsFocused]);
   const handleGetData = async () => {
@@ -192,6 +184,15 @@ const Home = () => {
   const handleCloseModal = () => {
     setFormVisible(false);
   };
+
+  const handleSearchList = searchText => {
+    if (searchText?.length) {
+      const searchOpenList = openList.filter(list =>
+        list?.name.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      setSearchItem(searchOpenList);
+    } else setSearchItem(openList);
+  };
   const renderItem = ({item}) => {
     return (
       <View style={styles.card}>
@@ -228,12 +229,17 @@ const Home = () => {
     <View style={{flex: 1}}>
       <Header title={'Open List'} />
       <View style={styles.container}>
+        <TextInput
+          style={{marginVertical: hp(2)}}
+          onChangeText={handleSearchList}
+          placeholder="Search Open list"
+        />
         <FlatList
-          extraData={openList}
+          extraData={searchItem}
           onRefresh={onRefresh}
           refreshing={isRefreshing}
-          keyExtractor={(item, index) => item.uid}
-          data={openList}
+          keyExtractor={(item, index) => item.dateTime}
+          data={searchItem}
           renderItem={renderItem}
         />
         <TouchableOpacity style={styles.AddRow} onPress={handleOpenModal}>
@@ -292,7 +298,10 @@ const Home = () => {
               )}
 
               <ThemeInput
-                style={[styles.bottomSpace, {textTransform: 'uppercase',color:'#000'}]}
+                style={[
+                  styles.bottomSpace,
+                  {textTransform: 'uppercase', color: '#000'},
+                ]}
                 value={status}
                 disabled={true}
                 // placeholder={'Status'}
