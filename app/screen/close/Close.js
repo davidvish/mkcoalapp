@@ -131,7 +131,7 @@ const Close = () => {
   }, [useIsFocused]);
   const handleGetData = async () => {
     try {
-      const querySnap = await firestore().collection('open').get();
+      const querySnap = await firestore().collection('close').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
 
       setOpenList(res);
@@ -218,7 +218,7 @@ const Close = () => {
   };
   return (
     <View style={{flex: 1}}>
-      <Header title={'Open List'} />
+      <Header title={'Close List'} />
       <View style={styles.container}>
         <FlatList
           extraData={openList}
