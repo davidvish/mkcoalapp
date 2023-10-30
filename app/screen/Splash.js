@@ -8,7 +8,7 @@ const Splash = () => {
   const navigation = useNavigation()
   useEffect(()=>{
     setTimeout(()=>{
-      navigation.navigate('BottomTabs')
+      navigation.navigate('CustomTab')
     },1500)
   })
   return (
