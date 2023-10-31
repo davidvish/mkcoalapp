@@ -80,7 +80,14 @@ const Home = () => {
           </Text>
           <Text style={styles.label}>
             Status:-{' '}
-            <Text style={[styles.regTxt, {textTransform: 'uppercase'}]}>
+            <Text
+              style={[
+                styles.regTxt,
+                {
+                  fontWeight:'600',
+                  color: item.status === 'open' ? 'red' : 'green',
+                },
+              ]}>
               {item.status}
             </Text>
           </Text>
@@ -98,7 +105,6 @@ const Home = () => {
           <Image  source={globalImagePath.search} style={styles.search}/>
         </View> */}
         <FlatList
-          horizontal
           extraData={openList}
           onRefresh={onRefresh}
           refreshing={isRefreshing}

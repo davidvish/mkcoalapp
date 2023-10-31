@@ -32,7 +32,6 @@ import uuid from 'react-native-uuid';
 
 const AddItem = () => {
   const route = useRoute();
-  console.log(route?.params?.data.itemId, 'item');
   const [name, setName] = useState(
     route?.params?.type == 'edit' ? route.params.data.name : '',
   );
@@ -46,12 +45,21 @@ const AddItem = () => {
   const [companyName, setCompanyName] = useState(
     route?.params?.type == 'edit' ? route.params.data.companyName : '',
   );
+  const [status, setStatus] = useState(
+    route?.params?.type == 'edit' ? route.params.data.status : '',
+  );
+  const [itemStatus, setItemStatus] = useState([
+    {label: 'open', value: 'Open'},
+    {label: 'close', value: 'Close'},
+    
+  ]);
   const [images, setImages] = useState(
     route?.params?.type == 'edit' ? route.params.data.images : '',
   );
-  const [status, setStatus] = useState('Open');
   const [disabled, setDisable] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openStatus, setOpenStatus] = useState(false);
+
   const [dateTime, setDateTime] = useState();
   const [listUid, setListUid] = useState();
   const [loadVisible, setLoaderVisible] = useState(false);
@@ -110,7 +118,7 @@ const AddItem = () => {
       try {
         const dataList = await firestore()
           .collection('open')
-          .doc(route.params?.data.itemId)
+          .doc(route.params?.data.itemID)
           .update({
             name,
             vehicleNumber,
@@ -119,7 +127,7 @@ const AddItem = () => {
             status,
             number,
             dateTime,
-            itemId: itemId,
+            itemID: route.params?.data.itemID,
           });
         Alert.alert('List added succussfully');
         setLoaderVisible(false);
@@ -138,7 +146,7 @@ const AddItem = () => {
           status,
           number,
           dateTime,
-          itemId: itemId,
+          itemID:itemId,
         });
         Alert.alert('List added succussfully');
         setLoaderVisible(false);
@@ -212,15 +220,20 @@ const AddItem = () => {
         onChangeText={txt => setVehicleNumber(txt)}
       />
 
-      <ThemeInput
-        style={[
-          styles.bottomSpace,
-          {textTransform: 'uppercase', color: '#000'},
-        ]}
+      <DropDownPicker
+        style={{
+          backgroundColor: 'transparent',
+          borderBottomWidth: 1,
+          borderWidth: 0,
+        }}
+        open={openStatus}
+        autoScroll
         value={status}
-        disabled={true}
-        // placeholder={'Status'}
-        onChangeText={txt => setStatus(txt)}
+        placeholder={'select status'}
+        items={itemStatus}
+        setOpen={setOpenStatus}
+        setValue={setStatus}
+        setItems={setItemStatus}
       />
 
       <TouchableOpacity
