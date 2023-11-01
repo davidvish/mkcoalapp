@@ -6,6 +6,7 @@ export const globalImagePath = {
     home:require('./home.png'),
     list:require('./list.png'),
     left:require('./left-arrow.png'),
-    search:require('./search.png')
+    search:require('./search.png'),
+    close:require('./close.png')
 
 };

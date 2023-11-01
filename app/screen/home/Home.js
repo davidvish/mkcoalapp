@@ -42,11 +42,12 @@ const Home = () => {
 
   const handleSearchList = searchText => {
     if (searchText?.length) {
-      const searchOpenList = openList.filter(list =>
-        list?.name.toLowerCase().includes(searchText.toLowerCase()) ||
-        list?.status.toLowerCase().includes(searchText.toLowerCase()) ||
-        list?.companyName.toLowerCase().includes(searchText.toLowerCase()) ||
-        list?.vehicleNumber.toLowerCase().includes(searchText.toLowerCase())
+      const searchOpenList = openList.filter(
+        list =>
+          list?.name.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.status.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.companyName.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.vehicleNumber.toLowerCase().includes(searchText.toLowerCase()),
       );
       setSearchItem(searchOpenList);
     } else setSearchItem(openList);
@@ -124,14 +125,22 @@ const Home = () => {
               onChangeText={handleSearchList}
               placeholder={'Search Item'}
             />
-            <Image source={globalImagePath.search} style={styles.search} />
+
+            <Image
+              source={
+                searchItem.length
+                  ? globalImagePath.search
+                  : globalImagePath.search
+              }
+              style={styles.search}
+            />
           </View>
         ) : null}
         <FlatList
           extraData={searchItem}
           onRefresh={onRefresh}
           refreshing={isRefreshing}
-          keyExtractor={(e, index) => index}
+          keyExtractor={(e, index) => e.itemId}
           data={searchItem}
           ListEmptyComponent={() => {
             <View>
