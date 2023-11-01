@@ -52,7 +52,6 @@ const AddItem = () => {
   const [itemStatus, setItemStatus] = useState([
     {label: 'open', value: 'Open'},
     {label: 'close', value: 'Close'},
-    
   ]);
   const [images, setImages] = useState(
     route?.params?.type == 'edit' ? route.params.data.images : '',
@@ -130,7 +129,7 @@ const AddItem = () => {
             images,
             status,
             number,
-            endDateTime : dateTime,
+            endDateTime: dateTime,
             itemId: route.params?.data.itemId,
           });
         Alert.alert('List added succussfully');
@@ -150,7 +149,7 @@ const AddItem = () => {
           status,
           number,
           dateTime,
-          itemId:itemId,
+          itemId: itemId,
         });
         Alert.alert('List added succussfully');
         setLoaderVisible(false);
@@ -161,7 +160,7 @@ const AddItem = () => {
       }
     }
     handleBlankField();
-    RNRestart.restart()
+    RNRestart.restart();
   };
   const handleOpenCamera = () => {
     launchCamera({quality: 0.5}, fileObj => {
@@ -234,6 +233,7 @@ const AddItem = () => {
         open={openStatus}
         autoScroll
         value={status}
+        placeholderStyle={{fontFamily: 'Lora-Regular'}}
         placeholder={'select status'}
         items={itemStatus}
         setOpen={setOpenStatus}
@@ -260,6 +260,9 @@ const AddItem = () => {
         value={companyName}
         items={items}
         setOpen={setOpen}
+        placeholder={'Select Destination'}
+        placeholderStyle={{fontFamily: 'Lora-Regular'}}
+
         setValue={setCompanyName}
         setItems={setItems}
       />
@@ -267,7 +270,7 @@ const AddItem = () => {
         // disabled={disabled ? true : false}
         style={{backgroundColor: colors.primary}}
         onPress={handlePostData}
-        children={route?.params?.type === 'edit'? 'UPDATE':'CREATE TASK'}
+        children={route?.params?.type === 'edit' ? 'UPDATE' : 'CREATE TASK'}
         btnStyle={{color: '#fff', textTransform: 'uppercase'}}
       />
       <Modal animationType="slide" visible={loadVisible} transparent>
@@ -346,7 +349,7 @@ const styles = StyleSheet.create({
   VImages: {
     height: hp(20),
     width: '100%',
-    borderRadius:8,
+    borderRadius: 8,
     resizeMode: 'cover',
   },
   errorMsg: {
@@ -391,6 +394,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: rfs(3.5),
     fontWeight: '600',
+    fontFamily:'Lora-SemiBold'
   },
   backBtn: {
     height: hp(3),

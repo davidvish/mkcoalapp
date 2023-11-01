@@ -49,13 +49,13 @@ export const styles = StyleSheet.create({
     fontSize: rfs(2),
     fontWeight: '500',
     textTransform: 'capitalize',
-    fontFamily:'LoraItalic'
+    fontFamily:'Lora-Regular'
   },
   regTxt: {
     fontSize: rfs(2),
     fontWeight: '400',
     textTransform: 'capitalize',
-    fontFamily:'LoraItalic'
+    fontFamily:'Lora-Medium'
   },
   images: {
     height: hp(25),

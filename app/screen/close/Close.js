@@ -32,7 +32,7 @@ import {useIsFocused} from '@react-navigation/native';
 import uuid from 'react-native-uuid';
 import FastImage from 'react-native-fast-image';
 import {styles} from './style';
-import {DataTable, Subheading, Title} from 'react-native-paper';
+import {DataTable, Title} from 'react-native-paper';
 import ThumbPopup from '../../component/ThummPopup';
 const Close = () => {
   const [name, setName] = useState('');
@@ -55,6 +55,10 @@ const Close = () => {
       console.log(error, 'error');
     }
   };
+  const handleShowImage = image => {
+    setChooseImage(image);
+    setShowPopup(true);
+  };
   const onRefresh = () => {
     //set isRefreshing to true
     setIsRefreshing(true);
@@ -67,35 +71,33 @@ const Close = () => {
   };
 
   const renderItem = ({item}) => {
-    setChooseImage(item.images);
-    setName(item.name);
+    // setChooseImage(item.images);
     return (
       <View style={styles.card}>
-        <Subheading style={{textAlign: 'left', width: '25%'}}>
-          {item.name}
-        </Subheading>
+        <View style={{width: '25%'}}>
+          <Text style={styles.alignLeft}>{item.name}</Text>
+        </View>
+
         <View style={{width: '50%'}}>
-          <Subheading style={{textAlign: 'center'}}>
-            {item.companyName}
-          </Subheading>
-          <Subheading style={{textAlign: 'center'}}>
-            {item.vehicleNumber}
-          </Subheading>
-          <Subheading style={{textAlign: 'center'}}>{item.dateTime}</Subheading>
-          <Subheading
-            style={{
-              textAlign: 'center',
-              color: item.status === 'Open' ? 'red' : 'green',
-              fontWeight:'700',
-              textTransform:'uppercase'
-            }}>
+          <Text style={styles.alignCenter}>{item.companyName}</Text>
+          <Text style={styles.alignCenter}>{item.vehicleNumber}</Text>
+          <Text style={styles.alignCenter}>{item.dateTime}</Text>
+          <Text style={styles.alignCenter}>{item.endDateTime}</Text>
+          <Text
+            style={[
+              styles.alignCenter,
+              {fontFamily:'Lora-SemiBold'},
+              {color: item.status === 'Open' ? 'red' : 'green'},
+            ]}>
             {item.status.toUpperCase()}
-          </Subheading>
+          </Text>
         </View>
         <TouchableOpacity
-          onPress={() => setShowPopup(true)}
+          onPress={() => handleShowImage(item.images)}
           style={{width: '25%'}}>
-          <Subheading style={{textAlign: 'right'}}>{'image'}</Subheading>
+          <Text style={[styles.alignLeft, {textAlign: 'right'}]}>
+            {'image'}
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -110,9 +112,9 @@ const Close = () => {
           ListHeaderComponent={() => {
             return (
               <DataTable.Header style={styles.headerList}>
-                <Subheading>Full Name</Subheading>
-                <Subheading>Description</Subheading>
-                <Subheading>Images</Subheading>
+                <Text style={styles.label}>Full Name</Text>
+                <Text style={styles.label}>Description</Text>
+                <Text style={styles.label}>Images</Text>
               </DataTable.Header>
             );
           }}
@@ -125,7 +127,6 @@ const Close = () => {
       {showPopup ? (
         <ThumbPopup
           image={chooseImage}
-          title={name}
           imageType={'url'}
           onClose={handleClose}
         />

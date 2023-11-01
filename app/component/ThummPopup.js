@@ -72,7 +72,7 @@ const ThumbPopup = ({ image, title, onClose, imageType }) => {
     <Modal animationType="none" visible={visible} transparent>
       <TouchableOpacity style={styles.modalContainer} onPress={handleClose}>
         <Animated.View style={[styles.modalContent, animatedStyle]}>
-          <Text style={styles.title}>{title}</Text>
+          {/* <Text style={styles.title}>{title}</Text> */}
           <Image
             ref={imageRef}
             source={imageType === 'url' ? { uri: image } : image}
@@ -95,19 +95,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius:8
   },
   modalContent: {
     backgroundColor: 'white',
     padding: 0,
-    borderRadius: 0,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
   popupImage: {
-    width: '80%',
+    width: '90%',
     resizeMode: 'cover',
-    // borderRadius:7
+    borderRadius:8
   },
   title: {
     position: 'absolute',

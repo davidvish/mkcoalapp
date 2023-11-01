@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: 'transparent',
     borderBottomWidth:1,
-    width:'100%'
+    width:'100%',
+    fontFamily:'Lora-Regular'
   },
 });

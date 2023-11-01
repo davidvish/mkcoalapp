@@ -99,7 +99,7 @@ const Home = () => {
               style={[
                 styles.regTxt,
                 {
-                  fontWeight: '700',
+                  fontFamily: 'Lora-Bold',
                   color: item.status === 'Open' ? 'red' : 'green',
                 },
               ]}>

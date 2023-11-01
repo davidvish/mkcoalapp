@@ -39,7 +39,8 @@ const styles = StyleSheet.create({
     fontSize: rfs(2),
     color: '#000',
     fontWeight: '400',
-    textTransform:'uppercase'
+    textTransform:'uppercase',
+    fontFamily:'Lora-Regular'
   },
   plus:{
     height:hp(1.5),

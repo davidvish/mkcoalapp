@@ -9,7 +9,7 @@ import {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
   },
   AddList: {
     height: hp(3),
@@ -38,16 +38,18 @@ export const styles = StyleSheet.create({
     marginBottom: hp(2),
   },
   card: {
-   paddingHorizontal:hp(1.8),
-   alignItems:'center',
-   flexDirection:'row',
-   justifyContent:'space-between',
-   borderBottomWidth:0.5,
+    marginTop: hp(1),
+    paddingHorizontal: hp(1.8),
+    paddingVertical:hp(0.5),
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 0.5,
   },
   label: {
     fontSize: rfs(2),
     fontWeight: '500',
-    textTransform: 'capitalize',
+    fontFamily:'Lora-Medium'
   },
   regTxt: {
     fontSize: rfs(2),
@@ -78,6 +80,16 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width:Dimensions.get('window').width
+    width: Dimensions.get('window').width,
+  },
+  alignCenter: {
+    fontSize: rfs(1.8),
+    fontFamily: 'Lora-Regular',
+    textAlign: 'center',
+  },
+  alignLeft: {
+    fontSize: rfs(1.8),
+    fontFamily: 'Lora-Regular',
+    textAlign: 'left',
   },
 });

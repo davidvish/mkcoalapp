@@ -28,7 +28,8 @@ const styles = StyleSheet.create({
     fontSize: rfs(2.2),
     textAlign:"center",
     fontWeight:'500',
-    color:'#fff'
+    color:'#fff',
+    fontFamily:'Lora-Bold'
 
   },
 });
