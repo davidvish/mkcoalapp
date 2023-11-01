@@ -3,13 +3,18 @@ import React, {useEffect, useState} from 'react';
 import Header from '../../component/Header';
 import firestore from '@react-native-firebase/firestore';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import {styles} from './style';
+import ThemeInput from '../../component/ThemeInput';
+import {responsiveHeight as hp} from 'react-native-responsive-dimensions';
+import RNRestart from 'react-native-restart';
 const Home = () => {
+  const route = useRoute();
   const [dateTime, setDateTime] = useState();
   const [openList, setOpenList] = useState([]);
   const [searchItem, setSearchItem] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const handleGetData = async () => {
     try {
@@ -22,9 +27,10 @@ const Home = () => {
     }
   };
   useEffect(() => {
-    // handleSearchList();
+    // RNRestart.Restart();
     handleGetData();
-  }, [useIsFocused]);
+    handleSearchList();
+  }, [isFocused]);
 
   const onRefresh = () => {
     //set isRefreshing to true
@@ -34,18 +40,20 @@ const Home = () => {
     setIsRefreshing(false);
   };
 
-  // const handleSearchList = searchText => {
-  //   if (searchText?.length) {
-  //     const searchOpenList = openList.filter(list =>
-  //       list?.name.toLowerCase().includes(searchText.toLowerCase()),
-  //     );
-  //     setSearchItem(searchOpenList);
-  //   } else setSearchItem(openList);
-  // };
+  const handleSearchList = searchText => {
+    if (searchText?.length) {
+      const searchOpenList = openList.filter(list =>
+        list?.name.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      setSearchItem(searchOpenList);
+    } else setSearchItem(openList);
+  };
   const renderItem = ({item}) => {
+    console.log(item, 'item');
     return (
       <View>
-        <View style={styles.card}>
+        <View
+          style={[styles.card, {opacity: item.status === 'Close' ? 0.5 : 1}]}>
           <View
             style={{
               flexDirection: 'row',
@@ -56,6 +64,7 @@ const Home = () => {
               Full Name:- <Text style={styles.regTxt}>{item.name}</Text>
             </Text>
             <TouchableOpacity
+              // disabled={item.status === 'Open' ? false : true}
               onPress={() =>
                 navigation.navigate('AddItem', {data: item, type: 'edit'})
               }>
@@ -72,10 +81,16 @@ const Home = () => {
           <Text style={styles.label}>
             Dispatch Date :- <Text style={styles.regTxt}>{item.dateTime}</Text>
           </Text>
+          {item.status === 'Close' && item?.endDateTime ? (
+            <Text style={styles.label}>
+              Delivery Date :-{' '}
+              <Text style={styles.regTxt}>{item.endDateTime}</Text>
+            </Text>
+          ) : null}
           <Text style={styles.label}>
             Vehicle Name:-{' '}
-            <Text style={[styles.regTxt, {textTransform: 'uppercase'}]}>
-              {item.vehicleNumber}
+            <Text style={[styles.regTxt]}>
+              {item.vehicleNumber.toUpperCase()}
             </Text>
           </Text>
           <Text style={styles.label}>
@@ -84,11 +99,11 @@ const Home = () => {
               style={[
                 styles.regTxt,
                 {
-                  fontWeight:'600',
-                  color: item.status === 'open' ? 'red' : 'green',
+                  fontWeight: '700',
+                  color: item.status === 'Open' ? 'red' : 'green',
                 },
               ]}>
-              {item.status}
+              {item.status.toUpperCase()}
             </Text>
           </Text>
           <Image source={{uri: item.images}} style={styles.images} />
@@ -98,18 +113,28 @@ const Home = () => {
   };
   return (
     <View style={{flex: 1}}>
-      <Header title={'Open List'} />
+      <Header title={'Home'} />
       <View style={styles.container}>
-        {/* <View style={{flexDirection:'row',alignItems:'center'}}>
-          <ThemeInput onChangeText={handleSearchList} placeholder={'Search Item'} />
-          <Image  source={globalImagePath.search} style={styles.search}/>
-        </View> */}
+        {openList.length ? (
+          <View style={styles.inputContainer}>
+            <ThemeInput
+              onChangeText={handleSearchList}
+              placeholder={'Search Item'}
+            />
+            <Image source={globalImagePath.search} style={styles.search} />
+          </View>
+        ) : null}
         <FlatList
-          extraData={openList}
+          extraData={searchItem}
           onRefresh={onRefresh}
           refreshing={isRefreshing}
-          keyExtractor={(item, index) => item.dateTime}
-          data={openList}
+          keyExtractor={(e, index) => index}
+          data={searchItem}
+          ListEmptyComponent={() => {
+            <View>
+              <Text>{'ksagfb'}</Text>
+            </View>;
+          }}
           renderItem={renderItem}
         />
       </View>

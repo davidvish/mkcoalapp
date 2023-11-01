@@ -29,6 +29,7 @@ import {launchCamera} from 'react-native-image-picker';
 import {ActivityIndicator} from 'react-native-paper';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import uuid from 'react-native-uuid';
+import RNRestart from 'react-native-restart';
 
 const AddItem = () => {
   const route = useRoute();
@@ -61,6 +62,8 @@ const AddItem = () => {
   const [openStatus, setOpenStatus] = useState(false);
 
   const [dateTime, setDateTime] = useState();
+  const [endDateTime, setEndDateTime] = useState();
+
   const [listUid, setListUid] = useState();
   const [loadVisible, setLoaderVisible] = useState(false);
   const navigation = useNavigation();
@@ -76,6 +79,7 @@ const AddItem = () => {
     let scheduledDeparture_Time = new Date();
     let dt2 = moment(scheduledDeparture_Time);
     setDateTime(dt2.format('DD/MM/YYYY HH:mm A'));
+    setEndDateTime(dt2.format('DD/MM/YYYY HH:mm A'));
     setDisable(!name || !vehicleNumber || !images || !companyName || !number);
     setListUid();
   });
@@ -118,7 +122,7 @@ const AddItem = () => {
       try {
         const dataList = await firestore()
           .collection('open')
-          .doc(route.params?.data.itemID)
+          .doc(route.params?.data.itemId)
           .update({
             name,
             vehicleNumber,
@@ -126,8 +130,8 @@ const AddItem = () => {
             images,
             status,
             number,
-            dateTime,
-            itemID: route.params?.data.itemID,
+            endDateTime : dateTime,
+            itemId: route.params?.data.itemId,
           });
         Alert.alert('List added succussfully');
         setLoaderVisible(false);
@@ -146,7 +150,7 @@ const AddItem = () => {
           status,
           number,
           dateTime,
-          itemID:itemId,
+          itemId:itemId,
         });
         Alert.alert('List added succussfully');
         setLoaderVisible(false);
@@ -157,6 +161,7 @@ const AddItem = () => {
       }
     }
     handleBlankField();
+    RNRestart.restart()
   };
   const handleOpenCamera = () => {
     launchCamera({quality: 0.5}, fileObj => {
@@ -214,7 +219,7 @@ const AddItem = () => {
       />
 
       <ThemeInput
-        style={[styles.bottomSpace, {textTransform: 'uppercase'}]}
+        style={[styles.bottomSpace]}
         value={vehicleNumber}
         placeholder={'Vehicle Number'}
         onChangeText={txt => setVehicleNumber(txt)}
@@ -262,7 +267,7 @@ const AddItem = () => {
         // disabled={disabled ? true : false}
         style={{backgroundColor: colors.primary}}
         onPress={handlePostData}
-        children={'CREATE TASK'}
+        children={route?.params?.type === 'edit'? 'UPDATE':'CREATE TASK'}
         btnStyle={{color: '#fff', textTransform: 'uppercase'}}
       />
       <Modal animationType="slide" visible={loadVisible} transparent>
@@ -341,6 +346,7 @@ const styles = StyleSheet.create({
   VImages: {
     height: hp(20),
     width: '100%',
+    borderRadius:8,
     resizeMode: 'cover',
   },
   errorMsg: {

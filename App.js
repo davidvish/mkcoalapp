@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import TabNavigation from './app/navigation/Navigation'
 import 'react-native-gesture-handler'
 import StackNavigation from './app/navigation/Navigation'
+import 'react-native-gesture-handler'
 
 const App = () => {
   return (

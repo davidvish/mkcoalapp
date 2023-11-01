@@ -43,21 +43,25 @@ export const styles = StyleSheet.create({
     padding: hp(2),
     borderWidth: 0.5,
     marginBottom: hp(2),
+    borderRadius: 8,
   },
   label: {
     fontSize: rfs(2),
     fontWeight: '500',
     textTransform: 'capitalize',
+    fontFamily:'LoraItalic'
   },
   regTxt: {
     fontSize: rfs(2),
     fontWeight: '400',
     textTransform: 'capitalize',
+    fontFamily:'LoraItalic'
   },
   images: {
-    height: hp(20),
+    height: hp(25),
     width: '100%',
     marginTop: hp(2),
+    borderRadius: 8,
   },
   normalImage: {
     height: hp(10),
@@ -96,6 +100,11 @@ export const styles = StyleSheet.create({
     height: hp(2),
     width: hp(2),
     resizeMode: 'contain',
-    right:wp(5)
+    right: wp(5),
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: hp(2),
   },
 });

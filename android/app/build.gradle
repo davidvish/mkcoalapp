@@ -118,6 +118,7 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation project(':react-native-restart')
 
     implementation("com.facebook.react:react-android")
     implementation project(':react-native-vector-icons')

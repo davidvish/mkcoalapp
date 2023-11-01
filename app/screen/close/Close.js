@@ -40,14 +40,14 @@ const Close = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [chooseImage, setChooseImage] = useState();
-  console.log(chooseImage,"images")
+  console.log(chooseImage, 'images');
 
   useEffect(() => {
     handleGetData();
   }, [useIsFocused]);
   const handleGetData = async () => {
     try {
-      const querySnap = await firestore().collection('close').get();
+      const querySnap = await firestore().collection('open').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
       console.log(res?.images, 'red');
       setCloseList(res);
@@ -67,8 +67,8 @@ const Close = () => {
   };
 
   const renderItem = ({item}) => {
-    setChooseImage(item.images)
-    setName(item.name)
+    setChooseImage(item.images);
+    setName(item.name);
     return (
       <View style={styles.card}>
         <Subheading style={{textAlign: 'left', width: '25%'}}>
@@ -82,7 +82,15 @@ const Close = () => {
             {item.vehicleNumber}
           </Subheading>
           <Subheading style={{textAlign: 'center'}}>{item.dateTime}</Subheading>
-          <Subheading style={{textAlign: 'center'}}>{item.status}</Subheading>
+          <Subheading
+            style={{
+              textAlign: 'center',
+              color: item.status === 'Open' ? 'red' : 'green',
+              fontWeight:'700',
+              textTransform:'uppercase'
+            }}>
+            {item.status.toUpperCase()}
+          </Subheading>
         </View>
         <TouchableOpacity
           onPress={() => setShowPopup(true)}
@@ -94,7 +102,7 @@ const Close = () => {
   };
   return (
     <View style={{flex: 1}}>
-      <Header title={'Close List'} />
+      <Header title={'Details List'} />
       <View style={styles.container}>
         <FlatList
           extraData={closeList}
