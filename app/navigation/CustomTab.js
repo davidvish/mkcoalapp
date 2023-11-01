@@ -40,12 +40,18 @@ const CustomTab = () => {
 
     return (
       <>
-      <MaterialCommunityIcons
-        name={icon}
-        size={30}
-        color={routeName === selectedTab ? colors.primary : 'gray'}
-      />
-      <Text style={styles.title}>{title}</Text>
+        <MaterialCommunityIcons
+          name={icon}
+          size={30}
+          color={routeName === selectedTab ? colors.primary : 'gray'}
+        />
+        <Text
+          style={[
+            styles.title,
+            {color: routeName === selectedTab ? colors.primary : 'gray'},
+          ]}>
+          {title}
+        </Text>
       </>
     );
   };
@@ -144,10 +150,10 @@ const styles = StyleSheet.create({
   tabbarItem: {
     alignSelf: 'center',
   },
-  title:{
-    textAlign:'center',
-    fontSize:rfs(1.5),
-    fontWeight:'400',
-    fontFamily:'Lora-SemiBold'
-  }
+  title: {
+    textAlign: 'center',
+    fontSize: rfs(1.5),
+    fontWeight: '400',
+    fontFamily: 'Lora-SemiBold',
+  },
 });
