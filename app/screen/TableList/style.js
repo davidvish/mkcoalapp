@@ -92,4 +92,9 @@ export const styles = StyleSheet.create({
     fontFamily: 'Lora-Regular',
     textAlign: 'left',
   },
+  image:{
+    height:hp(7),
+    width:hp(7),
+    alignSelf:'flex-end'
+  }
 });

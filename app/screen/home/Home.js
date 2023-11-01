@@ -1,4 +1,12 @@
-import {Text, View, Image, TouchableOpacity, FlatList} from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  SafeAreaView,
+  Pressable,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from '../../component/Header';
 import firestore from '@react-native-firebase/firestore';
@@ -8,12 +16,14 @@ import {styles} from './style';
 import ThemeInput from '../../component/ThemeInput';
 import {responsiveHeight as hp} from 'react-native-responsive-dimensions';
 import RNRestart from 'react-native-restart';
+import {ActivityIndicator, Modal} from 'react-native-paper';
 const Home = () => {
   const route = useRoute();
   const [dateTime, setDateTime] = useState();
   const [openList, setOpenList] = useState([]);
   const [searchItem, setSearchItem] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [filterModal, setFilterModal] = useState(false);
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const handleGetData = async () => {
@@ -65,7 +75,7 @@ const Home = () => {
               justifyContent: 'space-between',
             }}>
             <Text style={styles.label}>
-              Full Name:- <Text style={styles.regTxt}>{item.name}</Text>
+              Name:- <Text style={styles.regTxt}>{item.name}</Text>
             </Text>
             <TouchableOpacity
               // disabled={item.status === 'Open' ? false : true}
@@ -76,7 +86,10 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           <Text style={styles.label}>
-            Phone Number:- <Text style={styles.regTxt}>{item.number}</Text>
+            Phone Number:-{' '}
+            <Text style={[styles.regTxt, {fontFamily: 'Lora-Bold'}]}>
+              {item.number}
+            </Text>
           </Text>
           <Text style={styles.label}>
             Company Name:- <Text style={styles.regTxt}>{item.companyName}</Text>
@@ -126,14 +139,9 @@ const Home = () => {
               placeholder={'Search Item'}
             />
 
-            <Image
-              source={
-                searchItem.length
-                  ? globalImagePath.search
-                  : globalImagePath.search
-              }
-              style={styles.search}
-            />
+            {/* <TouchableOpacity style={styles.filter} onPress={()=> setFilterModal(true)}>
+              <Image source={globalImagePath.filter} style={styles.search} />
+            </TouchableOpacity> */}
           </View>
         ) : null}
         <FlatList
@@ -144,12 +152,22 @@ const Home = () => {
           data={searchItem}
           ListEmptyComponent={() => {
             <View>
-              <Text>{'ksagfb'}</Text>
+              <Text style={styles.label}>{'No Data Found'}</Text>
             </View>;
           }}
           renderItem={renderItem}
         />
       </View>
+      <Modal animationType="slide" visible={filterModal} transparent>
+        <SafeAreaView style={styles.parentContainer}>
+          <Pressable style={{height: '100%', width: '100%'}}></Pressable>
+          <View style={styles.parentWrapper}>
+            <View style={styles.modalWrapper}>
+              <ActivityIndicator />
+            </View>
+          </View>
+        </SafeAreaView>
+      </Modal>
     </View>
   );
 };

@@ -49,13 +49,13 @@ export const styles = StyleSheet.create({
     fontSize: rfs(2),
     fontWeight: '500',
     textTransform: 'capitalize',
-    fontFamily:'Lora-Regular'
+    fontFamily: 'Lora-Regular',
   },
   regTxt: {
     fontSize: rfs(2),
     fontWeight: '400',
     textTransform: 'capitalize',
-    fontFamily:'Lora-Medium'
+    fontFamily: 'Lora-Medium',
   },
   images: {
     height: hp(25),
@@ -96,15 +96,47 @@ export const styles = StyleSheet.create({
     padding: hp(2),
     borderRadius: 8,
   },
-  search: {
-    height: hp(2),
-    width: hp(2),
-    resizeMode: 'contain',
-    right: wp(5),
-  },
+
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: hp(2),
+  },
+  search: {
+    height: hp(2),
+    width: hp(2),
+    resizeMode: 'contain',
+  },
+  filter: {
+    height: hp(5),
+    width: hp(5),
+    right: wp(8),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  parentWrapper: {
+    bottom: 0,
+    top: 0,
+    left: wp(5),
+    right: wp(5),
+    flex: 1,
+    justifyContent: 'center',
+    position: 'absolute',
+  },
+  boxWrapper: {
+    padding: hp(3),
+    borderRadius: 8,
+    flex: 1,
+    justifyContent: 'space-between',
+    backgroundColor: '#f5f5f5',
+  },
+  modalWrapper: {
+    height: hp(50),
+    width:'90%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    alignSelf: 'center',
   },
 });

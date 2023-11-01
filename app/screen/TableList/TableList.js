@@ -1,41 +1,14 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  Modal,
-  Pressable,
-  Button,
-  Alert,
-  FlatList,
-} from 'react-native';
+import {Text, View, TouchableOpacity, FlatList, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from '../../component/Header';
-import {
-  responsiveHeight as hp,
-  responsiveFontSize as rfs,
-  responsiveWidth as wp,
-} from 'react-native-responsive-dimensions';
-import ThemeInput from '../../component/ThemeInput';
-import DropDown from 'react-native-paper-dropdown';
-import DropDownList from '../../component/DropDown';
-import DropDownPicker from 'react-native-dropdown-picker';
-import ThemeButton from '../../component/ThemeButton';
-import {launchCamera} from 'react-native-image-picker';
-import DatePicker from 'react-native-date-picker';
-import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
-import {globalImagePath} from '../../assets/Images/gloableImagePath';
-import {colors} from '../../assets/colors/colors';
+
 import {useIsFocused} from '@react-navigation/native';
-import uuid from 'react-native-uuid';
-import FastImage from 'react-native-fast-image';
 import {styles} from './style';
-import {DataTable, Title} from 'react-native-paper';
+import {DataTable} from 'react-native-paper';
 import ThumbPopup from '../../component/ThummPopup';
+import { globalImagePath } from '../../assets/Images/gloableImagePath';
 const Close = () => {
-  const [name, setName] = useState('');
   const [closeList, setCloseList] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -74,19 +47,22 @@ const Close = () => {
     // setChooseImage(item.images);
     return (
       <View style={styles.card}>
-        <View style={{width: '25%'}}>
+        <View style={{width: '30%'}}>
           <Text style={styles.alignLeft}>{item.name}</Text>
         </View>
 
-        <View style={{width: '50%'}}>
-          <Text style={styles.alignCenter}>{item.companyName}</Text>
-          <Text style={styles.alignCenter}>{item.vehicleNumber}</Text>
-          <Text style={styles.alignCenter}>{item.dateTime}</Text>
-          <Text style={styles.alignCenter}>{item.endDateTime}</Text>
+        <View style={{width: '55%'}}>
+          <Text style={styles.alignLeft}>{item.companyName}</Text>
+          <Text style={styles.alignLeft}>{item.number}</Text>
+          <Text style={styles.alignLeft}>{item.vehicleNumber}</Text>
+          <Text style={styles.alignLeft}>{item.dateTime}</Text>
+          {item.endDateTime ? (
+            <Text style={styles.alignLeft}>{item.endDateTime}</Text>
+          ) : null}
           <Text
             style={[
-              styles.alignCenter,
-              {fontFamily:'Lora-SemiBold'},
+              styles.alignLeft,
+              {fontFamily: 'Lora-SemiBold'},
               {color: item.status === 'Open' ? 'red' : 'green'},
             ]}>
             {item.status.toUpperCase()}
@@ -94,17 +70,15 @@ const Close = () => {
         </View>
         <TouchableOpacity
           onPress={() => handleShowImage(item.images)}
-          style={{width: '25%'}}>
-          <Text style={[styles.alignLeft, {textAlign: 'right'}]}>
-            {'image'}
-          </Text>
+          style={{width: '15%',backgroundColor:'red'}}>
+          <Image source={{uri:item.images}} style={styles.image}/>
         </TouchableOpacity>
       </View>
     );
   };
   return (
     <View style={{flex: 1}}>
-      <Header title={'Details List'} />
+      <Header title={'List'} />
       <View style={styles.container}>
         <FlatList
           extraData={closeList}
