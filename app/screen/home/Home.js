@@ -43,7 +43,10 @@ const Home = () => {
   const handleSearchList = searchText => {
     if (searchText?.length) {
       const searchOpenList = openList.filter(list =>
-        list?.name.toLowerCase().includes(searchText.toLowerCase()),
+        list?.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        list?.status.toLowerCase().includes(searchText.toLowerCase()) ||
+        list?.companyName.toLowerCase().includes(searchText.toLowerCase()) ||
+        list?.vehicleNumber.toLowerCase().includes(searchText.toLowerCase())
       );
       setSearchItem(searchOpenList);
     } else setSearchItem(openList);

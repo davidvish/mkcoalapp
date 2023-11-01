@@ -115,9 +115,9 @@ const AddItem = () => {
       setVehicleNumber('');
   };
   const handlePostData = async () => {
-    setLoaderVisible(false);
     let itemId = uuid.v4();
     if (route?.params?.type == 'edit') {
+      setLoaderVisible(true);
       try {
         const dataList = await firestore()
           .collection('open')
@@ -132,7 +132,7 @@ const AddItem = () => {
             endDateTime: dateTime,
             itemId: route.params?.data.itemId,
           });
-        Alert.alert('List added succussfully');
+        // Alert.alert('List added succussfully');
         setLoaderVisible(false);
         navigation.goBack();
       } catch (error) {
@@ -141,6 +141,7 @@ const AddItem = () => {
       }
     } else {
       try {
+        setLoaderVisible(true);
         const dataList = await firestore().collection('open').doc(itemId).set({
           name,
           vehicleNumber,
@@ -151,7 +152,7 @@ const AddItem = () => {
           dateTime,
           itemId: itemId,
         });
-        Alert.alert('List added succussfully');
+        // Alert.alert('List added succussfully');
         setLoaderVisible(false);
         navigation.goBack();
       } catch (error) {
@@ -164,7 +165,6 @@ const AddItem = () => {
   };
   const handleOpenCamera = () => {
     launchCamera({quality: 0.5}, fileObj => {
-      console.log(fileObj.assets[0].uri);
       const uploadTask = storage()
         .ref()
         .child(`/open/${Date.now()}`)
@@ -234,7 +234,12 @@ const AddItem = () => {
         autoScroll
         value={status}
         placeholderStyle={{fontFamily: 'Lora-Regular'}}
-        placeholder={'select status'}
+        dropDownContainerStyle={{fontFamily: 'Lora-Regular'}}
+        itemSeparatorStyle={{fontFamily: 'Lora-Regular'}}
+        dropDownDirection="BOTTOM"
+        labelStyle={{fontFamily: 'Lora-Regular'}}
+        textStyle={{fontFamily: 'Lora-Regular'}}
+        placeholder={'Select Status'}
         items={itemStatus}
         setOpen={setOpenStatus}
         setValue={setStatus}
@@ -254,21 +259,28 @@ const AddItem = () => {
           backgroundColor: 'transparent',
           borderBottomWidth: 1,
           borderWidth: 0,
+          fontFamily: 'Lora-Regular',
         }}
         open={open}
         autoScroll
         value={companyName}
         items={items}
+        labelStyle={{fontFamily: 'Lora-Regular'}}
+        textStyle={{fontFamily: 'Lora-Regular'}}
         setOpen={setOpen}
+        dropDownDirection="TOP"
+        disableBorderRadius={0}
         placeholder={'Select Destination'}
         placeholderStyle={{fontFamily: 'Lora-Regular'}}
-
         setValue={setCompanyName}
         setItems={setItems}
       />
       <ThemeButton
-        // disabled={disabled ? true : false}
-        style={{backgroundColor: colors.primary}}
+        disabled={disabled ? true : false}
+        style={{
+          backgroundColor: disabled ? '#ccc' : colors.primary,
+          borderColor: disabled ? '#ccc' : colors.primary,
+        }}
         onPress={handlePostData}
         children={route?.params?.type === 'edit' ? 'UPDATE' : 'CREATE TASK'}
         btnStyle={{color: '#fff', textTransform: 'uppercase'}}
@@ -371,11 +383,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   boxWrapper: {
-    backgroundColor: '#fff',
     padding: hp(3),
     borderRadius: 8,
     flex: 1,
     justifyContent: 'space-between',
+    backgroundColor: '#f5f5f5',
   },
   imageBox: {
     justifyContent: 'center',
@@ -390,11 +402,14 @@ const styles = StyleSheet.create({
     width: hp(10),
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    alignSelf: 'center',
   },
   title: {
     fontSize: rfs(3.5),
     fontWeight: '600',
-    fontFamily:'Lora-SemiBold'
+    fontFamily: 'Lora-SemiBold',
   },
   backBtn: {
     height: hp(3),

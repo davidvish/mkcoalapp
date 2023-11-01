@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
     paddingHorizontal: hp(2),
-    marginTop: hp(2),
+    paddingTop: hp(1),
   },
   AddList: {
     height: hp(3),
