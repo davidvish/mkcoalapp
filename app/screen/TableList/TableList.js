@@ -7,7 +7,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {styles} from './style';
 import {DataTable} from 'react-native-paper';
 import ThumbPopup from '../../component/ThummPopup';
-import { globalImagePath } from '../../assets/Images/gloableImagePath';
+import {globalImagePath} from '../../assets/Images/gloableImagePath';
 const Close = () => {
   const [closeList, setCloseList] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -70,8 +70,8 @@ const Close = () => {
         </View>
         <TouchableOpacity
           onPress={() => handleShowImage(item.images)}
-          style={{width: '15%',backgroundColor:'red'}}>
-          <Image source={{uri:item.images}} style={styles.image}/>
+          style={{width: '15%', backgroundColor: 'red'}}>
+          <Image source={{uri: item.images}} style={styles.image} />
         </TouchableOpacity>
       </View>
     );
@@ -80,18 +80,16 @@ const Close = () => {
     <View style={{flex: 1}}>
       <Header title={'List'} />
       <View style={styles.container}>
+        <DataTable.Header style={styles.headerList}>
+          <Text style={styles.label}>Full Name</Text>
+          <Text style={styles.label}>Description</Text>
+          <Text style={styles.label}>Images</Text>
+        </DataTable.Header>
         <FlatList
           extraData={closeList}
           onRefresh={onRefresh}
-          ListHeaderComponent={() => {
-            return (
-              <DataTable.Header style={styles.headerList}>
-                <Text style={styles.label}>Full Name</Text>
-                <Text style={styles.label}>Description</Text>
-                <Text style={styles.label}>Images</Text>
-              </DataTable.Header>
-            );
-          }}
+          maxToRenderPerBatch={10}
+          initialNumToRender={10}
           refreshing={isRefreshing}
           keyExtractor={(item, index) => item.uid}
           data={closeList}

@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   Pressable,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import Header from '../../component/Header';
 import firestore from '@react-native-firebase/firestore';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
@@ -16,14 +16,20 @@ import {styles} from './style';
 import ThemeInput from '../../component/ThemeInput';
 import {responsiveHeight as hp} from 'react-native-responsive-dimensions';
 import RNRestart from 'react-native-restart';
-import {ActivityIndicator, Modal} from 'react-native-paper';
+import {ActivityIndicator, Checkbox, Modal, Title} from 'react-native-paper';
+import DatePicker from 'react-native-date-picker';
 const Home = () => {
   const route = useRoute();
   const [dateTime, setDateTime] = useState();
   const [openList, setOpenList] = useState([]);
-  const [searchItem, setSearchItem] = useState([]);
+  const [oldData, setOldData] = useState([]);
+  const [openSelect, setOpenSelect] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [filterModal, setFilterModal] = useState(false);
+  const [index, setIndex] = useState(0);
+  const listRef = useRef();
+  const [startDateOpen, setStartDateOpen] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const handleGetData = async () => {
@@ -32,6 +38,7 @@ const Home = () => {
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
 
       setOpenList(res);
+      setOldData(res);
     } catch (error) {
       console.log(error, 'error');
     }
@@ -42,6 +49,17 @@ const Home = () => {
     handleSearchList();
   }, [isFocused]);
 
+  const handleOpenSelect = () => {
+    // let tempData = openList.sort((a, b) =>
+    //   a.status.toLowerCase() > b.status.toLowerCase() ? -1 : 1,
+    // );
+    setOpenList(tempData);
+    setFilterModal(false);
+  };
+  const handleFilterClose = () => {
+    setFilterModal(false);
+  };
+
   const onRefresh = () => {
     //set isRefreshing to true
     setIsRefreshing(true);
@@ -51,16 +69,22 @@ const Home = () => {
   };
 
   const handleSearchList = searchText => {
-    if (searchText?.length) {
-      const searchOpenList = openList.filter(
-        list =>
-          list?.name.toLowerCase().includes(searchText.toLowerCase()) ||
-          list?.status.toLowerCase().includes(searchText.toLowerCase()) ||
-          list?.companyName.toLowerCase().includes(searchText.toLowerCase()) ||
-          list?.vehicleNumber.toLowerCase().includes(searchText.toLowerCase()),
-      );
-      setSearchItem(searchOpenList);
-    } else setSearchItem(openList);
+    // if (searchText == '') {
+    //   setOpenList(oldData);
+    // } else {
+    //   const searchOpenList = openList.filter(list => {
+    //     return (
+    //       (list?.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
+    //         list?.status.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
+    //         list?.companyName.toLowerCase().indexOf(searchText.toLowerCase()) >
+    //           -1 ||
+    //         list?.vehicleNumber
+    //           .toLowerCase()
+    //           .indexOf(searchText.toLowerCase())) > -1
+    //     );
+    //   });
+    //   setOpenList(searchOpenList);
+    // }
   };
   const renderItem = ({item}) => {
     console.log(item, 'item');
@@ -139,17 +163,23 @@ const Home = () => {
               placeholder={'Search Item'}
             />
 
-            {/* <TouchableOpacity style={styles.filter} onPress={()=> setFilterModal(true)}>
+            {/* <TouchableOpacity
+              style={styles.filter}
+              onPress={() => setFilterModal(true)}>
               <Image source={globalImagePath.filter} style={styles.search} />
             </TouchableOpacity> */}
           </View>
         ) : null}
         <FlatList
-          extraData={searchItem}
+          extraData={openList}
+          ref={listRef}
+          maxToRenderPerBatch={10}
+          initialNumToRender={10}
+          initialScrollIndex={index}
           onRefresh={onRefresh}
           refreshing={isRefreshing}
           keyExtractor={(e, index) => e.itemId}
-          data={searchItem}
+          data={openList}
           ListEmptyComponent={() => {
             <View>
               <Text style={styles.label}>{'No Data Found'}</Text>
@@ -158,16 +188,61 @@ const Home = () => {
           renderItem={renderItem}
         />
       </View>
-      <Modal animationType="slide" visible={filterModal} transparent>
-        <SafeAreaView style={styles.parentContainer}>
-          <Pressable style={{height: '100%', width: '100%'}}></Pressable>
+      <Modal
+        animationType="slide"
+        onDismiss={handleFilterClose}
+        visible={filterModal}
+        transparent>
+        <View style={styles.parentContainer}>
+          <Pressable
+            style={{height: '100%', width: '100%'}}
+            onPress={handleFilterClose}></Pressable>
           <View style={styles.parentWrapper}>
             <View style={styles.modalWrapper}>
-              <ActivityIndicator />
+              <TouchableOpacity
+                style={styles.flexFilter}
+                onPress={() => {
+                  let tempData = openList.sort((a, b) =>
+                    a.status.toLowerCase() > b.status.toLowerCase() ? -1 : 1,
+                  );
+                  listRef.current?.scrollToIndex({animated: true, index: 0});
+                  setOpenList(tempData);
+                  handleFilterClose();
+                }}>
+                {/* <Checkbox /> */}
+                <Text style={styles.label}>{'Status - Open'}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  let tempData = openList.sort((a, b) =>
+                    a.status.toLowerCase() > b.status.toLowerCase() ? 1 : -1,
+                  );
+                  listRef.current?.scrollToIndex({animated: true, index: 0});
+                  setOpenList(tempData);
+                  handleFilterClose();
+                }}
+                style={styles.flexFilter}>
+                {/* <Checkbox /> */}
+                <Text style={styles.label}>{'Status - Close'}</Text>
+              </TouchableOpacity>
+              <View>
+                <Text>{'To'}</Text>
+                <TouchableOpacity onPress={() => setStartDateOpen(true)}>
+                  <Text>{'To'}</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </SafeAreaView>
+        </View>
       </Modal>
+      {/* <DatePicker
+        mode="date"
+        modal={startDateOpen}
+        onDateChange={(text)=> setStartDate(text)}
+        date={startDate}
+        onCancel={() => setStartDateOpen(false)}
+      /> */}
     </View>
   );
 };

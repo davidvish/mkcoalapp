@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+    marginBottom:hp(9)
   },
   AddList: {
     height: hp(3),
@@ -75,12 +76,13 @@ export const styles = StyleSheet.create({
     color: 'red',
   },
   headerList: {
-    backgroundColor: '',
+    backgroundColor: '#fff',
     height: hp(5),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: Dimensions.get('window').width,
+    width:'100%',
+    elevation:5
   },
   alignCenter: {
     fontSize: rfs(1.8),

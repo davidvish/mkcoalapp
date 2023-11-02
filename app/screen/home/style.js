@@ -132,11 +132,16 @@ export const styles = StyleSheet.create({
   },
   modalWrapper: {
     height: hp(50),
-    width:'90%',
+    width: '90%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 8,
     alignSelf: 'center',
+  },
+  flexFilter: {
+    flexDirection: 'row',
+    alignItems:'center',
+    justifyContent:'space-evenly'
   },
 });
