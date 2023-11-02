@@ -178,7 +178,7 @@ const Home = () => {
           initialScrollIndex={index}
           onRefresh={onRefresh}
           refreshing={isRefreshing}
-          keyExtractor={(e, index) => e.itemId}
+          keyExtractor={(e, index) => e.id}
           data={openList}
           ListEmptyComponent={() => {
             <View>

@@ -62,7 +62,7 @@ const AddItem = () => {
 
   const [dateTime, setDateTime] = useState();
   const [endDateTime, setEndDateTime] = useState();
-
+  const [index, setIndex] = useState(1);
   const [listUid, setListUid] = useState();
   const [loadVisible, setLoaderVisible] = useState(false);
   const navigation = useNavigation();
@@ -115,6 +115,7 @@ const AddItem = () => {
       setVehicleNumber('');
   };
   const handlePostData = async () => {
+    let id = setIndex(index + 1);
     let itemId = uuid.v4();
     if (route?.params?.type == 'edit') {
       setLoaderVisible(true);
@@ -129,6 +130,7 @@ const AddItem = () => {
             images,
             status,
             number,
+            id,
             endDateTime: dateTime,
             itemId: route.params?.data.itemId,
           });
@@ -150,6 +152,7 @@ const AddItem = () => {
           status,
           number,
           dateTime,
+          id,
           itemId: itemId,
         });
         // Alert.alert('List added succussfully');
