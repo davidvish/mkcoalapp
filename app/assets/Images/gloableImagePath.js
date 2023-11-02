@@ -9,6 +9,7 @@ export const globalImagePath = {
     search:require('./search.png'),
     close:require('./close.png'),
     filter:require('./filter.png'),
+    noInternetConnection:require('./noConnection.png')
 
 
 };

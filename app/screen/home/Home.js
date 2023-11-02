@@ -18,8 +18,10 @@ import {responsiveHeight as hp} from 'react-native-responsive-dimensions';
 import RNRestart from 'react-native-restart';
 import {ActivityIndicator, Checkbox, Modal, Title} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
+import CheckInteretConnect from '../checkInternet/CheckInteretConnect';
 const Home = () => {
   const route = useRoute();
+  const [isConnected, setIsConnected] = useState(false);
   const [dateTime, setDateTime] = useState();
   const [openList, setOpenList] = useState([]);
   const [oldData, setOldData] = useState([]);
@@ -155,94 +157,112 @@ const Home = () => {
   return (
     <View style={{flex: 1}}>
       <Header title={'Home'} />
-      <View style={styles.container}>
-        {openList.length ? (
-          <View style={styles.inputContainer}>
-            <ThemeInput
-              onChangeText={handleSearchList}
-              placeholder={'Search Item'}
-            />
+      {isConnected == true ? (
+        <View style={{flex: 1}}>
+          <View style={styles.container}>
+            {openList.length ? (
+              <View style={styles.inputContainer}>
+                <ThemeInput
+                  onChangeText={handleSearchList}
+                  placeholder={'Search Item'}
+                />
 
-            {/* <TouchableOpacity
+                {/* <TouchableOpacity
               style={styles.filter}
               onPress={() => setFilterModal(true)}>
               <Image source={globalImagePath.filter} style={styles.search} />
             </TouchableOpacity> */}
+              </View>
+            ) : null}
+            <FlatList
+              extraData={openList}
+              ref={listRef}
+              maxToRenderPerBatch={10}
+              initialNumToRender={10}
+              initialScrollIndex={index}
+              onRefresh={onRefresh}
+              refreshing={isRefreshing}
+              keyExtractor={(e, index) => e.id}
+              data={openList}
+              ListEmptyComponent={() => {
+                <View>
+                  <Text style={styles.label}>{'No Data Found'}</Text>
+                </View>;
+              }}
+              renderItem={renderItem}
+            />
           </View>
-        ) : null}
-        <FlatList
-          extraData={openList}
-          ref={listRef}
-          maxToRenderPerBatch={10}
-          initialNumToRender={10}
-          initialScrollIndex={index}
-          onRefresh={onRefresh}
-          refreshing={isRefreshing}
-          keyExtractor={(e, index) => e.id}
-          data={openList}
-          ListEmptyComponent={() => {
-            <View>
-              <Text style={styles.label}>{'No Data Found'}</Text>
-            </View>;
-          }}
-          renderItem={renderItem}
-        />
-      </View>
-      <Modal
-        animationType="slide"
-        onDismiss={handleFilterClose}
-        visible={filterModal}
-        transparent>
-        <View style={styles.parentContainer}>
-          <Pressable
-            style={{height: '100%', width: '100%'}}
-            onPress={handleFilterClose}></Pressable>
-          <View style={styles.parentWrapper}>
-            <View style={styles.modalWrapper}>
-              <TouchableOpacity
-                style={styles.flexFilter}
-                onPress={() => {
-                  let tempData = openList.sort((a, b) =>
-                    a.status.toLowerCase() > b.status.toLowerCase() ? -1 : 1,
-                  );
-                  listRef.current?.scrollToIndex({animated: true, index: 0});
-                  setOpenList(tempData);
-                  handleFilterClose();
-                }}>
-                {/* <Checkbox /> */}
-                <Text style={styles.label}>{'Status - Open'}</Text>
-              </TouchableOpacity>
+          <Modal
+            animationType="slide"
+            onDismiss={handleFilterClose}
+            visible={filterModal}
+            transparent>
+            <View style={styles.parentContainer}>
+              <Pressable
+                style={{height: '100%', width: '100%'}}
+                onPress={handleFilterClose}></Pressable>
+              <View style={styles.parentWrapper}>
+                <View style={styles.modalWrapper}>
+                  <TouchableOpacity
+                    style={styles.flexFilter}
+                    onPress={() => {
+                      let tempData = openList.sort((a, b) =>
+                        a.status.toLowerCase() > b.status.toLowerCase()
+                          ? -1
+                          : 1,
+                      );
+                      listRef.current?.scrollToIndex({
+                        animated: true,
+                        index: 0,
+                      });
+                      setOpenList(tempData);
+                      handleFilterClose();
+                    }}>
+                    {/* <Checkbox /> */}
+                    <Text style={styles.label}>{'Status - Open'}</Text>
+                  </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => {
-                  let tempData = openList.sort((a, b) =>
-                    a.status.toLowerCase() > b.status.toLowerCase() ? 1 : -1,
-                  );
-                  listRef.current?.scrollToIndex({animated: true, index: 0});
-                  setOpenList(tempData);
-                  handleFilterClose();
-                }}
-                style={styles.flexFilter}>
-                {/* <Checkbox /> */}
-                <Text style={styles.label}>{'Status - Close'}</Text>
-              </TouchableOpacity>
-              <View>
-                <Text>{'To'}</Text>
-                <TouchableOpacity onPress={() => setStartDateOpen(true)}>
-                  <Text>{'To'}</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      let tempData = openList.sort((a, b) =>
+                        a.status.toLowerCase() > b.status.toLowerCase()
+                          ? 1
+                          : -1,
+                      );
+                      listRef.current?.scrollToIndex({
+                        animated: true,
+                        index: 0,
+                      });
+                      setOpenList(tempData);
+                      handleFilterClose();
+                    }}
+                    style={styles.flexFilter}>
+                    {/* <Checkbox /> */}
+                    <Text style={styles.label}>{'Status - Close'}</Text>
+                  </TouchableOpacity>
+                  <View>
+                    <Text>{'To'}</Text>
+                    <TouchableOpacity onPress={() => setStartDateOpen(true)}>
+                      <Text>{'To'}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
             </View>
-          </View>
-        </View>
-      </Modal>
-      {/* <DatePicker
+          </Modal>
+          {/* <DatePicker
         mode="date"
         modal={startDateOpen}
         onDateChange={(text)=> setStartDate(text)}
         date={startDate}
         onCancel={() => setStartDateOpen(false)}
       /> */}
+        </View>
+      ) : null}
+      <CheckInteretConnect
+        isConnected={isConnected}
+        setIsConnected={setIsConnected}
+      />
     </View>
   );
 };

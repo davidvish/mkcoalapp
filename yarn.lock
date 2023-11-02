@@ -1698,6 +1698,11 @@
     prompts "^2.4.0"
     semver "^7.5.2"
 
+"@react-native-community/netinfo@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.npmjs.org/@react-native-community/netinfo/-/netinfo-10.0.0.tgz"
+  integrity sha512-cJZ7q85EY93xML1IYW7yi1+YGuYmha4EtMyJLoiZL0Bqwz7Jaie/zUiTlAJVzvHaGpaAIWQyF2cXEIf60JWoPw==
+
 "@react-native-firebase/app@^18.6.0", "@react-native-firebase/app@18.6.0":
   version "18.6.0"
   resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-18.6.0.tgz"
@@ -5974,7 +5979,7 @@ react-native-vector-icons@*, react-native-vector-icons@^10.0.0, "react-native-ve
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native@*, "react-native@>= 0.64.3", react-native@>=0.44.1, react-native@>=0.60.0, react-native@0.72.6:
+react-native@*, "react-native@>= 0.64.3", react-native@>=0.44.1, react-native@>=0.59, react-native@>=0.60.0, react-native@0.72.6:
   version "0.72.6"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.72.6.tgz"
   integrity sha512-RafPY2gM7mcrFySS8TL8x+TIO3q7oAlHpzEmC7Im6pmXni6n1AuufGaVh0Narbr1daxstw7yW7T9BKW5dpVc2A==
