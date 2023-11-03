@@ -71,21 +71,15 @@ const Home = () => {
     setIsRefreshing(false);
   };
 
-  const handleSearchList = searchText => {
+  const handleSearchList = (searchText) => {
     if (searchText?.length) {
-      const searchDataList = dataList.filter(list => {
-        return (
-          list?.name.toLowerCase().includes(searchText.toLowerCase()) > -1 ||
-          list?.status.toLowerCase().includes(searchText.toLowerCase()) > -1 ||
-          list?.companyName.toLowerCase().includes(searchText.toLowerCase()) >
-            -1 ||
-          list?.vehicleNumber.includes(searchText) > -1
-        );
-      });
-      setDataList(searchDataList);
-    } else {
-      setDataList(oldData);
-    }
+      let filteredAddr = dataList.filter(
+        (list) =>
+          list?.name.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.companyName.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      setDataList(filteredAddr);
+    } else setDataList(oldData);
   };
   const renderItem = ({item}) => {
     console.log(item, 'item');
@@ -159,7 +153,6 @@ const Home = () => {
       {isConnected == true ? (
         <View style={{flex: 1}}>
           <View style={styles.container}>
-            {dataList.length ? (
               <View style={styles.inputContainer}>
                 <ThemeInput
                   onChangeText={handleSearchList}
@@ -172,7 +165,6 @@ const Home = () => {
               <Image source={globalImagePath.filter} style={styles.search} />
             </TouchableOpacity> */}
               </View>
-            ) : null}
             <FlatList
               extraData={dataList}
               ref={listRef}
