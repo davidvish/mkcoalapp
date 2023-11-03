@@ -11,6 +11,7 @@ import {globalImagePath} from '../../assets/Images/gloableImagePath';
 import { colors } from '../../assets/colors/colors';
 const Close = () => {
   const [closeList, setCloseList] = useState([]);
+  const isFocused = useIsFocused()
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [chooseImage, setChooseImage] = useState();
@@ -18,7 +19,7 @@ const Close = () => {
 
   useEffect(() => {
     handleGetData();
-  }, [useIsFocused]);
+  }, [isFocused]);
   const handleGetData = async () => {
     try {
       const querySnap = await firestore().collection('open').get();

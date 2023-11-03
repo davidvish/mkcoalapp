@@ -24,7 +24,7 @@ const Home = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [dateTime, setDateTime] = useState();
   const [dataList, setDataList] = useState([]);
-  console.log(dataList,"openList")
+  console.log(dataList, 'openList');
   const [oldData, setOldData] = useState([]);
   const [openSelect, setOpenSelect] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -76,15 +76,15 @@ const Home = () => {
       const searchDataList = dataList.filter(list => {
         return (
           list?.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
-            list?.status.toLowerCase().includes(searchText.toLowerCase()) > -1 ||
-            list?.companyName.toLowerCase().includes(searchText.toLowerCase()) >
-              -1 ||
-            list?.vehicleNumber.includes(searchText) > -1
+          list?.status.toLowerCase().includes(searchText.toLowerCase()) > -1 ||
+          list?.companyName.toLowerCase().includes(searchText.toLowerCase()) >
+            -1 ||
+          list?.vehicleNumber.includes(searchText) > -1
         );
       });
       setDataList(searchDataList);
     } else {
-     setDataList(oldData)
+      setDataList(oldData);
     }
   };
   const renderItem = ({item}) => {
@@ -256,12 +256,11 @@ const Home = () => {
       /> */}
         </View>
       ) : null}
-      {isConnected == true ? null : (
-        <CheckInteretConnect
-          isConnected={isConnected}
-          setIsConnected={setIsConnected}
-        />
-      )}
+
+      <CheckInteretConnect
+        isConnected={isConnected}
+        setIsConnected={setIsConnected}
+      />
     </View>
   );
 };
