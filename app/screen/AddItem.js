@@ -130,7 +130,6 @@ const AddItem = () => {
             images,
             status,
             number,
-            id,
             endDateTime: dateTime,
             itemId: route.params?.data.itemId,
           });

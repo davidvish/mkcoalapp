@@ -22,6 +22,7 @@ const ThemeInput = ({
       numberOfLines={numberOfLines}
       placeholder={placeholder}
       error={error}
+      placeholderTextColor={'#000'}
       disabled={disabled}
       keyboardType={keyboardType}
       mode="outlined"
@@ -37,6 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderBottomWidth:1,
     width:'100%',
-    fontFamily:'Lora-Regular'
+    fontFamily:'Lora-Regular',
+    color:'#000'
   },
 });

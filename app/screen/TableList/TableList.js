@@ -8,6 +8,7 @@ import {styles} from './style';
 import {DataTable} from 'react-native-paper';
 import ThumbPopup from '../../component/ThummPopup';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
+import { colors } from '../../assets/colors/colors';
 const Close = () => {
   const [closeList, setCloseList] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -22,7 +23,6 @@ const Close = () => {
     try {
       const querySnap = await firestore().collection('open').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
-      console.log(res?.images, 'red');
       setCloseList(res);
     } catch (error) {
       console.log(error, 'error');
@@ -70,7 +70,7 @@ const Close = () => {
         </View>
         <TouchableOpacity
           onPress={() => handleShowImage(item.images)}
-          style={{width: '15%', backgroundColor: 'red'}}>
+          style={{width: '15%', backgroundColor: colors.primary}}>
           <Image source={{uri: item.images}} style={styles.image} />
         </TouchableOpacity>
       </View>
@@ -91,7 +91,7 @@ const Close = () => {
           maxToRenderPerBatch={10}
           initialNumToRender={10}
           refreshing={isRefreshing}
-          keyExtractor={(item, index) => item.uid}
+          keyExtractor={(item, index) => item.id}
           data={closeList}
           renderItem={renderItem}
         />

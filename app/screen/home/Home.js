@@ -71,22 +71,20 @@ const Home = () => {
   };
 
   const handleSearchList = searchText => {
-    // if (searchText == '') {
-    //   setOpenList(oldData);
-    // } else {
-    //   const searchOpenList = openList.filter(list => {
-    //     return (
-    //       (list?.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
-    //         list?.status.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
-    //         list?.companyName.toLowerCase().indexOf(searchText.toLowerCase()) >
-    //           -1 ||
-    //         list?.vehicleNumber
-    //           .toLowerCase()
-    //           .indexOf(searchText.toLowerCase())) > -1
-    //     );
-    //   });
-    //   setOpenList(searchOpenList);
-    // }
+    if (searchText == '') {
+      setOpenList(oldData);
+    } else {
+      const searchOpenList = openList.filter(list => {
+        return (
+          (list?.name.toLowerCase().includes(searchText) > -1 ||
+            list?.status.toLowerCase().includes(searchText.toLowerCase()) > -1 ||
+            list?.companyName.toLowerCase().includes(searchText.toLowerCase()) >
+              -1 ||
+            list?.vehicleNumber.includes(searchText)) > -1
+        );
+      });
+      setOpenList(searchOpenList);
+    }
   };
   const renderItem = ({item}) => {
     console.log(item, 'item');
@@ -177,8 +175,6 @@ const Home = () => {
             <FlatList
               extraData={openList}
               ref={listRef}
-              maxToRenderPerBatch={10}
-              initialNumToRender={10}
               initialScrollIndex={index}
               onRefresh={onRefresh}
               refreshing={isRefreshing}
@@ -259,10 +255,12 @@ const Home = () => {
       /> */}
         </View>
       ) : null}
-      <CheckInteretConnect
-        isConnected={isConnected}
-        setIsConnected={setIsConnected}
-      />
+      {isConnected == true ? null : (
+        <CheckInteretConnect
+          isConnected={isConnected}
+          setIsConnected={setIsConnected}
+        />
+      )}
     </View>
   );
 };
