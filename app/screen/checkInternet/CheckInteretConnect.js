@@ -32,18 +32,16 @@ const CheckInteretConnect = ({isConnected, setIsConnected}) => {
   return (
     <View style={[styles.container]}>
       {isConnected !== true ? (
-        <View style={{flex: 1, backgroundColor: '#fff', top: hp(10)}}>
+        <View style={{flex: 1,backgroundColor:'#fff',top:hp(10)}}>
           <Image
             source={globalImagePath.noInternetConnection}
             style={styles.image}
           />
-          {isConnected == true ? (
-            <Text style={styles.message}>No Internet Connection</Text>
-          ) : null}
+          <Text style={styles.message}> {isConnected == true ? null :'No Internet Connection'}</Text>
           <TouchableOpacity
             style={[styles.button]}
-            onPress={handleCheckConnection}>
-            <Text style={[styles.btnTxt]}>{'Reload'}</Text>
+            onPress={handleCheckConnection} activeOpacity={1}>
+            <Text style={[styles.btnTxt]}>{'No Internet Connection'}</Text>
           </TouchableOpacity>
         </View>
       ) : null}
@@ -70,22 +68,18 @@ const styles = StyleSheet.create({
     paddingVertical: hp(1),
   },
   button: {
-    backgroundColor: colors.primary,
-    borderRadius: 10,
     height: hp(6),
-    borderWidth: 1,
+    borderWidth: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
     textTransform: 'uppercase',
-    shadowColor: colors.primary,
     flexDirection: 'row',
-    width: '80%',
-    alignSelf: 'center',
+    width:'80%',
+    alignSelf:'center'
   },
   btnTxt: {
-    fontSize: rfs(2),
-    color: '#fff',
+    fontSize: rfs(2.5),
+    color: colors.primary,
     fontWeight: '400',
     textTransform: 'uppercase',
     fontFamily: 'Lora-Regular',
