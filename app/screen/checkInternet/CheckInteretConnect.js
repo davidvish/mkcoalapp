@@ -7,6 +7,7 @@ import {
   responsiveFontSize as rfs,
 } from 'react-native-responsive-dimensions';
 import ThemeButton from '../../component/ThemeButton';
+import {colors} from '../../assets/colors/colors';
 
 const CheckInteretConnect = ({isConnected, setIsConnected}) => {
   useEffect(() => {
@@ -29,25 +30,21 @@ const CheckInteretConnect = ({isConnected, setIsConnected}) => {
     });
   };
   return (
-    <View
-      style={[
-        styles.container,
-        {backgroundColor: isConnected == true ? null : '#fff'},
-      ]}>
+    <View style={[styles.container]}>
       {isConnected !== true ? (
-        <View style={[styles.container]}>
+        <View style={{flex: 1, backgroundColor: '#fff', top: hp(10)}}>
           <Image
             source={globalImagePath.noInternetConnection}
             style={styles.image}
           />
-          <Text style={styles.message}>
-            {isConnected == true ? '' : 'No Internet Connection'}
-          </Text>
-          <ThemeButton
-            style={{width: '80%', alignSelf: 'center'}}
-            children={'Reload'}
-            onPress={handleCheckConnection}
-          />
+          {isConnected == true ? (
+            <Text style={styles.message}>No Internet Connection</Text>
+          ) : null}
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={handleCheckConnection}>
+            <Text style={[styles.btnTxt]}>{'Reload'}</Text>
+          </TouchableOpacity>
         </View>
       ) : null}
     </View>
@@ -58,9 +55,7 @@ export default CheckInteretConnect;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
-  
   },
   image: {
     width: hp(20),
@@ -73,5 +68,26 @@ const styles = StyleSheet.create({
     fontWeight: 'Lora-SemiBold',
     textAlign: 'center',
     paddingVertical: hp(1),
+  },
+  button: {
+    backgroundColor: colors.primary,
+    borderRadius: 10,
+    height: hp(6),
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    textTransform: 'uppercase',
+    shadowColor: colors.primary,
+    flexDirection: 'row',
+    width: '80%',
+    alignSelf: 'center',
+  },
+  btnTxt: {
+    fontSize: rfs(2),
+    color: '#fff',
+    fontWeight: '400',
+    textTransform: 'uppercase',
+    fontFamily: 'Lora-Regular',
   },
 });

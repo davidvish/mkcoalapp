@@ -75,7 +75,7 @@ const Home = () => {
     if (searchText?.length) {
       const searchDataList = dataList.filter(list => {
         return (
-          list?.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
+          list?.name.toLowerCase().includes(searchText.toLowerCase()) > -1 ||
           list?.status.toLowerCase().includes(searchText.toLowerCase()) > -1 ||
           list?.companyName.toLowerCase().includes(searchText.toLowerCase()) >
             -1 ||
@@ -179,8 +179,9 @@ const Home = () => {
               initialScrollIndex={index}
               onRefresh={onRefresh}
               refreshing={isRefreshing}
-              keyExtractor={(e, index) => e.id}
-              data={dataList}
+              keyExtractor={(e, index) => e.uid + index}
+              data={dataList.sort((a, b) =>
+                a.name.localeCompare(b.name))}
               ListEmptyComponent={() => {
                 <View>
                   <Text style={styles.label}>{'No Data Found'}</Text>

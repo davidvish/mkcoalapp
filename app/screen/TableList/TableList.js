@@ -92,8 +92,9 @@ const Close = () => {
           maxToRenderPerBatch={10}
           initialNumToRender={10}
           refreshing={isRefreshing}
-          keyExtractor={(item, index) => item.id}
-          data={closeList}
+          keyExtractor={(item, index) => item.uid + index}
+          data={closeList.sort((a, b) =>
+            a.name.localeCompare(b.name))}
           renderItem={renderItem}
         />
       </View>
