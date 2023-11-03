@@ -23,7 +23,8 @@ const Home = () => {
   const route = useRoute();
   const [isConnected, setIsConnected] = useState(false);
   const [dateTime, setDateTime] = useState();
-  const [openList, setOpenList] = useState([]);
+  const [dataList, setDataList] = useState([]);
+  console.log(dataList,"openList")
   const [oldData, setOldData] = useState([]);
   const [openSelect, setOpenSelect] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -39,7 +40,7 @@ const Home = () => {
       const querySnap = await firestore().collection('open').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
 
-      setOpenList(res);
+      setDataList(res);
       setOldData(res);
     } catch (error) {
       console.log(error, 'error');
@@ -52,10 +53,10 @@ const Home = () => {
   }, [isFocused]);
 
   const handleOpenSelect = () => {
-    // let tempData = openList.sort((a, b) =>
+    // let tempData = dataList.sort((a, b) =>
     //   a.status.toLowerCase() > b.status.toLowerCase() ? -1 : 1,
     // );
-    setOpenList(tempData);
+    setDataList(tempData);
     setFilterModal(false);
   };
   const handleFilterClose = () => {
@@ -71,19 +72,19 @@ const Home = () => {
   };
 
   const handleSearchList = searchText => {
-    if (searchText == '') {
-      setOpenList(oldData);
-    } else {
-      const searchOpenList = openList.filter(list => {
+    if (searchText?.length) {
+      const searchDataList = dataList.filter(list => {
         return (
-          (list?.name.toLowerCase().includes(searchText) > -1 ||
+          list?.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1 ||
             list?.status.toLowerCase().includes(searchText.toLowerCase()) > -1 ||
             list?.companyName.toLowerCase().includes(searchText.toLowerCase()) >
               -1 ||
-            list?.vehicleNumber.includes(searchText)) > -1
+            list?.vehicleNumber.includes(searchText) > -1
         );
       });
-      setOpenList(searchOpenList);
+      setDataList(searchDataList);
+    } else {
+     setDataList(oldData)
     }
   };
   const renderItem = ({item}) => {
@@ -158,7 +159,7 @@ const Home = () => {
       {isConnected == true ? (
         <View style={{flex: 1}}>
           <View style={styles.container}>
-            {openList.length ? (
+            {dataList.length ? (
               <View style={styles.inputContainer}>
                 <ThemeInput
                   onChangeText={handleSearchList}
@@ -173,13 +174,13 @@ const Home = () => {
               </View>
             ) : null}
             <FlatList
-              extraData={openList}
+              extraData={dataList}
               ref={listRef}
               initialScrollIndex={index}
               onRefresh={onRefresh}
               refreshing={isRefreshing}
               keyExtractor={(e, index) => e.id}
-              data={openList}
+              data={dataList}
               ListEmptyComponent={() => {
                 <View>
                   <Text style={styles.label}>{'No Data Found'}</Text>
@@ -202,7 +203,7 @@ const Home = () => {
                   <TouchableOpacity
                     style={styles.flexFilter}
                     onPress={() => {
-                      let tempData = openList.sort((a, b) =>
+                      let tempData = dataList.sort((a, b) =>
                         a.status.toLowerCase() > b.status.toLowerCase()
                           ? -1
                           : 1,
@@ -211,7 +212,7 @@ const Home = () => {
                         animated: true,
                         index: 0,
                       });
-                      setOpenList(tempData);
+                      setDataList(tempData);
                       handleFilterClose();
                     }}>
                     {/* <Checkbox /> */}
@@ -220,7 +221,7 @@ const Home = () => {
 
                   <TouchableOpacity
                     onPress={() => {
-                      let tempData = openList.sort((a, b) =>
+                      let tempData = dataList.sort((a, b) =>
                         a.status.toLowerCase() > b.status.toLowerCase()
                           ? 1
                           : -1,
@@ -229,7 +230,7 @@ const Home = () => {
                         animated: true,
                         index: 0,
                       });
-                      setOpenList(tempData);
+                      setDataList(tempData);
                       handleFilterClose();
                     }}
                     style={styles.flexFilter}>

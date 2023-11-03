@@ -151,7 +151,6 @@ const AddItem = () => {
           status,
           number,
           dateTime,
-          id,
           itemId: itemId,
         });
         // Alert.alert('List added succussfully');
@@ -163,7 +162,6 @@ const AddItem = () => {
       }
     }
     handleBlankField();
-    RNRestart.restart();
   };
   const handleOpenCamera = () => {
     launchCamera({quality: 0.5}, fileObj => {

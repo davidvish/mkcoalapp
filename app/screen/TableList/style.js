@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    marginBottom:hp(9)
+    paddingBottom:hp(9)
   },
   AddList: {
     height: hp(3),
