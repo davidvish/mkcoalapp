@@ -57,6 +57,11 @@ export const styles = StyleSheet.create({
     textTransform: 'capitalize',
     fontFamily: 'Lora-Medium',
   },
+  boldText:{
+    fontSize: rfs(2.2),
+    textTransform: 'capitalize',
+    fontFamily: 'Lora-Bold',
+  },
   images: {
     height: hp(25),
     width: '100%',
@@ -77,8 +82,8 @@ export const styles = StyleSheet.create({
     color: 'red',
   },
   editEvent: {
-    height: hp(2),
-    width: hp(2),
+    height: hp(3),
+    width: hp(3),
     right: wp(2),
     resizeMode: 'contain',
   },

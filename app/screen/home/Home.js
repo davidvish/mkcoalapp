@@ -71,10 +71,10 @@ const Home = () => {
     setIsRefreshing(false);
   };
 
-  const handleSearchList = (searchText) => {
+  const handleSearchList = searchText => {
     if (searchText?.length) {
       let filteredAddr = dataList.filter(
-        (list) =>
+        list =>
           list?.name.toLowerCase().includes(searchText.toLowerCase()) ||
           list?.companyName.toLowerCase().includes(searchText.toLowerCase()),
       );
@@ -85,8 +85,7 @@ const Home = () => {
     console.log(item, 'item');
     return (
       <View>
-        <View
-          style={[styles.card, {opacity: item.status === 'Close' ? 0.5 : 1}]}>
+        <View style={[styles.card]}>
           <View
             style={{
               flexDirection: 'row',
@@ -94,7 +93,7 @@ const Home = () => {
               justifyContent: 'space-between',
             }}>
             <Text style={styles.label}>
-              Name:- <Text style={styles.regTxt}>{item.name}</Text>
+              <Text style={[styles.boldText]}>{item.name}</Text>
             </Text>
             <TouchableOpacity
               // disabled={item.status === 'Open' ? false : true}
@@ -105,10 +104,7 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           <Text style={styles.label}>
-            Phone Number:-{' '}
-            <Text style={[styles.regTxt, {fontFamily: 'Lora-Bold'}]}>
-              {item.number}
-            </Text>
+            <Text style={[styles.boldText]}>{item.number}</Text>
           </Text>
           <Text style={styles.label}>
             Company Name:- <Text style={styles.regTxt}>{item.companyName}</Text>
@@ -124,13 +120,12 @@ const Home = () => {
             </Text>
           ) : null}
           <Text style={styles.label}>
-            Vehicle Name:-{' '}
+            Vehicle Number:-{' '}
             <Text style={[styles.regTxt]}>
               {item.vehicleNumber.toUpperCase()}
             </Text>
           </Text>
           <Text style={styles.label}>
-            Status:-{' '}
             <Text
               style={[
                 styles.regTxt,
@@ -153,18 +148,18 @@ const Home = () => {
       {isConnected == true ? (
         <View style={{flex: 1}}>
           <View style={styles.container}>
-              <View style={styles.inputContainer}>
-                <ThemeInput
-                  onChangeText={handleSearchList}
-                  placeholder={'Search Item'}
-                />
+            <View style={styles.inputContainer}>
+              <ThemeInput
+                onChangeText={handleSearchList}
+                placeholder={'Search Item'}
+              />
 
-                {/* <TouchableOpacity
+              {/* <TouchableOpacity
               style={styles.filter}
               onPress={() => setFilterModal(true)}>
               <Image source={globalImagePath.filter} style={styles.search} />
             </TouchableOpacity> */}
-              </View>
+            </View>
             <FlatList
               extraData={dataList}
               ref={listRef}
@@ -172,8 +167,7 @@ const Home = () => {
               onRefresh={onRefresh}
               refreshing={isRefreshing}
               keyExtractor={(e, index) => e.uid + index}
-              data={dataList.sort((a, b) =>
-                a.name.localeCompare(b.name))}
+              data={dataList.sort((a, b) => a.name.localeCompare(b.name))}
               ListEmptyComponent={() => {
                 <View>
                   <Text style={styles.label}>{'No Data Found'}</Text>

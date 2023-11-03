@@ -47,16 +47,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: 0.5,
   },
-  label: {
-    fontSize: rfs(2),
-    fontWeight: '500',
-    fontFamily:'Lora-Medium'
-  },
-  regTxt: {
-    fontSize: rfs(2),
-    fontWeight: '400',
-    textTransform: 'capitalize',
-  },
+
   images: {
     height: hp(20),
     width: '100%',
@@ -85,12 +76,12 @@ export const styles = StyleSheet.create({
     elevation:5
   },
   alignCenter: {
-    fontSize: rfs(1.8),
+    fontSize: rfs(2),
     fontFamily: 'Lora-Regular',
     textAlign: 'center',
   },
   alignLeft: {
-    fontSize: rfs(1.8),
+    fontSize: rfs(2),
     fontFamily: 'Lora-Regular',
     textAlign: 'left',
   },
@@ -98,5 +89,22 @@ export const styles = StyleSheet.create({
     height:hp(7),
     width:hp(7),
     alignSelf:'flex-end'
-  }
+  },
+  label: {
+    fontSize: rfs(2),
+    fontWeight: '500',
+    textTransform: 'capitalize',
+    fontFamily: 'Lora-Regular',
+  },
+  regTxt: {
+    fontSize: rfs(2),
+    fontWeight: '400',
+    textTransform: 'capitalize',
+    fontFamily: 'Lora-Medium',
+  },
+  boldText:{
+    fontSize: rfs(2),
+    textTransform: 'capitalize',
+    fontFamily: 'Lora-Bold',
+  },
 });

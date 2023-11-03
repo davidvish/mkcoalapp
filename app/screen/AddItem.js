@@ -233,6 +233,9 @@ const AddItem = () => {
         open={openStatus}
         autoScroll
         value={status}
+        selectedItemLabelStyle={{color:'#fff'}}
+        selectedItemContainerStyle={{backgroundColor:colors.primaryOpacity}}
+        tickIconStyle={{tintColor:'#fff'}}
         placeholderStyle={{fontFamily: 'Lora-Regular'}}
         dropDownContainerStyle={{fontFamily: 'Lora-Regular'}}
         itemSeparatorStyle={{fontFamily: 'Lora-Regular'}}
@@ -265,6 +268,9 @@ const AddItem = () => {
         autoScroll
         value={companyName}
         items={items}
+        tickIconStyle={{tintColor:'#fff'}}
+        selectedItemLabelStyle={{color:'#fff'}}
+        selectedItemContainerStyle={{backgroundColor:colors.primaryOpacity}}
         labelStyle={{fontFamily: 'Lora-Regular'}}
         textStyle={{fontFamily: 'Lora-Regular'}}
         setOpen={setOpen}

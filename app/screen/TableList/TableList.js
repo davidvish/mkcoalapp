@@ -8,10 +8,10 @@ import {styles} from './style';
 import {DataTable} from 'react-native-paper';
 import ThumbPopup from '../../component/ThummPopup';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
-import { colors } from '../../assets/colors/colors';
+import {colors} from '../../assets/colors/colors';
 const Close = () => {
   const [closeList, setCloseList] = useState([]);
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [chooseImage, setChooseImage] = useState();
@@ -56,9 +56,14 @@ const Close = () => {
           <Text style={styles.alignLeft}>{item.companyName}</Text>
           <Text style={styles.alignLeft}>{item.number}</Text>
           <Text style={styles.alignLeft}>{item.vehicleNumber}</Text>
-          <Text style={styles.alignLeft}>{item.dateTime}</Text>
-          {item.endDateTime ? (
-            <Text style={styles.alignLeft}>{item.endDateTime}</Text>
+          <Text style={styles.label}>
+            Dispatch Date :- <Text style={styles.boldText}>{item.dateTime}</Text>
+          </Text>
+          {item.status === 'Close' && item?.endDateTime ? (
+            <Text style={styles.label}>
+              Delivery Date :-{' '}
+              <Text style={styles.boldText}>{item.endDateTime}</Text>
+            </Text>
           ) : null}
           <Text
             style={[
@@ -82,9 +87,9 @@ const Close = () => {
       <Header title={'List'} />
       <View style={styles.container}>
         <DataTable.Header style={styles.headerList}>
-          <Text style={styles.label}>Full Name</Text>
+          <Text style={styles.label}>Name</Text>
           <Text style={styles.label}>Description</Text>
-          <Text style={styles.label}>Images</Text>
+          <Text style={styles.label}>Image</Text>
         </DataTable.Header>
         <FlatList
           extraData={closeList}
@@ -93,8 +98,7 @@ const Close = () => {
           initialNumToRender={10}
           refreshing={isRefreshing}
           keyExtractor={(item, index) => item.uid + index}
-          data={closeList.sort((a, b) =>
-            a.name.localeCompare(b.name))}
+          data={closeList.sort((a, b) => a.name.localeCompare(b.name))}
           renderItem={renderItem}
         />
       </View>
