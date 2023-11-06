@@ -197,7 +197,9 @@ const AddItem = () => {
   return (
     <View style={styles.boxWrapper}>
       <View>
-        <TouchableOpacity  style={styles.leftBackBtn} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.leftBackBtn}
+          onPress={() => navigation.goBack()}>
           <Image source={globalImagePath.left} style={styles.backBtn} />
         </TouchableOpacity>
         <Text style={styles.title}>{'Create\nNew Task'}</Text>
@@ -232,9 +234,9 @@ const AddItem = () => {
         }}
         open={openStatus}
         value={status}
-        selectedItemLabelStyle={{color:'#fff'}}
-        selectedItemContainerStyle={{backgroundColor:colors.primaryOpacity}}
-        tickIconStyle={{tintColor:'#fff'}}
+        selectedItemLabelStyle={{color: '#fff'}}
+        selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
+        tickIconStyle={{tintColor: '#fff'}}
         placeholderStyle={{fontFamily: 'Lora-Regular'}}
         dropDownContainerStyle={{fontFamily: 'Lora-Regular'}}
         itemSeparatorStyle={{fontFamily: 'Lora-Regular'}}
@@ -263,12 +265,13 @@ const AddItem = () => {
           borderWidth: 0,
           fontFamily: 'Lora-Regular',
         }}
+        searchable
         open={open}
         value={companyName}
         items={items}
-        tickIconStyle={{tintColor:'#fff'}}
-        selectedItemLabelStyle={{color:'#fff'}}
-        selectedItemContainerStyle={{backgroundColor:colors.primaryOpacity}}
+        tickIconStyle={{tintColor: '#fff'}}
+        selectedItemLabelStyle={{color: '#fff'}}
+        selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
         labelStyle={{fontFamily: 'Lora-Regular'}}
         textStyle={{fontFamily: 'Lora-Regular'}}
         setOpen={setOpen}
@@ -420,10 +423,10 @@ const styles = StyleSheet.create({
     width: hp(4),
     resizeMode: 'contain',
   },
-  leftBackBtn:{
+  leftBackBtn: {
     height: hp(5),
     width: hp(5),
-    alignItems:'center',
-    justifyContent:'center'
-  }
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
