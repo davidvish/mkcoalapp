@@ -44,6 +44,7 @@ export const styles = StyleSheet.create({
     borderWidth: 0.5,
     marginBottom: hp(2),
     borderRadius: 8,
+    backgroundColor:'#fff'
   },
   label: {
     fontSize: rfs(2),
@@ -57,7 +58,7 @@ export const styles = StyleSheet.create({
     textTransform: 'capitalize',
     fontFamily: 'Lora-Medium',
   },
-  boldText:{
+  boldText: {
     fontSize: rfs(2.2),
     textTransform: 'capitalize',
     fontFamily: 'Lora-Bold',
@@ -146,7 +147,12 @@ export const styles = StyleSheet.create({
   },
   flexFilter: {
     flexDirection: 'row',
-    alignItems:'center',
-    justifyContent:'space-evenly'
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+  },
+  flexRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });

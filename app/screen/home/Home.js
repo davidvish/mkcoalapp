@@ -16,7 +16,7 @@ import {styles} from './style';
 import ThemeInput from '../../component/ThemeInput';
 import {responsiveHeight as hp} from 'react-native-responsive-dimensions';
 import RNRestart from 'react-native-restart';
-import {ActivityIndicator, Checkbox, Modal, Title} from 'react-native-paper';
+import {ActivityIndicator, Checkbox, Modal, Title,Card, Subheading,Headline} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import CheckInteretConnect from '../checkInternet/CheckInteretConnect';
 const Home = () => {
@@ -84,17 +84,10 @@ const Home = () => {
   const renderItem = ({item}) => {
     console.log(item, 'item');
     return (
-      <View>
-        <View style={[styles.card]}>
+        <Card style={[styles.card]}>
           <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <Text style={styles.label}>
-              <Text style={[styles.boldText]}>{item.name}</Text>
-            </Text>
+            style={styles.flexRow}>
+              <Headline style={[styles.boldText]}>{item.name}</Headline>
             <TouchableOpacity
               // disabled={item.status === 'Open' ? false : true}
               onPress={() =>
@@ -103,30 +96,28 @@ const Home = () => {
               <Image source={globalImagePath.edit} style={styles.editEvent} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.label}>
-            <Text style={[styles.boldText]}>{item.number}</Text>
-          </Text>
-          <Text style={styles.label}>
-            Company Name:- <Text style={styles.regTxt}>{item.companyName}</Text>
-          </Text>
+            <Headline style={[styles.boldText]}>{item.number}</Headline>
+          <Subheading style={styles.label}>
+            Company Name:- <Subheading style={styles.regTxt}>{item.companyName}</Subheading>
+          </Subheading>
 
-          <Text style={styles.label}>
-            Dispatch Date :- <Text style={styles.regTxt}>{item.dateTime}</Text>
-          </Text>
+          <Subheading style={styles.label}>
+            Dispatch Date :- <Subheading style={styles.regTxt}>{item.dateTime}</Subheading>
+          </Subheading>
           {item.status === 'Close' && item?.endDateTime ? (
             <Text style={styles.label}>
               Delivery Date :-{' '}
               <Text style={styles.regTxt}>{item.endDateTime}</Text>
             </Text>
           ) : null}
-          <Text style={styles.label}>
+          <Subheading style={styles.label}>
             Vehicle Number:-{' '}
-            <Text style={[styles.regTxt]}>
+            <Subheading style={[styles.regTxt]}>
               {item.vehicleNumber.toUpperCase()}
-            </Text>
-          </Text>
-          <Text style={styles.label}>
-            <Text
+            </Subheading>
+          </Subheading>
+          <Subheading style={styles.label}>
+            <Subheading
               style={[
                 styles.regTxt,
                 {
@@ -135,11 +126,10 @@ const Home = () => {
                 },
               ]}>
               {item.status.toUpperCase()}
-            </Text>
-          </Text>
+            </Subheading>
+          </Subheading>
           <Image source={{uri: item.images}} style={styles.images} />
-        </View>
-      </View>
+        </Card>
     );
   };
   return (
@@ -170,77 +160,12 @@ const Home = () => {
               data={dataList.sort((a, b) => a.name.localeCompare(b.name))}
               ListEmptyComponent={() => {
                 <View>
-                  <Text style={styles.label}>{'No Data Found'}</Text>
+                  <Subheading style={styles.label}>{'No Data Found'}</Subheading>
                 </View>;
               }}
               renderItem={renderItem}
             />
           </View>
-          <Modal
-            animationType="slide"
-            onDismiss={handleFilterClose}
-            visible={filterModal}
-            transparent>
-            <View style={styles.parentContainer}>
-              <Pressable
-                style={{height: '100%', width: '100%'}}
-                onPress={handleFilterClose}></Pressable>
-              <View style={styles.parentWrapper}>
-                <View style={styles.modalWrapper}>
-                  <TouchableOpacity
-                    style={styles.flexFilter}
-                    onPress={() => {
-                      let tempData = dataList.sort((a, b) =>
-                        a.status.toLowerCase() > b.status.toLowerCase()
-                          ? -1
-                          : 1,
-                      );
-                      listRef.current?.scrollToIndex({
-                        animated: true,
-                        index: 0,
-                      });
-                      setDataList(tempData);
-                      handleFilterClose();
-                    }}>
-                    {/* <Checkbox /> */}
-                    <Text style={styles.label}>{'Status - Open'}</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      let tempData = dataList.sort((a, b) =>
-                        a.status.toLowerCase() > b.status.toLowerCase()
-                          ? 1
-                          : -1,
-                      );
-                      listRef.current?.scrollToIndex({
-                        animated: true,
-                        index: 0,
-                      });
-                      setDataList(tempData);
-                      handleFilterClose();
-                    }}
-                    style={styles.flexFilter}>
-                    {/* <Checkbox /> */}
-                    <Text style={styles.label}>{'Status - Close'}</Text>
-                  </TouchableOpacity>
-                  <View>
-                    <Text>{'To'}</Text>
-                    <TouchableOpacity onPress={() => setStartDateOpen(true)}>
-                      <Text>{'To'}</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </Modal>
-          {/* <DatePicker
-        mode="date"
-        modal={startDateOpen}
-        onDateChange={(text)=> setStartDate(text)}
-        date={startDate}
-        onCancel={() => setStartDateOpen(false)}
-      /> */}
         </View>
       ) : null}
 

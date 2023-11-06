@@ -5,12 +5,13 @@ import {
   responsiveFontSize as rfs,
 } from 'react-native-responsive-dimensions';
 import { colors } from '../assets/colors/colors';
+import { Title } from 'react-native-paper';
 
 const Header = ({title}) => {
   return (
     <View style={styles.header}>
         <StatusBar backgroundColor={colors.primary} barStyle={'default'}/>
-      <Text style={styles.title}>{title}</Text>
+      <Title style={styles.title}>{title}</Title>
     </View>
   );
 };
@@ -25,7 +26,6 @@ const styles = StyleSheet.create({
     // borderBottomRightRadius:20
   },
   title: {
-    fontSize: rfs(2.2),
     textAlign:"center",
     fontWeight:'500',
     color:'#fff',

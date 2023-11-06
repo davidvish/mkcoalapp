@@ -5,7 +5,7 @@ import firestore from '@react-native-firebase/firestore';
 
 import {useIsFocused} from '@react-navigation/native';
 import {styles} from './style';
-import {DataTable} from 'react-native-paper';
+import {DataTable, Subheading, Title} from 'react-native-paper';
 import ThumbPopup from '../../component/ThummPopup';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
 import {colors} from '../../assets/colors/colors';
@@ -49,30 +49,30 @@ const Close = () => {
     return (
       <View style={styles.card}>
         <View style={{width: '30%'}}>
-          <Text style={styles.alignLeft}>{item.name}</Text>
+          <Subheading style={styles.alignLeft}>{item.name}</Subheading>
         </View>
 
         <View style={{width: '55%'}}>
-          <Text style={styles.alignLeft}>{item.companyName}</Text>
-          <Text style={styles.alignLeft}>{item.number}</Text>
-          <Text style={styles.alignLeft}>{item.vehicleNumber}</Text>
-          <Text style={styles.label}>
-            Dispatch Date :- <Text style={styles.boldText}>{item.dateTime}</Text>
-          </Text>
+          <Subheading style={styles.alignLeft}>{item.companyName}</Subheading>
+          <Subheading style={styles.alignLeft}>{item.number}</Subheading>
+          <Subheading style={styles.alignLeft}>{item.vehicleNumber}</Subheading>
+          <Subheading style={styles.label}>
+            Dispatch Date :- <Subheading style={styles.boldText}>{item.dateTime}</Subheading>
+          </Subheading>
           {item.status === 'Close' && item?.endDateTime ? (
-            <Text style={styles.label}>
+            <Subheading style={styles.label}>
               Delivery Date :-{' '}
-              <Text style={styles.boldText}>{item.endDateTime}</Text>
-            </Text>
+              <Subheading style={styles.boldText}>{item.endDateTime}</Subheading>
+            </Subheading>
           ) : null}
-          <Text
+          <Subheading
             style={[
               styles.alignLeft,
               {fontFamily: 'Lora-SemiBold'},
               {color: item.status === 'Open' ? 'red' : 'green'},
             ]}>
             {item.status.toUpperCase()}
-          </Text>
+          </Subheading>
         </View>
         <TouchableOpacity
           onPress={() => handleShowImage(item.images)}
@@ -87,9 +87,9 @@ const Close = () => {
       <Header title={'List'} />
       <View style={styles.container}>
         <DataTable.Header style={styles.headerList}>
-          <Text style={styles.label}>Name</Text>
-          <Text style={styles.label}>Description</Text>
-          <Text style={styles.label}>Image</Text>
+          <Subheading style={styles.label}>Name</Subheading>
+          <Subheading style={styles.label}>Description</Subheading>
+          <Subheading style={styles.label}>Image</Subheading>
         </DataTable.Header>
         <FlatList
           extraData={closeList}

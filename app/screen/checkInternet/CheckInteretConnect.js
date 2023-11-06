@@ -8,6 +8,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import ThemeButton from '../../component/ThemeButton';
 import {colors} from '../../assets/colors/colors';
+import { Title } from 'react-native-paper';
 
 const CheckInteretConnect = ({isConnected, setIsConnected}) => {
   useEffect(() => {
@@ -37,11 +38,11 @@ const CheckInteretConnect = ({isConnected, setIsConnected}) => {
             source={globalImagePath.noInternetConnection}
             style={styles.image}
           />
-          <Text style={styles.message}> {isConnected == true ? null :'No Internet Connection'}</Text>
+          <Title style={styles.message}> {isConnected == true ? null :'No Internet Connection'}</Title>
           <TouchableOpacity
             style={[styles.button]}
             onPress={handleCheckConnection} activeOpacity={1}>
-            <Text style={[styles.btnTxt]}>{'No Internet Connection'}</Text>
+            <Title style={[styles.btnTxt]}>{'No Internet Connection'}</Title>
           </TouchableOpacity>
         </View>
       ) : null}

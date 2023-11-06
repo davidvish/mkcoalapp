@@ -26,7 +26,7 @@ import firestore from '@react-native-firebase/firestore';
 import {globalImagePath} from '../assets/Images/gloableImagePath';
 import {colors} from '../assets/colors/colors';
 import {launchCamera} from 'react-native-image-picker';
-import {ActivityIndicator} from 'react-native-paper';
+import {ActivityIndicator, Title} from 'react-native-paper';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import uuid from 'react-native-uuid';
 import RNRestart from 'react-native-restart';
@@ -202,7 +202,7 @@ const AddItem = () => {
           onPress={() => navigation.goBack()}>
           <Image source={globalImagePath.left} style={styles.backBtn} />
         </TouchableOpacity>
-        <Text style={styles.title}>{'Create\nNew Task'}</Text>
+        <Title style={styles.title}>{'Create\nNew Task'}</Title>
       </View>
       <ThemeInput
         style={styles.bottomSpace}
@@ -227,22 +227,18 @@ const AddItem = () => {
       />
 
       <DropDownPicker
-        style={{
-          backgroundColor: 'transparent',
-          borderBottomWidth: 1,
-          borderWidth: 0,
-        }}
+        style={styles.DropDownPicker}
         open={openStatus}
         value={status}
-        selectedItemLabelStyle={{color: '#fff'}}
+        selectedItemLabelStyle={styles.selectedStyle}
         selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
         tickIconStyle={{tintColor: '#fff'}}
-        placeholderStyle={{fontFamily: 'Lora-Regular'}}
-        dropDownContainerStyle={{fontFamily: 'Lora-Regular'}}
-        itemSeparatorStyle={{fontFamily: 'Lora-Regular'}}
+        placeholderStyle={styles.LoraRegular}
+        dropDownContainerStyle={styles.LoraRegular}
+        itemSeparatorStyle={styles.LoraRegular}
         dropDownDirection="BOTTOM"
-        labelStyle={{fontFamily: 'Lora-Regular'}}
-        textStyle={{fontFamily: 'Lora-Regular'}}
+        labelStyle={styles.LoraRegular}
+        textStyle={styles.LoraRegular}
         placeholder={'Select Status'}
         items={itemStatus}
         setOpen={setOpenStatus}
@@ -259,26 +255,21 @@ const AddItem = () => {
         />
       </TouchableOpacity>
       <DropDownPicker
-        style={{
-          backgroundColor: 'transparent',
-          borderBottomWidth: 1,
-          borderWidth: 0,
-          fontFamily: 'Lora-Regular',
-        }}
+        style={styles.DropDownPicker}
         searchable
         open={open}
         value={companyName}
         items={items}
         tickIconStyle={{tintColor: '#fff'}}
-        selectedItemLabelStyle={{color: '#fff'}}
+        selectedItemLabelStyle={styles.selectedStyle}
         selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
-        labelStyle={{fontFamily: 'Lora-Regular'}}
-        textStyle={{fontFamily: 'Lora-Regular'}}
+        labelStyle={styles.LoraRegular}
+        textStyle={styles.LoraRegular}
         setOpen={setOpen}
         dropDownDirection="TOP"
         disableBorderRadius={0}
         placeholder={'Select Destination'}
-        placeholderStyle={{fontFamily: 'Lora-Regular'}}
+        placeholderStyle={styles.LoraRegular}
         setValue={setCompanyName}
         setItems={setItems}
       />
@@ -429,4 +420,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  DropDownPicker: {
+    backgroundColor: 'transparent',
+    borderBottomWidth: 1,
+    borderWidth: 0,
+    width: '100%',
+  },
+  selectedStyle: {
+    color: '#fff',
+    width: '100%',
+  },
+  LoraRegular:{
+    fontFamily: 'Lora-Regular'
+  }
 });

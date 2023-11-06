@@ -81,7 +81,6 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   alignLeft: {
-    fontSize: rfs(2),
     fontFamily: 'Lora-Regular',
     textAlign: 'left',
   },
