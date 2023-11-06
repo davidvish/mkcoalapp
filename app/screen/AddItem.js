@@ -197,7 +197,7 @@ const AddItem = () => {
   return (
     <View style={styles.boxWrapper}>
       <View>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity  style={styles.leftBackBtn} onPress={() => navigation.goBack()}>
           <Image source={globalImagePath.left} style={styles.backBtn} />
         </TouchableOpacity>
         <Text style={styles.title}>{'Create\nNew Task'}</Text>
@@ -231,7 +231,6 @@ const AddItem = () => {
           borderWidth: 0,
         }}
         open={openStatus}
-        autoScroll
         value={status}
         selectedItemLabelStyle={{color:'#fff'}}
         selectedItemContainerStyle={{backgroundColor:colors.primaryOpacity}}
@@ -265,7 +264,6 @@ const AddItem = () => {
           fontFamily: 'Lora-Regular',
         }}
         open={open}
-        autoScroll
         value={companyName}
         items={items}
         tickIconStyle={{tintColor:'#fff'}}
@@ -418,8 +416,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Lora-SemiBold',
   },
   backBtn: {
-    height: hp(3),
-    width: hp(3.5),
+    height: hp(4),
+    width: hp(4),
     resizeMode: 'contain',
   },
+  leftBackBtn:{
+    height: hp(5),
+    width: hp(5),
+    alignItems:'center',
+    justifyContent:'center'
+  }
 });
