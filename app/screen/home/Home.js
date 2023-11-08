@@ -105,10 +105,10 @@ const Home = () => {
             Dispatch Date :- <Subheading style={styles.regTxt}>{item.dateTime}</Subheading>
           </Subheading>
           {item.status === 'Close' && item?.endDateTime ? (
-            <Text style={styles.label}>
+            <Subheading style={styles.label}>
               Delivery Date :-{' '}
-              <Text style={styles.regTxt}>{item.endDateTime}</Text>
-            </Text>
+              <Subheading style={styles.regTxt}>{item.endDateTime}</Subheading>
+            </Subheading>
           ) : null}
           <Subheading style={styles.label}>
             Vehicle Number:-{' '}

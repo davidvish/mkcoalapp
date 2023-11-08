@@ -81,7 +81,7 @@ const AddItem = () => {
     setEndDateTime(dt2.format('DD/MM/YYYY HH:mm A'));
     setDisable(!name || !vehicleNumber || !images || !companyName || !number);
     setListUid();
-  });
+  },[navigation,itemStatus,items]);
   const requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
