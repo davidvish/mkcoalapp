@@ -42,7 +42,7 @@ const Home = () => {
   const listRef = useRef();
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
-  const [loadVisible, setLoaderVisible] = useState(false);
+  const [loaderVisible, setLoaderVisible] = useState(false);
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const handleGetData = async () => {
@@ -188,7 +188,7 @@ const Home = () => {
         isConnected={isConnected}
         setIsConnected={setIsConnected}
       />
-      <Loader visible={loadVisible} />
+      <Loader visible={loaderVisible} />
     </View>
   );
 };
