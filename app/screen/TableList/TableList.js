@@ -9,22 +9,25 @@ import {DataTable, Subheading, Title} from 'react-native-paper';
 import ThumbPopup from '../../component/ThummPopup';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
 import {colors} from '../../assets/colors/colors';
+import Loader from '../../component/Loader';
 const Close = () => {
   const [closeList, setCloseList] = useState([]);
   const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [chooseImage, setChooseImage] = useState();
-  console.log(chooseImage, 'images');
+  const [loaderVisible, setLoaderVisible] = useState(false);
 
   useEffect(() => {
     handleGetData();
   }, [isFocused]);
   const handleGetData = async () => {
+    setLoaderVisible(true);
     try {
       const querySnap = await firestore().collection('open').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
       setCloseList(res);
+      setLoaderVisible(false);
     } catch (error) {
       console.log(error, 'error');
     }
@@ -57,12 +60,15 @@ const Close = () => {
           <Subheading style={styles.alignLeft}>{item.number}</Subheading>
           <Subheading style={styles.alignLeft}>{item.vehicleNumber}</Subheading>
           <Subheading style={styles.label}>
-            Dispatch Date :- <Subheading style={styles.boldText}>{item.dateTime}</Subheading>
+            Dispatch Date :-{' '}
+            <Subheading style={styles.boldText}>{item.dateTime}</Subheading>
           </Subheading>
           {item.status === 'Close' && item?.endDateTime ? (
             <Subheading style={styles.label}>
               Delivery Date :-{' '}
-              <Subheading style={styles.boldText}>{item.endDateTime}</Subheading>
+              <Subheading style={styles.boldText}>
+                {item.endDateTime}
+              </Subheading>
             </Subheading>
           ) : null}
           <Subheading
@@ -109,6 +115,7 @@ const Close = () => {
           onClose={handleClose}
         />
       ) : null}
+      <Loader visible={loaderVisible} />
     </View>
   );
 };

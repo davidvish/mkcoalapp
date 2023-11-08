@@ -1,35 +1,20 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  PermissionsAndroid,
-  Modal,
-  SafeAreaView,
-  Pressable,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import {View, Image, TouchableOpacity, PermissionsAndroid} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import ThemeInput from '../component/ThemeInput';
-import ThemeButton from '../component/ThemeButton';
+import ThemeInput from '../../component/ThemeInput';
+import ThemeButton from '../../component/ThemeButton';
 import DropDownPicker from 'react-native-dropdown-picker';
 import moment from 'moment';
-import {
-  responsiveHeight as hp,
-  responsiveFontSize as rfs,
-  responsiveWidth as wp,
-} from 'react-native-responsive-dimensions';
+
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
-import {globalImagePath} from '../assets/Images/gloableImagePath';
-import {colors} from '../assets/colors/colors';
+import {globalImagePath} from '../../assets/Images/gloableImagePath';
+import {colors} from '../../assets/colors/colors';
 import {launchCamera} from 'react-native-image-picker';
-import {ActivityIndicator, Title} from 'react-native-paper';
+import {Title} from 'react-native-paper';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import uuid from 'react-native-uuid';
-import RNRestart from 'react-native-restart';
+import Loader from '../../component/Loader';
+import { styles } from './style';
 
 const AddItem = () => {
   const route = useRoute();
@@ -81,7 +66,7 @@ const AddItem = () => {
     setEndDateTime(dt2.format('DD/MM/YYYY HH:mm A'));
     setDisable(!name || !vehicleNumber || !images || !companyName || !number);
     setListUid();
-  },[navigation,itemStatus,items]);
+  }, [navigation, itemStatus, items]);
   const requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -283,154 +268,9 @@ const AddItem = () => {
         children={route?.params?.type === 'edit' ? 'UPDATE' : 'CREATE TASK'}
         btnStyle={{color: '#fff', textTransform: 'uppercase'}}
       />
-      <Modal animationType="slide" visible={loadVisible} transparent>
-        <SafeAreaView style={styles.parentContainer}>
-          <Pressable style={{height: '100%', width: '100%'}}></Pressable>
-          <View style={styles.parentWrapper}>
-            <View style={styles.modalWrapper}>
-              <ActivityIndicator />
-            </View>
-          </View>
-        </SafeAreaView>
-      </Modal>
+      <Loader visible={loadVisible} />
     </View>
   );
 };
 
 export default AddItem;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: hp(2),
-  },
-  AddList: {
-    height: hp(3),
-    width: hp(3),
-    resizeMode: 'contain',
-    tintColor: '#fff',
-  },
-  AddRow: {
-    position: 'absolute',
-    bottom: hp(2),
-    right: hp(2),
-    height: hp(7),
-    width: hp(7),
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 100,
-    backgroundColor: colors.primary,
-    elevation: 8,
-  },
-  parentContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0 ,0 ,0.5)',
-    paddingHorizontal: wp(8),
-  },
-  bottomSpace: {
-    marginBottom: hp(2),
-  },
-  card: {
-    padding: hp(2),
-    borderWidth: 0.5,
-    marginBottom: hp(2),
-  },
-  label: {
-    fontSize: rfs(2),
-    fontWeight: '500',
-    textTransform: 'capitalize',
-  },
-  regTxt: {
-    fontSize: rfs(2),
-    fontWeight: '400',
-    textTransform: 'capitalize',
-  },
-  images: {
-    height: hp(20),
-    width: '100%',
-    marginTop: hp(2),
-  },
-  normalImage: {
-    height: hp(7),
-    width: hp(7),
-    resizeMode: 'cover',
-  },
-  VImages: {
-    height: hp(20),
-    width: '100%',
-    borderRadius: 8,
-    resizeMode: 'cover',
-  },
-  errorMsg: {
-    color: 'red',
-  },
-  editEvent: {
-    height: hp(2),
-    width: hp(2),
-    right: wp(2),
-    resizeMode: 'contain',
-  },
-  parentWrapper: {
-    bottom: 0,
-    top: 0,
-    left: wp(5),
-    right: wp(5),
-    flex: 1,
-    justifyContent: 'center',
-    position: 'absolute',
-  },
-  boxWrapper: {
-    padding: hp(3),
-    borderRadius: 8,
-    flex: 1,
-    justifyContent: 'space-between',
-    backgroundColor: '#f5f5f5',
-  },
-  imageBox: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: hp(2),
-    height: hp(20),
-    borderRadius: 8,
-    borderWidth: 1,
-  },
-  modalWrapper: {
-    height: hp(10),
-    width: hp(10),
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    alignSelf: 'center',
-  },
-  title: {
-    fontSize: rfs(3.5),
-    fontWeight: '600',
-    fontFamily: 'Lora-SemiBold',
-  },
-  backBtn: {
-    height: hp(4),
-    width: hp(4),
-    resizeMode: 'contain',
-  },
-  leftBackBtn: {
-    height: hp(5),
-    width: hp(5),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  DropDownPicker: {
-    backgroundColor: 'transparent',
-    borderBottomWidth: 1,
-    borderWidth: 0,
-    width: '100%',
-  },
-  selectedStyle: {
-    color: '#fff',
-    width: '100%',
-  },
-  LoraRegular:{
-    fontFamily: 'Lora-Regular'
-  }
-});

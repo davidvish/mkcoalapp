@@ -5,11 +5,11 @@ import Home from '../screen/home/Home';
 import Close from '../screen/TableList/TableList';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {createStackNavigator} from '@react-navigation/stack';
-import Splash from '../screen/Splash';
+import Splash from '../screen/splash/Splash';
 import {colors} from '../assets/colors/colors';
 import {responsiveHeight as hp} from 'react-native-responsive-dimensions';
 import CustomTab from './CustomTab';
-import AddItem from '../screen/AddItem';
+import AddItem from '../screen/addItem/AddItem';
 const Tabs = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 

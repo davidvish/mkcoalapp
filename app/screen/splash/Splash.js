@@ -2,7 +2,7 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import React,{useEffect} from 'react';
 import {responsiveHeight as hp} from 'react-native-responsive-dimensions';
 import {useNavigation} from '@react-navigation/native'
-import { globalImagePath } from '../assets/Images/gloableImagePath';
+import { globalImagePath } from '../../assets/Images/gloableImagePath';
 
 const Splash = () => {
   const navigation = useNavigation()

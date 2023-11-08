@@ -16,9 +16,18 @@ import {styles} from './style';
 import ThemeInput from '../../component/ThemeInput';
 import {responsiveHeight as hp} from 'react-native-responsive-dimensions';
 import RNRestart from 'react-native-restart';
-import {ActivityIndicator, Checkbox, Modal, Title,Card, Subheading,Headline} from 'react-native-paper';
+import {
+  ActivityIndicator,
+  Checkbox,
+  Modal,
+  Title,
+  Card,
+  Subheading,
+  Headline,
+} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import CheckInteretConnect from '../checkInternet/CheckInteretConnect';
+import Loader from '../../component/Loader';
 const Home = () => {
   const route = useRoute();
   const [isConnected, setIsConnected] = useState(false);
@@ -33,15 +42,18 @@ const Home = () => {
   const listRef = useRef();
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
+  const [loadVisible, setLoaderVisible] = useState(false);
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const handleGetData = async () => {
+    setLoaderVisible(true);
     try {
       const querySnap = await firestore().collection('open').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
 
       setDataList(res);
       setOldData(res);
+      setLoaderVisible(false);
     } catch (error) {
       console.log(error, 'error');
     }
@@ -84,52 +96,53 @@ const Home = () => {
   const renderItem = ({item}) => {
     console.log(item, 'item');
     return (
-        <Card style={[styles.card]}>
-          <View
-            style={styles.flexRow}>
-              <Headline style={[styles.boldText]}>{item.name}</Headline>
-            <TouchableOpacity
-              // disabled={item.status === 'Open' ? false : true}
-              onPress={() =>
-                navigation.navigate('AddItem', {data: item, type: 'edit'})
-              }>
-              <Image source={globalImagePath.edit} style={styles.editEvent} />
-            </TouchableOpacity>
-          </View>
-            <Headline style={[styles.boldText]}>{item.number}</Headline>
-          <Subheading style={styles.label}>
-            Company Name:- <Subheading style={styles.regTxt}>{item.companyName}</Subheading>
-          </Subheading>
+      <Card style={[styles.card]}>
+        <View style={styles.flexRow}>
+          <Headline style={[styles.boldText]}>{item.name}</Headline>
+          <TouchableOpacity
+            // disabled={item.status === 'Open' ? false : true}
+            onPress={() =>
+              navigation.navigate('AddItem', {data: item, type: 'edit'})
+            }>
+            <Image source={globalImagePath.edit} style={styles.editEvent} />
+          </TouchableOpacity>
+        </View>
+        <Headline style={[styles.boldText]}>{item.number}</Headline>
+        <Subheading style={styles.label}>
+          Company Name:-{' '}
+          <Subheading style={styles.regTxt}>{item.companyName}</Subheading>
+        </Subheading>
 
+        <Subheading style={styles.label}>
+          Dispatch Date :-{' '}
+          <Subheading style={styles.regTxt}>{item.dateTime}</Subheading>
+        </Subheading>
+        {item.status === 'Close' && item?.endDateTime ? (
           <Subheading style={styles.label}>
-            Dispatch Date :- <Subheading style={styles.regTxt}>{item.dateTime}</Subheading>
+            Delivery Date :-{' '}
+            <Subheading style={styles.regTxt}>{item.endDateTime}</Subheading>
           </Subheading>
-          {item.status === 'Close' && item?.endDateTime ? (
-            <Subheading style={styles.label}>
-              Delivery Date :-{' '}
-              <Subheading style={styles.regTxt}>{item.endDateTime}</Subheading>
-            </Subheading>
-          ) : null}
-          <Subheading style={styles.label}>
-            Vehicle Number:-{' '}
-            <Subheading style={[styles.regTxt]}>
-              {item.vehicleNumber.toUpperCase()}
-            </Subheading>
+        ) : null}
+        <Subheading style={styles.label}>
+          Vehicle Number:-{' '}
+          <Subheading style={[styles.regTxt]}>
+            {item.vehicleNumber.toUpperCase()}
           </Subheading>
-          <Subheading style={styles.label}>
-            <Subheading
-              style={[
-                styles.regTxt,
-                {
-                  fontFamily: 'Lora-Bold',
-                  color: item.status === 'Open' ? 'red' : 'green',
-                },
-              ]}>
-              {item.status.toUpperCase()}
-            </Subheading>
+        </Subheading>
+        <Subheading style={styles.label}>
+          <Subheading
+            style={[
+              styles.regTxt,
+              {
+                fontFamily: 'Lora-Bold',
+                color: item.status === 'Open' ? 'red' : 'green',
+              },
+            ]}>
+            {item.status.toUpperCase()}
           </Subheading>
-          <Image source={{uri: item.images}} style={styles.images} />
-        </Card>
+        </Subheading>
+        <Image source={{uri: item.images}} style={styles.images} />
+      </Card>
     );
   };
   return (
@@ -160,7 +173,9 @@ const Home = () => {
               data={dataList.sort((a, b) => a.name.localeCompare(b.name))}
               ListEmptyComponent={() => {
                 <View>
-                  <Subheading style={styles.label}>{'No Data Found'}</Subheading>
+                  <Subheading style={styles.label}>
+                    {'No Data Found'}
+                  </Subheading>
                 </View>;
               }}
               renderItem={renderItem}
@@ -173,6 +188,7 @@ const Home = () => {
         isConnected={isConnected}
         setIsConnected={setIsConnected}
       />
+      <Loader visible={loadVisible} />
     </View>
   );
 };
