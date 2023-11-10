@@ -248,7 +248,7 @@ const AddItem = () => {
           onChangeText={txt => setName(txt)}
         />
         {nameError ? (
-          <Text style={styles.errorMsg}>{'enter your full name!'}</Text>
+          <Text style={styles.errorMsg}>{'Enter your full name!'}</Text>
         ) : <View style={styles.errorMsg}/>}
 
         <ThemeInput
@@ -261,7 +261,7 @@ const AddItem = () => {
           
         />
         {numberError ? (
-          <Text style={styles.errorMsg}>{'enter your phone number 10 digits!'}</Text>
+          <Text style={styles.errorMsg}>{'Enter your phone number 10 digits!'}</Text>
         ) : <View style={styles.errorMsg}/>}
 
         <ThemeInput
@@ -274,7 +274,7 @@ const AddItem = () => {
         />
         {vehicleNumberError ? (
           <Text style={styles.errorMsg}>
-            {'enter correct your vehicle number!'}
+            {'Enter correct your vehicle number!'}
           </Text>
         ) : <View style={styles.errorMsg}/>}
         <DropDownPicker
@@ -297,7 +297,7 @@ const AddItem = () => {
           setItems={setItemStatus}
         />
         {statusError ? (
-          <Text style={styles.errorMsg}>{'select any one status!'}</Text>
+          <Text style={styles.errorMsg}>{'Select any one status!'}</Text>
         ) : <View style={styles.errorMsg}/>}
         <TouchableOpacity
           onPress={() => requestCameraPermission()}
@@ -308,7 +308,7 @@ const AddItem = () => {
           />
         </TouchableOpacity>
         {imageError ? (
-          <Text style={styles.errorMsg}>{'add your truck image with number display!'}</Text>
+          <Text style={styles.errorMsg}>{'Add your truck image with number display!'}</Text>
         ) : <View style={styles.errorMsg}/>}
         <DropDownPicker
           style={[styles.dropDownPicker, styles.bottomSpace]}
@@ -331,7 +331,7 @@ const AddItem = () => {
         />
         {companyNameError ? (
           <Text style={styles.errorMsg}>
-            {'select any one for destination!'}
+            {'Select any one for destination!'}
           </Text>
         ) : <View style={styles.errorMsg}/>}
       </ScrollView>
