@@ -337,9 +337,9 @@ const AddItem = () => {
       </ScrollView>
 
       <ThemeButton
-        // disabled={disabled ? true : false}
+        disabled={disabled ? true : false}
         style={{
-          backgroundColor: colors.primary,
+          backgroundColor:disabled ? '#ccc' : colors.primary,
           borderColor: disabled ? '#ccc' : colors.primary,
         }}
         onPress={handlePostData}

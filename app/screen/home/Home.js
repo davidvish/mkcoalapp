@@ -141,7 +141,8 @@ const Home = () => {
             {item.status.toUpperCase()}
           </Subheading>
         </Subheading>
-        <Image source={{uri: item.images}} style={styles.images} />
+        { item.images ? 
+        <Image source={{uri: item.images}} style={styles.images} /> :null}
       </Card>
     );
   };
