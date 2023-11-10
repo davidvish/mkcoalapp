@@ -1,4 +1,11 @@
-import {View, Image, TouchableOpacity, PermissionsAndroid} from 'react-native';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  PermissionsAndroid,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import ThemeInput from '../../component/ThemeInput';
 import ThemeButton from '../../component/ThemeButton';
@@ -10,11 +17,11 @@ import firestore from '@react-native-firebase/firestore';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
 import {colors} from '../../assets/colors/colors';
 import {launchCamera} from 'react-native-image-picker';
-import {Title} from 'react-native-paper';
+import {Text, Title} from 'react-native-paper';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import uuid from 'react-native-uuid';
 import Loader from '../../component/Loader';
-import { styles } from './style';
+import {styles} from './style';
 
 const AddItem = () => {
   const route = useRoute();
@@ -24,7 +31,6 @@ const AddItem = () => {
   const [number, setNumber] = useState(
     route?.params?.type == 'edit' ? route.params.data.number : '',
   );
-
   const [vehicleNumber, setVehicleNumber] = useState(
     route?.params?.type == 'edit' ? route.params.data.vehicleNumber : '',
   );
@@ -44,7 +50,6 @@ const AddItem = () => {
   const [disabled, setDisable] = useState(false);
   const [open, setOpen] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
-
   const [dateTime, setDateTime] = useState();
   const [endDateTime, setEndDateTime] = useState();
   const [index, setIndex] = useState(1);
@@ -57,7 +62,12 @@ const AddItem = () => {
     {label: 'Rinira', value: 'Rinira'},
     {label: 'Infosys', value: 'Infosys'},
   ]);
-  const [error, setError] = useState({field: '', message: ''});
+  const [nameError, setNameError] = useState(false);
+  const [numberError, setNumberError] = useState(false);
+  const [vehicleNumberError, setVehicleNumberError] = useState(false);
+  const [statusError, setStatusError] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [companyNameError, setCompanyNameError] = useState(false);
 
   useEffect(() => {
     let scheduledDeparture_Time = new Date();
@@ -99,7 +109,47 @@ const AddItem = () => {
       setCompanyName(''),
       setVehicleNumber('');
   };
+  const handleValidation = () => {
+    var phoneNum = number.replace(/[^\d]/g, '');
+
+    if (!name) {
+      setNameError(true);
+    } else {
+      setNameError(false);
+    }
+    if ( !phoneNum) {
+      setNumberError(true);
+    } else {
+      if(phoneNum.length > 9 && phoneNum.length < 11){
+        setNumberError(false);
+      }
+    }
+    if (!vehicleNumber) {
+      setVehicleNumberError(true);
+    } else {
+      setVehicleNumberError(false);
+    }
+    if (!status) {
+      setStatusError(true);
+    } else {
+      setStatusError(false);
+    }
+    if (!images) {
+      setImageError(true);
+    } else {
+      setImageError(false);
+    }
+    if (!companyName) {
+      setCompanyNameError(true);
+    } else {
+      setCompanyNameError(false);
+    }
+  };
   const handlePostData = async () => {
+    handleValidation();
+    if (!name || !number) {
+      return false;
+    }
     let id = setIndex(index + 1);
     let itemId = uuid.v4();
     if (route?.params?.type == 'edit') {
@@ -189,79 +239,105 @@ const AddItem = () => {
         </TouchableOpacity>
         <Title style={styles.title}>{'Create\nNew Task'}</Title>
       </View>
-      <ThemeInput
-        style={styles.bottomSpace}
-        value={name}
-        placeholder={'Full Name'}
-        onChangeText={txt => setName(txt)}
-      />
-
-      <ThemeInput
-        style={styles.bottomSpace}
-        value={number}
-        keyboardType={'number-pad'}
-        placeholder={'Phone Number'}
-        onChangeText={txt => setNumber(txt)}
-      />
-
-      <ThemeInput
-        style={[styles.bottomSpace]}
-        value={vehicleNumber}
-        placeholder={'Vehicle Number'}
-        onChangeText={txt => setVehicleNumber(txt)}
-      />
-
-      <DropDownPicker
-        style={styles.DropDownPicker}
-        open={openStatus}
-        value={status}
-        selectedItemLabelStyle={styles.selectedStyle}
-        selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
-        tickIconStyle={{tintColor: '#fff'}}
-        placeholderStyle={styles.LoraRegular}
-        dropDownContainerStyle={styles.LoraRegular}
-        itemSeparatorStyle={styles.LoraRegular}
-        dropDownDirection="BOTTOM"
-        labelStyle={styles.LoraRegular}
-        textStyle={styles.LoraRegular}
-        placeholder={'Select Status'}
-        items={itemStatus}
-        setOpen={setOpenStatus}
-        setValue={setStatus}
-        setItems={setItemStatus}
-      />
-
-      <TouchableOpacity
-        onPress={() => requestCameraPermission()}
-        style={styles.imageBox}>
-        <Image
-          source={images ? {uri: images} : globalImagePath.camera}
-          style={images ? styles.VImages : styles.normalImage}
+      <ScrollView>
+        <ThemeInput
+          autoFocus={true}
+          style={styles.bottomSpace}
+          value={name}
+          placeholder={'Full Name'}
+          onChangeText={txt => setName(txt)}
         />
-      </TouchableOpacity>
-      <DropDownPicker
-        style={styles.DropDownPicker}
-        searchable
-        open={open}
-        value={companyName}
-        items={items}
-        tickIconStyle={{tintColor: '#fff'}}
-        selectedItemLabelStyle={styles.selectedStyle}
-        selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
-        labelStyle={styles.LoraRegular}
-        textStyle={styles.LoraRegular}
-        setOpen={setOpen}
-        dropDownDirection="TOP"
-        disableBorderRadius={0}
-        placeholder={'Select Destination'}
-        placeholderStyle={styles.LoraRegular}
-        setValue={setCompanyName}
-        setItems={setItems}
-      />
+        {nameError ? (
+          <Text style={styles.errorMsg}>{'enter your full name!'}</Text>
+        ) : <View style={styles.errorMsg}/>}
+
+        <ThemeInput
+          style={styles.bottomSpace}
+          value={number}
+          maxLength={10}
+          keyboardType={'number-pad'}
+          placeholder={'Phone Number'}
+          onChangeText={txt => setNumber(txt)}
+          
+        />
+        {numberError ? (
+          <Text style={styles.errorMsg}>{'enter your phone number 10 digits!'}</Text>
+        ) : <View style={styles.errorMsg}/>}
+
+        <ThemeInput
+          style={[styles.bottomSpace]}
+          value={vehicleNumber}
+          placeholder={'Vehicle Number'}
+          onChangeText={txt => setVehicleNumber(txt)}
+        />
+        {vehicleNumberError ? (
+          <Text style={styles.errorMsg}>
+            {'enter correct your vehicle number!'}
+          </Text>
+        ) : <View style={styles.errorMsg}/>}
+        <DropDownPicker
+          style={[styles.dropDownPicker, styles.bottomSpace]}
+          open={openStatus}
+          value={status}
+          selectedItemLabelStyle={styles.selectedStyle}
+          selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
+          tickIconStyle={{tintColor: '#fff'}}
+          placeholderStyle={styles.LoraRegular}
+          dropDownContainerStyle={styles.LoraRegular}
+          itemSeparatorStyle={styles.LoraRegular}
+          dropDownDirection="BOTTOM"
+          labelStyle={styles.LoraRegular}
+          textStyle={styles.LoraRegular}
+          placeholder={'Select Status'}
+          items={itemStatus}
+          setOpen={setOpenStatus}
+          setValue={setStatus}
+          setItems={setItemStatus}
+        />
+        {statusError ? (
+          <Text style={styles.errorMsg}>{'select any one status!'}</Text>
+        ) : <View style={styles.errorMsg}/>}
+        <TouchableOpacity
+          onPress={() => requestCameraPermission()}
+          style={styles.imageBox}>
+          <Image
+            source={images ? {uri: images} : globalImagePath.camera}
+            style={images ? styles.VImages : styles.normalImage}
+          />
+        </TouchableOpacity>
+        {imageError ? (
+          <Text style={styles.errorMsg}>{'add your truck image with number display!'}</Text>
+        ) : <View style={styles.errorMsg}/>}
+        <DropDownPicker
+          style={[styles.dropDownPicker, styles.bottomSpace]}
+          searchable
+          open={open}
+          value={companyName}
+          items={items}
+          tickIconStyle={{tintColor: '#fff'}}
+          selectedItemLabelStyle={styles.selectedStyle}
+          selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
+          labelStyle={styles.LoraRegular}
+          textStyle={styles.LoraRegular}
+          setOpen={setOpen}
+          dropDownDirection="TOP"
+          disableBorderRadius={0}
+          placeholder={'Select Destination'}
+          placeholderStyle={styles.LoraRegular}
+          setValue={setCompanyName}
+          setItems={setItems}
+        />
+        {companyNameError ? (
+          <Text style={styles.errorMsg}>
+            {'select any one for destination!'}
+          </Text>
+        ) : <View style={styles.errorMsg}/>}
+      </ScrollView>
+
       <ThemeButton
-        disabled={disabled ? true : false}
+        // disabled={disabled ? true : false}
         style={{
-          backgroundColor: disabled ? '#ccc' : colors.primary,
+          backgroundColor: colors.primary,
           borderColor: disabled ? '#ccc' : colors.primary,
         }}
         onPress={handlePostData}

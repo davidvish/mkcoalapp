@@ -11,13 +11,19 @@ const ThemeInput = ({
   error,
   keyboardType,
   disabled,
-  onBlur
+  onBlur,
+  label,
+  autoFocus,
+  maxLength
 }) => {
   return (
     <TextInput
       onChange={onChange}
       onChangeText={onChangeText}
       value={value}
+      label={label}
+      maxLength={maxLength}
+      autoFocus={autoFocus}
       style={[styles.input, style]}
       numberOfLines={numberOfLines}
       placeholder={placeholder}
@@ -25,8 +31,7 @@ const ThemeInput = ({
       placeholderTextColor={'#000'}
       disabled={disabled}
       keyboardType={keyboardType}
-      mode="outlined"
-      onBlur={onBlur}
+      mode="flat"
     />
   );
 };
@@ -37,6 +42,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: 'transparent',
     borderBottomWidth:1,
+    borderWidth:0,
     width:'100%',
     fontFamily:'Lora-Regular',
     color:'#000'

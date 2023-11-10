@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
     },
   
     bottomSpace: {
-      marginBottom: hp(2),
+      marginBottom: hp(0),
     },
     card: {
       padding: hp(2),
@@ -68,6 +68,9 @@ export const styles = StyleSheet.create({
     },
     errorMsg: {
       color: 'red',
+      height:hp(3),
+      fontSize:rfs(1.8),
+      fontFamily: 'Lora-Regular',
     },
     editEvent: {
       height: hp(2),
@@ -86,8 +89,8 @@ export const styles = StyleSheet.create({
     imageBox: {
       justifyContent: 'center',
       alignItems: 'center',
-      marginBottom: hp(2),
       height: hp(20),
+      marginTop:hp(2),
       borderRadius: 8,
       borderWidth: 1,
     },
@@ -108,7 +111,7 @@ export const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
-    DropDownPicker: {
+    dropDownPicker: {
       backgroundColor: 'transparent',
       borderBottomWidth: 1,
       borderWidth: 0,

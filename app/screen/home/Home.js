@@ -154,7 +154,7 @@ const Home = () => {
             <View style={styles.inputContainer}>
               <ThemeInput
                 onChangeText={handleSearchList}
-                placeholder={'Search Item'}
+                label={'Search Item'}
               />
 
               {/* <TouchableOpacity
