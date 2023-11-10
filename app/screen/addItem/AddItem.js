@@ -147,7 +147,7 @@ const AddItem = () => {
   };
   const handlePostData = async () => {
     handleValidation();
-    if (!name || !number) {
+    if (!name || !number || !images || !vehicleNumber || !companyName || !status) {
       return false;
     }
     let id = setIndex(index + 1);
