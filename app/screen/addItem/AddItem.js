@@ -267,7 +267,9 @@ const AddItem = () => {
         <ThemeInput
           style={[styles.bottomSpace]}
           value={vehicleNumber}
+          ariaValuemin={4}
           placeholder={'Vehicle Number'}
+          maxLength={10}
           onChangeText={txt => setVehicleNumber(txt)}
         />
         {vehicleNumberError ? (

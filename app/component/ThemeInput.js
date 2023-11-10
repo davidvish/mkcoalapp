@@ -14,7 +14,8 @@ const ThemeInput = ({
   onBlur,
   label,
   autoFocus,
-  maxLength
+  maxLength,
+  ariaValuemin
 }) => {
   return (
     <TextInput
@@ -28,6 +29,7 @@ const ThemeInput = ({
       numberOfLines={numberOfLines}
       placeholder={placeholder}
       error={error}
+      aria-valuemin={ariaValuemin}
       placeholderTextColor={'#000'}
       disabled={disabled}
       keyboardType={keyboardType}
