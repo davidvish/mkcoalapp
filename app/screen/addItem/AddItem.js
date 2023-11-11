@@ -76,7 +76,7 @@ const AddItem = () => {
     setEndDateTime(dt2.format('DD/MM/YYYY HH:mm A'));
     setDisabled(!name || !vehicleNumber || !images || !companyName || !number);
     setListUid();
-  }, [navigation, itemStatus, items]);
+  });
   const requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -117,13 +117,14 @@ const AddItem = () => {
     } else {
       setNameError(false);
     }
-    if ( !phoneNum) {
-      setNumberError(true);
-    } else {
-      if(phoneNum.length > 9 && phoneNum.length < 11){
-        setNumberError(false);
+    if (!phoneNum) {
+      if (number.length === 10) {
+        setNumberError(true);
       }
+    } else {
+      setNumberError(false);
     }
+
     if (!vehicleNumber) {
       setVehicleNumberError(true);
     } else {
@@ -147,7 +148,14 @@ const AddItem = () => {
   };
   const handlePostData = async () => {
     handleValidation();
-    if (!name || !number || !images || !vehicleNumber || !companyName || !status) {
+    if (
+      !name ||
+      !number ||
+      !images ||
+      !vehicleNumber ||
+      !companyName ||
+      !status
+    ) {
       return false;
     }
     let id = setIndex(index + 1);
@@ -227,8 +235,7 @@ const AddItem = () => {
         },
       );
     });
-    setLoaderVisible(false)
-
+    setLoaderVisible(false);
   };
 
   return (
@@ -251,7 +258,9 @@ const AddItem = () => {
         />
         {nameError ? (
           <Text style={styles.errorMsg}>{'Enter your full name!'}</Text>
-        ) : <View style={styles.errorMsg}/>}
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
 
         <ThemeInput
           style={styles.bottomSpace}
@@ -260,11 +269,14 @@ const AddItem = () => {
           keyboardType={'number-pad'}
           placeholder={'Phone Number'}
           onChangeText={txt => setNumber(txt)}
-          
         />
         {numberError ? (
-          <Text style={styles.errorMsg}>{'Enter your phone number 10 digits!'}</Text>
-        ) : <View style={styles.errorMsg}/>}
+          <Text style={styles.errorMsg}>
+            {'Enter your phone number 10 digits!'}
+          </Text>
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
 
         <ThemeInput
           style={[styles.bottomSpace]}
@@ -278,7 +290,9 @@ const AddItem = () => {
           <Text style={styles.errorMsg}>
             {'Enter correct your vehicle number!'}
           </Text>
-        ) : <View style={styles.errorMsg}/>}
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
         <DropDownPicker
           style={[styles.dropDownPicker, styles.bottomSpace]}
           open={openStatus}
@@ -300,7 +314,9 @@ const AddItem = () => {
         />
         {statusError ? (
           <Text style={styles.errorMsg}>{'Select any one status!'}</Text>
-        ) : <View style={styles.errorMsg}/>}
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
         <TouchableOpacity
           onPress={() => requestCameraPermission()}
           style={styles.imageBox}>
@@ -310,8 +326,12 @@ const AddItem = () => {
           />
         </TouchableOpacity>
         {imageError ? (
-          <Text style={styles.errorMsg}>{'Add your truck image with number display!'}</Text>
-        ) : <View style={styles.errorMsg}/>}
+          <Text style={styles.errorMsg}>
+            {'Add your truck image with number display!'}
+          </Text>
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
         <DropDownPicker
           style={[styles.dropDownPicker, styles.bottomSpace]}
           searchable
@@ -335,13 +355,15 @@ const AddItem = () => {
           <Text style={styles.errorMsg}>
             {'Select any one for destination!'}
           </Text>
-        ) : <View style={styles.errorMsg}/>}
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
       </ScrollView>
 
       <ThemeButton
         disabled={disabled ? true : false}
         style={{
-          backgroundColor:disabled ? '#ccc' : colors.primary,
+          backgroundColor: disabled ? '#ccc' : colors.primary,
           borderColor: disabled ? '#ccc' : colors.primary,
         }}
         onPress={handlePostData}
