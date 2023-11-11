@@ -117,11 +117,9 @@ const AddItem = () => {
     } else {
       setNameError(false);
     }
-    if (!phoneNum) {
-      if (number.length === 10) {
-        setNumberError(true);
-      }
-    } else {
+    if (!phoneNum && phoneNum == 10) {
+     setNumberError(true)
+    } else{
       setNumberError(false);
     }
 
@@ -208,6 +206,7 @@ const AddItem = () => {
   };
   const handleOpenCamera = () => {
     launchCamera({quality: 0.5}, fileObj => {
+      setLoaderVisible(true)
       const uploadTask = storage()
         .ref()
         .child(`/items/${Date.now()}`)
@@ -217,9 +216,9 @@ const AddItem = () => {
         snapshot => {
           var progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          //console.log('Upload is ' + progress + '% done');
+          // console.log('End Upload is ' + progress + '% done');
           if (progress == 100) {
-            // alert('uploaded');
+            setLoaderVisible(false)
           }
         },
         error => {
@@ -235,7 +234,6 @@ const AddItem = () => {
         },
       );
     });
-    setLoaderVisible(false);
   };
 
   return (

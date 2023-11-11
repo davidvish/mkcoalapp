@@ -170,7 +170,7 @@ const Home = () => {
               initialScrollIndex={index}
               onRefresh={onRefresh}
               refreshing={isRefreshing}
-              keyExtractor={(e, index) => e.uid + index}
+              keyExtractor={(e, index) => e.dateTime + index}
               data={dataList.sort((a, b) => a.name.localeCompare(b.name))}
               ListEmptyComponent={() => {
                 <View>
