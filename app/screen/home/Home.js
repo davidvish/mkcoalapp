@@ -48,7 +48,7 @@ const Home = () => {
   const handleGetData = async () => {
     setLoaderVisible(true);
     try {
-      const querySnap = await firestore().collection('open').get();
+      const querySnap = await firestore().collection('items').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
 
       setDataList(res);

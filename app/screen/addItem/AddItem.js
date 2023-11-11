@@ -47,7 +47,7 @@ const AddItem = () => {
   const [images, setImages] = useState(
     route?.params?.type == 'edit' ? route.params.data.images : '',
   );
-  const [disabled, setDisable] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const [open, setOpen] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
   const [dateTime, setDateTime] = useState();
@@ -74,7 +74,7 @@ const AddItem = () => {
     let dt2 = moment(scheduledDeparture_Time);
     setDateTime(dt2.format('DD/MM/YYYY HH:mm A'));
     setEndDateTime(dt2.format('DD/MM/YYYY HH:mm A'));
-    setDisable(!name || !vehicleNumber || !images || !companyName || !number);
+    setDisabled(!name || !vehicleNumber || !images || !companyName || !number);
     setListUid();
   }, [navigation, itemStatus, items]);
   const requestCameraPermission = async () => {
@@ -156,7 +156,7 @@ const AddItem = () => {
       setLoaderVisible(true);
       try {
         const dataList = await firestore()
-          .collection('open')
+          .collection('items')
           .doc(route.params?.data.itemId)
           .update({
             name,
@@ -178,7 +178,7 @@ const AddItem = () => {
     } else {
       try {
         setLoaderVisible(true);
-        const dataList = await firestore().collection('open').doc(itemId).set({
+        const dataList = await firestore().collection('items').doc(itemId).set({
           name,
           vehicleNumber,
           companyName,
@@ -202,7 +202,7 @@ const AddItem = () => {
     launchCamera({quality: 0.5}, fileObj => {
       const uploadTask = storage()
         .ref()
-        .child(`/open/${Date.now()}`)
+        .child(`/items/${Date.now()}`)
         .putFile(fileObj.assets[0].uri.split('file://')[1]);
       uploadTask.on(
         'state_changed',
@@ -227,6 +227,8 @@ const AddItem = () => {
         },
       );
     });
+    setLoaderVisible(false)
+
   };
 
   return (
