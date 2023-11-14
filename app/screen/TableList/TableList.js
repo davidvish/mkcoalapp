@@ -10,7 +10,7 @@ import ThumbPopup from '../../component/ThummPopup';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
 import {colors} from '../../assets/colors/colors';
 import Loader from '../../component/Loader';
-const Close = () => {
+const TableList = () => {
   const [closeList, setCloseList] = useState([]);
   const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -120,4 +120,4 @@ const Close = () => {
   );
 };
 
-export default Close;
+export default TableList;

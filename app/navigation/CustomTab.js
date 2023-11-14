@@ -16,9 +16,36 @@ import {globalImagePath} from '../assets/Images/gloableImagePath';
 import {colors} from '../assets/colors/colors';
 import {useNavigation} from '@react-navigation/native';
 import Home from '../screen/home/Home';
-import Close from '../screen/TableList/TableList';
 import {CurvedBottomBarExpo} from 'react-native-curved-bottom-bar';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import TabsList from '../screen/home/TabsList';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import TableList from '../screen/TableList/TableList';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Header from '../component/Header';
+const StackTabs = createNativeStackNavigator();
+
+const Tabs = createMaterialTopTabNavigator();
+
+export const TabNavigation = () => {
+  return(
+   <Tabs.Navigator >
+     <Tabs.Screen name='Open' component={TabsList} />
+     <Tabs.Screen name='Close' component={TabsList} />
+   </Tabs.Navigator>
+  )
+ 
+ };
+
+ export const StackTabsNavigation = () =>{
+  return(
+      <StackTabs.Navigator>
+        <StackTabs.Screen name='TopTabs' component={TabNavigation }  options={{
+          header:()=> <Header title={'Home'} />
+        }}/>
+      </StackTabs.Navigator>
+  )
+ }
 
 const CustomTab = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -99,11 +126,12 @@ const CustomTab = () => {
         <CurvedBottomBarExpo.Screen
           name="Home"
           position="LEFT"
-          component={Home}
+          component={StackTabsNavigation}
         />
         <CurvedBottomBarExpo.Screen
           name="List"
-          component={Close}
+          component={TableList}
+          
           position="RIGHT"
         />
       </CurvedBottomBarExpo.Navigator>

@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     paddingHorizontal: hp(2),
     paddingTop: hp(1),
-    paddingBottom:hp(8)
+    paddingBottom: hp(8),
   },
   AddList: {
     height: hp(3),
@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
     borderWidth: 0.5,
     marginBottom: hp(2),
     borderRadius: 8,
-    backgroundColor:'#fff'
+    backgroundColor: '#fff',
   },
   label: {
     fontSize: rfs(2),
@@ -155,5 +155,13 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  topWrapper: {
+    position: 'absolute',
+    bottom: hp(10),
+    right: wp(3),
+    padding:hp(1.5),
+    borderRadius:50,
+    backgroundColor:colors.primary,
   },
 });
