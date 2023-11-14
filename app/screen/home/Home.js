@@ -33,7 +33,8 @@ const Home = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [dateTime, setDateTime] = useState();
   const [dataList, setDataList] = useState([]);
-  console.log(dataList, 'openList');
+  const [openDataList , setOpenDataList] = useState([])
+  console.log(openDataList, 'open List');
   const [oldData, setOldData] = useState([]);
   const [openSelect, setOpenSelect] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -60,6 +61,9 @@ const Home = () => {
   };
   useEffect(() => {
     // RNRestart.Restart();
+    let openList = dataList.map(e => e.status == "Open")
+    console.log(openList,"abc")
+    setOpenDataList(openList)
     handleGetData();
     handleSearchList();
   }, [isFocused]);
@@ -94,7 +98,6 @@ const Home = () => {
     } else setDataList(oldData);
   };
   const renderItem = ({item}) => {
-    console.log(item, 'item');
     return (
       <Card style={[styles.card]}>
         <View style={styles.flexRow}>

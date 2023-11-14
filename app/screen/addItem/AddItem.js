@@ -117,7 +117,7 @@ const AddItem = () => {
     } else {
       setNameError(false);
     }
-    if (!phoneNum && phoneNum == 10) {
+    if (!phoneNum ) {
      setNumberError(true)
     } else{
       setNumberError(false);
@@ -359,10 +359,10 @@ const AddItem = () => {
       </ScrollView>
 
       <ThemeButton
-        disabled={disabled ? true : false}
+        // disabled={disabled ? true : false}
         style={{
-          backgroundColor: disabled ? '#ccc' : colors.primary,
-          borderColor: disabled ? '#ccc' : colors.primary,
+          backgroundColor: colors.primary,
+          borderColor:  colors.primary,
         }}
         onPress={handlePostData}
         children={route?.params?.type === 'edit' ? 'UPDATE' : 'CREATE TASK'}
