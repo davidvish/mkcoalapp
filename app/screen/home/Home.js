@@ -60,9 +60,6 @@ const Home = () => {
     }
   };
   useEffect(() => {
-    // RNRestart.Restart();
-    let openList = dataList.map(e => e.status == "Open")
-    console.log(openList,"abc")
     setOpenDataList(openList)
     handleGetData();
     handleSearchList();
@@ -114,6 +111,10 @@ const Home = () => {
         <Subheading style={styles.label}>
           Company Name:-{' '}
           <Subheading style={styles.regTxt}>{item.companyName}</Subheading>
+        </Subheading>
+        <Subheading style={styles.label}>
+          Company Name:-{' '}
+          <Subheading style={styles.regTxt}>{item.mines}</Subheading>
         </Subheading>
 
         <Subheading style={styles.label}>

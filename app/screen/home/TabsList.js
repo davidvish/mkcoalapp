@@ -12,7 +12,6 @@ import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
 import {Card, Headline, Subheading, TextInput} from 'react-native-paper';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
 import {styles} from './style';
-import Header from '../../component/Header';
 import Loader from '../../component/Loader';
 import CheckInteretConnect from '../checkInternet/CheckInteretConnect';
 import ThemeInput from '../../component/ThemeInput';
@@ -28,27 +27,29 @@ const TabsList = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [filterData, setFilterData] = useState([]);
+  const [filterData, setFilterData] = useState();
+  const [todayTotalItem, setTodayTotalItem] = useState()
+  console.log(todayTotalItem,'abc')
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  console.log(filterData, 'filter');
-  useEffect(() => {
-    handleGetData();
-    handleFilterClose();
-  }, [isFocused]);
-
   const handleGetData = async () => {
+    setLoaderVisible(true);
     try {
       const querySnap = await firestore().collection('items').get();
-      const res = await querySnap.docs.map(docsSnap => docsSnap.data());
+      const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
       setDataList(res);
       setOldDataList(res);
+      setLoaderVisible(false);
     } catch (error) {
       console.log(error, 'error');
     }
   };
 
-  const handleFilterClose = () => {
+  const handleTotalTodayItems =  () => {
+    if(dataList.dateTime == new Date())
+    setTodayTotalItem(filterData)
+  }
+  const handleFilter = () => {
     if (route.name == 'Open') {
       setFilterData(dataList.filter(e => e.status == 'Open'));
     }
@@ -56,13 +57,21 @@ const TabsList = () => {
       setFilterData(dataList.filter(e => e.status == 'Close'));
     }
   };
+   useEffect(() => {
+    setOldDataList()
+   });
+  useEffect(() => {
+    handleGetData()
+    handleFilter();
+    handleTotalTodayItems()
+  }, [isFocused]);
   const handleScrollToTop = () => {
     listRef?.scrollToOffset({offset: 0, animated: true});
   };
   const onRefresh = () => {
     //set isRefreshing to true
     setIsRefreshing(true);
-    handleGetData();
+    handleFilter();
     // and set isRefreshing to false at the end of your callApiMethod()
     setIsRefreshing(false);
   };
@@ -71,7 +80,10 @@ const TabsList = () => {
       let filteredAddr = filterData.filter(
         list =>
           list?.name.toLowerCase().includes(searchText.toLowerCase()) ||
-          list?.companyName.toLowerCase().includes(searchText.toLowerCase()),
+          list?.dateTime.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.endDateTime.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.companyName.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.vehicleNumber.toLowerCase().includes(searchText.toLowerCase()),
       );
       setFilterData(filteredAddr);
     } else setFilterData(oldDataList);
@@ -93,6 +105,9 @@ const TabsList = () => {
         <Subheading style={styles.label}>
           Company Name:-{' '}
           <Subheading style={styles.regTxt}>{item.companyName}</Subheading>
+        </Subheading>
+        <Subheading style={styles.label}>
+          Mines:- <Subheading style={styles.regTxt}>{item.mines}</Subheading>
         </Subheading>
 
         <Subheading style={styles.label}>
@@ -123,9 +138,14 @@ const TabsList = () => {
             {item.status.toUpperCase()}
           </Subheading>
         </Subheading>
-        {item.images ? (
-          <Image source={{uri: item.images}} style={styles.images} />
-        ) : null}
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          {item.images ? (
+            <Image source={{uri: item.images}} style={styles.images} />
+          ) : null}
+          {item.imageWithSlip ? (
+            <Image source={{uri: item.imageWithSlip}} style={styles.images} />
+          ) : null}
+        </View>
       </Card>
     );
   };
@@ -158,13 +178,8 @@ const TabsList = () => {
         }}
         renderItem={renderItem}
       />
-      <TouchableOpacity onPress={handleScrollToTop}  style={styles.topWrapper}>
-        <MaterialCommunityIcons
-          size={25}
-          name="arrow-up-bold"
-          color={'#fff'}
-         
-        />
+      <TouchableOpacity onPress={handleScrollToTop} style={styles.topWrapper}>
+        <MaterialCommunityIcons size={25} name="arrow-up-bold" color={'#fff'} />
       </TouchableOpacity>
       <Loader visible={loaderVisible} />
     </View>

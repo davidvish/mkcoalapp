@@ -22,6 +22,8 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import uuid from 'react-native-uuid';
 import Loader from '../../component/Loader';
 import {styles} from './style';
+import {CompanyDestination} from '../../assets/data/DestinationList';
+import {MinesList} from '../../assets/data/MinesList';
 
 const AddItem = () => {
   const route = useRoute();
@@ -37,6 +39,9 @@ const AddItem = () => {
   const [companyName, setCompanyName] = useState(
     route?.params?.type == 'edit' ? route.params.data.companyName : '',
   );
+  const [mines, setMines] = useState(
+    route?.params?.type == 'edit' ? route.params.data.mines : '',
+  );
   const [status, setStatus] = useState(
     route?.params?.type == 'edit' ? route.params.data.status : '',
   );
@@ -47,8 +52,12 @@ const AddItem = () => {
   const [images, setImages] = useState(
     route?.params?.type == 'edit' ? route.params.data.images : '',
   );
+  const [imageWithSlip, setImageWithSlip] = useState(
+    route?.params?.type == 'edit' ? route.params.data.imageWithSlip : '',
+  );
   const [disabled, setDisabled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openMines, setOpenMines] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
   const [dateTime, setDateTime] = useState();
   const [endDateTime, setEndDateTime] = useState();
@@ -56,18 +65,18 @@ const AddItem = () => {
   const [listUid, setListUid] = useState();
   const [loadVisible, setLoaderVisible] = useState(false);
   const navigation = useNavigation();
-  const [items, setItems] = useState([
-    {label: 'Wipro', value: 'Wipro'},
-    {label: 'Tata', value: 'Tata'},
-    {label: 'Rinira', value: 'Rinira'},
-    {label: 'Infosys', value: 'Infosys'},
-  ]);
+  const [DestinationList, setDestinationList] = useState();
+  const [items, setItems] = useState(CompanyDestination);
+  const [minesItems, setMinesItems] = useState(MinesList);
   const [nameError, setNameError] = useState(false);
   const [numberError, setNumberError] = useState(false);
   const [vehicleNumberError, setVehicleNumberError] = useState(false);
   const [statusError, setStatusError] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [imageWithSlipError, setImageWithSlipError] = useState(false);
+
   const [companyNameError, setCompanyNameError] = useState(false);
+  const [minesError, setMinesError] = useState(false);
 
   useEffect(() => {
     let scheduledDeparture_Time = new Date();
@@ -77,6 +86,9 @@ const AddItem = () => {
     setDisabled(!name || !vehicleNumber || !images || !companyName || !number);
     setListUid();
   });
+  useEffect(() => {
+    handleDestinationList();
+  }, []);
   const requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -117,9 +129,9 @@ const AddItem = () => {
     } else {
       setNameError(false);
     }
-    if (!phoneNum ) {
-     setNumberError(true)
-    } else{
+    if (!phoneNum) {
+      setNumberError(true);
+    } else {
       setNumberError(false);
     }
 
@@ -143,6 +155,16 @@ const AddItem = () => {
     } else {
       setCompanyNameError(false);
     }
+    if (!mines) {
+      setMinesError(true);
+    } else {
+      setMinesError(false);
+    }
+    if (!imageWithSlip) {
+      setImageWithSlipError(true);
+    } else {
+      setImageWithSlipError(false);
+    }
   };
   const handlePostData = async () => {
     handleValidation();
@@ -150,9 +172,11 @@ const AddItem = () => {
       !name ||
       !number ||
       !images ||
+      !imageWithSlip || 
       !vehicleNumber ||
       !companyName ||
-      !status
+      !status ||
+      !mines
     ) {
       return false;
     }
@@ -168,6 +192,8 @@ const AddItem = () => {
             name,
             vehicleNumber,
             companyName,
+            mines,
+            imageWithSlip,
             images,
             status,
             number,
@@ -188,6 +214,8 @@ const AddItem = () => {
           name,
           vehicleNumber,
           companyName,
+          mines,
+          imageWithSlip,
           images,
           status,
           number,
@@ -206,7 +234,7 @@ const AddItem = () => {
   };
   const handleOpenCamera = () => {
     launchCamera({quality: 0.5}, fileObj => {
-      setLoaderVisible(true)
+      setLoaderVisible(true);
       const uploadTask = storage()
         .ref()
         .child(`/items/${Date.now()}`)
@@ -218,7 +246,7 @@ const AddItem = () => {
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           // console.log('End Upload is ' + progress + '% done');
           if (progress == 100) {
-            setLoaderVisible(false)
+            setLoaderVisible(false);
           }
         },
         error => {
@@ -234,6 +262,48 @@ const AddItem = () => {
         },
       );
     });
+  };
+  const handleOpenCameraSlip = () => {
+    launchCamera({quality: 0.5}, fileObj => {
+      setLoaderVisible(true);
+      const uploadTask = storage()
+        .ref()
+        .child(`/slip/${Date.now()}`)
+        .putFile(fileObj.assets[0].uri.split('file://')[1]);
+      uploadTask.on(
+        'state_changed',
+        snapshot => {
+          var progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          // console.log('End Upload is ' + progress + '% done');
+          if (progress == 100) {
+            setLoaderVisible(false);
+          }
+        },
+        error => {
+          alert(error);
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            //console.log('File available at', downloadURL);
+            setImageWithSlip(downloadURL);
+          });
+        },
+      );
+    });
+  };
+
+  const handleDestinationList = async () => {
+    try {
+      const querySnap = await firestore().collection('DestinationList').get();
+      const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
+      let list = res.map(e => console.log(e, 'e'));
+      // setDestinationList(res[0]?.DestinationList);
+    } catch (error) {
+      console.log(error, 'error');
+    }
   };
 
   return (
@@ -301,7 +371,7 @@ const AddItem = () => {
           placeholderStyle={styles.LoraRegular}
           dropDownContainerStyle={styles.LoraRegular}
           itemSeparatorStyle={styles.LoraRegular}
-          dropDownDirection="BOTTOM"
+          dropDownDirection="TOP"
           labelStyle={styles.LoraRegular}
           textStyle={styles.LoraRegular}
           placeholder={'Select Status'}
@@ -315,21 +385,7 @@ const AddItem = () => {
         ) : (
           <View style={styles.errorMsg} />
         )}
-        <TouchableOpacity
-          onPress={() => requestCameraPermission()}
-          style={styles.imageBox}>
-          <Image
-            source={images ? {uri: images} : globalImagePath.camera}
-            style={images ? styles.VImages : styles.normalImage}
-          />
-        </TouchableOpacity>
-        {imageError ? (
-          <Text style={styles.errorMsg}>
-            {'Add your truck image with number display!'}
-          </Text>
-        ) : (
-          <View style={styles.errorMsg} />
-        )}
+        {/* <Text>{DestinationList}</Text> */}
         <DropDownPicker
           style={[styles.dropDownPicker, styles.bottomSpace]}
           searchable
@@ -356,13 +412,69 @@ const AddItem = () => {
         ) : (
           <View style={styles.errorMsg} />
         )}
+        <DropDownPicker
+          style={[styles.dropDownPicker, styles.bottomSpace]}
+          searchable
+          open={openMines}
+          value={mines}
+          items={minesItems}
+          tickIconStyle={{tintColor: '#fff'}}
+          selectedItemLabelStyle={styles.selectedStyle}
+          selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
+          labelStyle={styles.LoraRegular}
+          textStyle={styles.LoraRegular}
+          setOpen={setOpenMines}
+          dropDownDirection="TOP"
+          disableBorderRadius={0}
+          placeholder={'Select Mines'}
+          placeholderStyle={styles.LoraRegular}
+          setValue={setMines}
+          setItems={setMinesItems}
+        />
+        {minesError ? (
+          <Text style={styles.errorMsg}>{'Select any one for mines!'}</Text>
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
+        <TouchableOpacity
+          onPress={() => requestCameraPermission()}
+          style={styles.imageBox}>
+          <Image
+            source={images ? {uri: images} : globalImagePath.camera}
+            style={images ? styles.VImages : styles.normalImage}
+          />
+          {images ?null : <Text style={styles.regTxt}>{'Image with truck number'}</Text> }
+        </TouchableOpacity>
+        {imageError ? (
+          <Text style={styles.errorMsg}>
+            {'Add your truck image with number display!'}
+          </Text>
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
+        <TouchableOpacity
+          onPress={() => handleOpenCameraSlip()}
+          style={styles.imageBox}>
+          <Image
+            source={
+              imageWithSlip ? {uri: imageWithSlip} : globalImagePath.camera
+            }
+            style={imageWithSlip ? styles.VImages : styles.normalImage}
+          />
+          {imageWithSlip ? null : <Text style={styles.regTxt}>{'Image with slip'}</Text>}
+        </TouchableOpacity>
+        {imageWithSlipError ? (
+          <Text style={styles.errorMsg}>{'Add image with slip!'}</Text>
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
       </ScrollView>
 
       <ThemeButton
         // disabled={disabled ? true : false}
         style={{
           backgroundColor: colors.primary,
-          borderColor:  colors.primary,
+          borderColor: colors.primary,
         }}
         onPress={handlePostData}
         children={route?.params?.type === 'edit' ? 'UPDATE' : 'CREATE TASK'}
