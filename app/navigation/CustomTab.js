@@ -29,7 +29,7 @@ const Tabs = createMaterialTopTabNavigator();
 
 export const TabNavigation = () => {
   return(
-   <Tabs.Navigator >
+   <Tabs.Navigator initialRouteName='Open'>
      <Tabs.Screen name='Open' component={TabsList} />
      <Tabs.Screen name='Close' component={TabsList} />
    </Tabs.Navigator>
@@ -39,7 +39,7 @@ export const TabNavigation = () => {
 
  export const StackTabsNavigation = () =>{
   return(
-      <StackTabs.Navigator>
+      <StackTabs.Navigator initialRouteName='TopTabs'>
         <StackTabs.Screen name='TopTabs' component={TabNavigation }  options={{
           header:()=> <Header title={'Home'} />
         }}/>

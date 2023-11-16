@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import firestore from '@react-native-firebase/firestore';
-import {useRoute, useNavigation, useIsFocused} from '@react-navigation/native';
+import {useRoute, useNavigation, useIsFocused,useFocusEffect} from '@react-navigation/native';
 import {Card, Headline, Subheading, TextInput} from 'react-native-paper';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
 import {styles} from './style';
@@ -27,9 +27,9 @@ const TabsList = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [filterData, setFilterData] = useState();
-  const [todayTotalItem, setTodayTotalItem] = useState()
-  console.log(todayTotalItem,'abc')
+  const [filterData, setFilterData] = useState(dataList);
+  const [todayTotalItem, setTodayTotalItem] = useState();
+  console.log(filterData,'abc')
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const handleGetData = async () => {
@@ -45,25 +45,29 @@ const TabsList = () => {
     }
   };
 
-  const handleTotalTodayItems =  () => {
-    if(dataList.dateTime == new Date())
-    setTodayTotalItem(filterData)
-  }
-  const handleFilter = () => {
-    if (route.name == 'Open') {
-      setFilterData(dataList.filter(e => e.status == 'Open'));
+  const handleTotalTodayItems = () => {
+    if (dataList.dateTime == new Date()) setTodayTotalItem(filterData);
+  };
+  const handleFilter = (program) => {
+    setFilterData(program)
+    if (route.name === 'Open') {
+     let OpenDataList =  dataList.filter(e => e.status == 'Open');
+     setFilterData(OpenDataList)
     }
-    if (route.name == 'Close') {
-      setFilterData(dataList.filter(e => e.status == 'Close'));
+    if (route.name === 'Close') {
+      let CloseDataList = dataList.filter(e => e.status == 'Close');
+      setFilterData(CloseDataList)
     }
   };
-   useEffect(() => {
-    setOldDataList()
-   });
+  useFocusEffect(
+    React.useCallback(()=>{
+      handleFilter(dataList)
+    },[dataList])
+  )
+  
   useEffect(() => {
-    handleGetData()
-    handleFilter();
-    handleTotalTodayItems()
+    handleGetData();
+    handleTotalTodayItems();
   }, [isFocused]);
   const handleScrollToTop = () => {
     listRef?.scrollToOffset({offset: 0, animated: true});
@@ -80,8 +84,8 @@ const TabsList = () => {
       let filteredAddr = filterData.filter(
         list =>
           list?.name.toLowerCase().includes(searchText.toLowerCase()) ||
-          list?.dateTime.toLowerCase().includes(searchText.toLowerCase()) ||
-          list?.endDateTime.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.dateTime.includes(searchText) ||
+          // list?.endDateTime.includes(searchText) ||
           list?.companyName.toLowerCase().includes(searchText.toLowerCase()) ||
           list?.vehicleNumber.toLowerCase().includes(searchText.toLowerCase()),
       );

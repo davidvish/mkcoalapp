@@ -60,7 +60,6 @@ const Home = () => {
     }
   };
   useEffect(() => {
-    setOpenDataList(openList)
     handleGetData();
     handleSearchList();
   }, [isFocused]);
