@@ -2,6 +2,7 @@ import {Text, View, TouchableOpacity, FlatList, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from '../../component/Header';
 import firestore from '@react-native-firebase/firestore';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {useIsFocused} from '@react-navigation/native';
 import {styles} from './style';
@@ -11,6 +12,7 @@ import {globalImagePath} from '../../assets/Images/gloableImagePath';
 import {colors} from '../../assets/colors/colors';
 import Loader from '../../component/Loader';
 const TableList = () => {
+  let listRef;
   const [closeList, setCloseList] = useState([]);
   const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -46,7 +48,9 @@ const TableList = () => {
   const handleClose = () => {
     setShowPopup(false);
   };
-
+  const handleScrollToTop = () => {
+    listRef?.scrollToOffset({offset: 0, animated: true});
+  };
   const renderItem = ({item}) => {
     // setChooseImage(item.images);
     return (
@@ -99,6 +103,9 @@ const TableList = () => {
         </DataTable.Header>
         <FlatList
           extraData={closeList}
+          ref={ref => {
+            listRef = ref;
+          }}
           onRefresh={onRefresh}
           contentContainerStyle={styles.listBottom}
           maxToRenderPerBatch={10}
@@ -116,6 +123,9 @@ const TableList = () => {
           onClose={handleClose}
         />
       ) : null}
+       <TouchableOpacity onPress={handleScrollToTop} style={styles.topWrapper}>
+        <MaterialCommunityIcons size={25} name="arrow-up-bold" color={'#fff'} />
+      </TouchableOpacity>
       <Loader visible={loaderVisible} />
     </View>
   );

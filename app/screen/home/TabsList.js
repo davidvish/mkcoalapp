@@ -157,7 +157,6 @@ const TabsList = () => {
 
   return (
     <View style={styles.container}>
-     <ScrollView>
      <View style={styles.inputContainer}>
         <TextInput
           style={{width: '100%', backgroundColor: 'transparent'}}
@@ -185,7 +184,6 @@ const TabsList = () => {
         }}
         renderItem={renderItem}
       />
-     </ScrollView>
       <TouchableOpacity onPress={handleScrollToTop} style={styles.topWrapper}>
         <MaterialCommunityIcons size={25} name="arrow-up-bold" color={'#fff'} />
       </TouchableOpacity>

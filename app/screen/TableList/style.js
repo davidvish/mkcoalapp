@@ -109,4 +109,12 @@ export const styles = StyleSheet.create({
     textTransform: 'capitalize',
     fontFamily: 'Lora-Bold',
   },
+  topWrapper: {
+    position: 'absolute',
+    bottom: hp(10),
+    right: wp(3),
+    padding:hp(1.5),
+    borderRadius:50,
+    backgroundColor:colors.primary,
+  },
 });
