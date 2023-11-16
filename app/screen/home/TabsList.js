@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   Image,
+  ScrollView
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import firestore from '@react-native-firebase/firestore';
@@ -156,7 +157,8 @@ const TabsList = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
+     <ScrollView>
+     <View style={styles.inputContainer}>
         <TextInput
           style={{width: '100%', backgroundColor: 'transparent'}}
           onChangeText={handleSearchList}
@@ -173,6 +175,7 @@ const TabsList = () => {
         onRefresh={onRefresh}
         // ListHeaderComponent={ListHeaderComponent}
         refreshing={isRefreshing}
+        contentContainerStyle={styles.listBottom}
         keyExtractor={(e, index) => e.dateTime.toString()}
         data={filterData}
         ListEmptyComponent={() => {
@@ -182,6 +185,7 @@ const TabsList = () => {
         }}
         renderItem={renderItem}
       />
+     </ScrollView>
       <TouchableOpacity onPress={handleScrollToTop} style={styles.topWrapper}>
         <MaterialCommunityIcons size={25} name="arrow-up-bold" color={'#fff'} />
       </TouchableOpacity>

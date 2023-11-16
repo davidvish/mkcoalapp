@@ -100,6 +100,7 @@ const TableList = () => {
         <FlatList
           extraData={closeList}
           onRefresh={onRefresh}
+          contentContainerStyle={styles.listBottom}
           maxToRenderPerBatch={10}
           initialNumToRender={10}
           refreshing={isRefreshing}

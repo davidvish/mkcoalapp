@@ -12,7 +12,10 @@ export const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     paddingHorizontal: hp(2),
     paddingTop: hp(1),
+  },
+  listBottom:{
     paddingBottom: hp(8),
+
   },
   AddList: {
     height: hp(3),
