@@ -18,6 +18,7 @@ import CheckInteretConnect from '../checkInternet/CheckInteretConnect';
 import ThemeInput from '../../component/ThemeInput';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colors} from '../../assets/colors/colors';
+import moment from 'moment';
 
 const TabsList = () => {
   let listRef;
@@ -29,8 +30,8 @@ const TabsList = () => {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [filterData, setFilterData] = useState(dataList);
-  const [todayTotalItem, setTodayTotalItem] = useState();
-  console.log(filterData,'abc')
+  console.log(filterData,"id")
+  const [todayTotalItem, setTodayTotalItem] = useState(5);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const handleGetData = async () => {
@@ -47,7 +48,20 @@ const TabsList = () => {
   };
 
   const handleTotalTodayItems = () => {
-    if (dataList.dateTime == new Date()) setTodayTotalItem(filterData);
+    let count = filterData.map(e=> e.dateTime)
+    console.log(moment(count).format('DD/MM/YYYY'),"date")
+    let dt2 = moment(count);
+    // console.log(dt2.format('DD/MM/YYYY'),'Date');
+
+    // let todayCount = new Date()
+    // console.log(todayCount)
+    // if(count == todayCount){
+    // console.log(count.length,"abc")
+    // }else{
+    //   console.log(count.length,"0")
+
+    // }
+
   };
   const handleFilter = (program) => {
     setFilterData(program)
@@ -63,12 +77,15 @@ const TabsList = () => {
   useFocusEffect(
     React.useCallback(()=>{
       handleFilter(dataList)
+      handleTotalTodayItems()
     },[dataList])
   )
   
   useEffect(() => {
+    // let scheduledDeparture_Time = new Date();
+    // let dt2 = moment(scheduledDeparture_Time);
+    // console.log(dt2.format('DD/MM/YYYY'));
     handleGetData();
-    handleTotalTodayItems();
   }, [isFocused]);
   const handleScrollToTop = () => {
     listRef?.scrollToOffset({offset: 0, animated: true});
@@ -165,6 +182,7 @@ const TabsList = () => {
           right={<TextInput.Icon name="plus" size={50} color={'red'} />}
         />
       </View>
+      <Text>Today Total Count:- {todayTotalItem}</Text>
       <FlatList
         extraData={filterData}
         ref={ref => {
@@ -175,7 +193,7 @@ const TabsList = () => {
         // ListHeaderComponent={ListHeaderComponent}
         refreshing={isRefreshing}
         contentContainerStyle={styles.listBottom}
-        keyExtractor={(e, index) => e.dateTime.toString()}
+        keyExtractor={(e, index) => index}
         data={filterData}
         ListEmptyComponent={() => {
           <View>

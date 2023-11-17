@@ -81,8 +81,8 @@ const AddItem = () => {
   useEffect(() => {
     let scheduledDeparture_Time = new Date();
     let dt2 = moment(scheduledDeparture_Time);
-    setDateTime(dt2.format('DD/MM/YYYY HH:mm A'));
-    setEndDateTime(dt2.format('DD/MM/YYYY HH:mm A'));
+    setDateTime(dt2.format('DD/MM/YYYY'));
+    setEndDateTime(dt2.format('DD/MM/YYYY'));
     setDisabled(!name || !vehicleNumber || !images || !companyName || !number);
     setListUid();
   });
@@ -122,23 +122,26 @@ const AddItem = () => {
       setVehicleNumber('');
   };
   const handleValidation = () => {
-    var phoneNum = number.replace(/[^\d]/g, '');
 
     if (!name) {
       setNameError(true);
     } else {
       setNameError(false);
     }
-    if (!phoneNum) {
+    if (!number) {
       setNumberError(true);
-    } else {
-      setNumberError(false);
+    } else if(number && number.length < 10) {
+      setNumberError(true);
+    }else if(number && number.length == 10){
+      setNumberError(false)
     }
 
     if (!vehicleNumber) {
       setVehicleNumberError(true);
-    } else {
-      setVehicleNumberError(false);
+    } else if(vehicleNumber && vehicleNumber.length < 10){
+      setVehicleNumberError(true);
+    }else if(vehicleNumber && vehicleNumber.length == 10){
+      setVehicleNumberError(false)
     }
     if (!status) {
       setStatusError(true);
@@ -160,11 +163,11 @@ const AddItem = () => {
     } else {
       setMinesError(false);
     }
-    if (!imageWithSlip) {
-      setImageWithSlipError(true);
-    } else {
-      setImageWithSlipError(false);
-    }
+    // if (!imageWithSlip) {
+    //   setImageWithSlipError(true);
+    // } else {
+    //   setImageWithSlipError(false);
+    // }
   };
   const handlePostData = async () => {
     handleValidation();
@@ -172,7 +175,7 @@ const AddItem = () => {
       !name ||
       !number ||
       !images ||
-      !imageWithSlip || 
+      // !imageWithSlip || 
       !vehicleNumber ||
       !companyName ||
       !status ||
@@ -316,7 +319,6 @@ const AddItem = () => {
         </TouchableOpacity>
         <Title style={styles.title}>{'Create\nNew Task'}</Title>
       </View>
-      <ScrollView>
         <ThemeInput
           autoFocus={true}
           style={styles.bottomSpace}
@@ -417,6 +419,7 @@ const AddItem = () => {
           searchable
           open={openMines}
           value={mines}
+          scrollViewProps={'always'}
           items={minesItems}
           tickIconStyle={{tintColor: '#fff'}}
           selectedItemLabelStyle={styles.selectedStyle}
@@ -452,7 +455,7 @@ const AddItem = () => {
         ) : (
           <View style={styles.errorMsg} />
         )}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => handleOpenCameraSlip()}
           style={styles.imageBox}>
           <Image
@@ -467,8 +470,7 @@ const AddItem = () => {
           <Text style={styles.errorMsg}>{'Add image with slip!'}</Text>
         ) : (
           <View style={styles.errorMsg} />
-        )}
-      </ScrollView>
+        )} */}
 
       <ThemeButton
         // disabled={disabled ? true : false}
