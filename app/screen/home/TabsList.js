@@ -5,11 +5,16 @@ import {
   View,
   TouchableOpacity,
   Image,
-  ScrollView
+  ScrollView,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import firestore from '@react-native-firebase/firestore';
-import {useRoute, useNavigation, useIsFocused,useFocusEffect} from '@react-navigation/native';
+import {
+  useRoute,
+  useNavigation,
+  useIsFocused,
+  useFocusEffect,
+} from '@react-navigation/native';
 import {Card, Headline, Subheading, TextInput} from 'react-native-paper';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
 import {styles} from './style';
@@ -19,6 +24,7 @@ import ThemeInput from '../../component/ThemeInput';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colors} from '../../assets/colors/colors';
 import moment from 'moment';
+import {responsiveFontSize as rfs} from 'react-native-responsive-dimensions';
 
 const TabsList = () => {
   let listRef;
@@ -30,14 +36,13 @@ const TabsList = () => {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [filterData, setFilterData] = useState(dataList);
-  console.log(filterData,"id")
-  const [todayTotalItem, setTodayTotalItem] = useState(5);
+  const [todayTotalItem, setTodayTotalItem] = useState(0);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const handleGetData = async () => {
     setLoaderVisible(true);
     try {
-      const querySnap = await firestore().collection('items').get();
+      const querySnap = await firestore().collection('new').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
       setDataList(res);
       setOldDataList(res);
@@ -46,50 +51,45 @@ const TabsList = () => {
       console.log(error, 'error');
     }
   };
-
-  const handleTotalTodayItems = () => {
-    let count = filterData.map(e=> e.dateTime)
-    console.log(moment(count).format('DD/MM/YYYY'),"date")
-    let dt2 = moment(count);
-    // console.log(dt2.format('DD/MM/YYYY'),'Date');
-
-    // let todayCount = new Date()
-    // console.log(todayCount)
-    // if(count == todayCount){
-    // console.log(count.length,"abc")
-    // }else{
-    //   console.log(count.length,"0")
-
-    // }
-
+  const handleCountItem = () => {
+    const dateCount = filterData.map(e => e.endDate ? e.endDate :  e.date );
+    const handleTotalTodayItems = (array, value) => {
+      var count = 0;
+      dateCount.forEach(v => v === value && count++);
+      return count;
+    };
+    const date = new Date();
+    const dt2 = moment(date);
+    const todayCount = dt2.format('DD/MM/YYYY');
+    let countTodayItem = handleTotalTodayItems(dateCount, todayCount); // todat list
+    setTodayTotalItem(countTodayItem);
   };
-  const handleFilter = (program) => {
-    setFilterData(program)
+
+  const handleFilter = program => {
+    setFilterData(program);
     if (route.name === 'Open') {
-     let OpenDataList =  dataList.filter(e => e.status == 'Open');
-     setFilterData(OpenDataList)
+      let OpenDataList = dataList.filter(e => e.status == 'Open');
+      setFilterData(OpenDataList);
     }
     if (route.name === 'Close') {
       let CloseDataList = dataList.filter(e => e.status == 'Close');
-      setFilterData(CloseDataList)
+      setFilterData(CloseDataList);
     }
   };
   useFocusEffect(
-    React.useCallback(()=>{
-      handleFilter(dataList)
-      handleTotalTodayItems()
-    },[dataList])
-  )
-  
+    React.useCallback(() => {
+      handleFilter(dataList);
+    }, [dataList]),
+  );
+
   useEffect(() => {
-    // let scheduledDeparture_Time = new Date();
-    // let dt2 = moment(scheduledDeparture_Time);
-    // console.log(dt2.format('DD/MM/YYYY'));
     handleGetData();
-  }, [isFocused]);
+    handleCountItem();
+  }, [isFocused,todayTotalItem]);
   const handleScrollToTop = () => {
     listRef?.scrollToOffset({offset: 0, animated: true});
   };
+
   const onRefresh = () => {
     //set isRefreshing to true
     setIsRefreshing(true);
@@ -102,8 +102,8 @@ const TabsList = () => {
       let filteredAddr = filterData.filter(
         list =>
           list?.name.toLowerCase().includes(searchText.toLowerCase()) ||
-          list?.dateTime.includes(searchText) ||
-          // list?.endDateTime.includes(searchText) ||
+          list?.date.includes(searchText) ||
+          // list?.endDate.includes(searchText) ||
           list?.companyName.toLowerCase().includes(searchText.toLowerCase()) ||
           list?.vehicleNumber.toLowerCase().includes(searchText.toLowerCase()),
       );
@@ -134,12 +134,12 @@ const TabsList = () => {
 
         <Subheading style={styles.label}>
           Dispatch Date :-{' '}
-          <Subheading style={styles.regTxt}>{item.dateTime}</Subheading>
+          <Subheading style={styles.regTxt}>{`${item.date} ${item.startTime}` }</Subheading>
         </Subheading>
-        {item.status === 'Close' && item?.endDateTime ? (
+        {item.status === 'Close' && item?.endDate ? (
           <Subheading style={styles.label}>
             Delivery Date :-{' '}
-            <Subheading style={styles.regTxt}>{item.endDateTime}</Subheading>
+            <Subheading style={styles.regTxt}>{`${item.endDate} ${item.endTime}`}</Subheading>
           </Subheading>
         ) : null}
         <Subheading style={styles.label}>
@@ -174,15 +174,38 @@ const TabsList = () => {
 
   return (
     <View style={styles.container}>
-     <View style={styles.inputContainer}>
-        <TextInput
-          style={{width: '100%', backgroundColor: 'transparent'}}
-          onChangeText={handleSearchList}
-          placeholder={'Search Item'}
-          right={<TextInput.Icon name="plus" size={50} color={'red'} />}
-        />
-      </View>
-      <Text>Today Total Count:- {todayTotalItem}</Text>
+      {filterData.length > 0 ? (
+        <>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={{width: '100%', backgroundColor: 'transparent'}}
+              onChangeText={handleSearchList}
+              placeholder={'Search Item'}
+              right={<TextInput.Icon name="plus" size={50} color={'red'} />}
+            />
+          </View>
+          <Text style={[styles.ttcLabal]}>
+            Total List:- {filterData?.length}/
+            <Text style={{fontFamily: 'Lora-Bold', fontSize: rfs(2)}}>
+              {todayTotalItem}
+            </Text>
+          </Text>
+        </>
+      ) : null}
+
+      {filterData?.length == 0 ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+          }}>
+          <Text style={[styles.label, {textAlign: 'center'}]}>
+            {'No data found'}
+          </Text>
+        </View>
+      ) : null}
+
       <FlatList
         extraData={filterData}
         ref={ref => {
@@ -193,18 +216,20 @@ const TabsList = () => {
         // ListHeaderComponent={ListHeaderComponent}
         refreshing={isRefreshing}
         contentContainerStyle={styles.listBottom}
-        keyExtractor={(e, index) => index}
+        keyExtractor={(e, index) => index.toString()}
         data={filterData}
-        ListEmptyComponent={() => {
-          <View>
-            <Subheading style={styles.label}>{'No Data Found'}</Subheading>
-          </View>;
-        }}
         renderItem={renderItem}
       />
-      <TouchableOpacity onPress={handleScrollToTop} style={styles.topWrapper}>
-        <MaterialCommunityIcons size={25} name="arrow-up-bold" color={'#fff'} />
-      </TouchableOpacity>
+
+      {dataList.length > 1 ? (
+        <TouchableOpacity onPress={handleScrollToTop} style={styles.topWrapper}>
+          <MaterialCommunityIcons
+            size={25}
+            name="arrow-up-bold"
+            color={'#fff'}
+          />
+        </TouchableOpacity>
+      ) : null}
       <Loader visible={loaderVisible} />
     </View>
   );

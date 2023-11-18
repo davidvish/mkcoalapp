@@ -13,7 +13,7 @@ import {colors} from '../../assets/colors/colors';
 import Loader from '../../component/Loader';
 const TableList = () => {
   let listRef;
-  const [closeList, setCloseList] = useState([]);
+  const [dataList, setDataList] = useState([]);
   const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -28,7 +28,7 @@ const TableList = () => {
     try {
       const querySnap = await firestore().collection('items').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
-      setCloseList(res);
+      setDataList(res);
       setLoaderVisible(false);
     } catch (error) {
       console.log(error, 'error');
@@ -101,8 +101,20 @@ const TableList = () => {
           <Subheading style={styles.label}>Description</Subheading>
           <Subheading style={styles.label}>Image</Subheading>
         </DataTable.Header>
+        {dataList?.length == 0 ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}>
+            <Text style={[styles.label, {textAlign: 'center'}]}>
+              {'No data found'}
+            </Text>
+          </View>
+        ) : null}
         <FlatList
-          extraData={closeList}
+          extraData={dataList}
           ref={ref => {
             listRef = ref;
           }}
@@ -112,10 +124,11 @@ const TableList = () => {
           initialNumToRender={10}
           refreshing={isRefreshing}
           keyExtractor={(item, index) => item.uid + index}
-          data={closeList.sort((a, b) => a.name.localeCompare(b.name))}
+          data={dataList.sort((a, b) => a.name.localeCompare(b.name))}
           renderItem={renderItem}
         />
       </View>
+
       {showPopup ? (
         <ThumbPopup
           image={chooseImage}
@@ -123,9 +136,15 @@ const TableList = () => {
           onClose={handleClose}
         />
       ) : null}
-       <TouchableOpacity onPress={handleScrollToTop} style={styles.topWrapper}>
-        <MaterialCommunityIcons size={25} name="arrow-up-bold" color={'#fff'} />
-      </TouchableOpacity>
+      {dataList?.length > 1 ? (
+        <TouchableOpacity onPress={handleScrollToTop} style={styles.topWrapper}>
+          <MaterialCommunityIcons
+            size={25}
+            name="arrow-up-bold"
+            color={'#fff'}
+          />
+        </TouchableOpacity>
+      ) : null}
       <Loader visible={loaderVisible} />
     </View>
   );

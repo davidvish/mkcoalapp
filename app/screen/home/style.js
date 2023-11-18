@@ -13,9 +13,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: hp(2),
     paddingTop: hp(1),
   },
-  listBottom:{
+  listBottom: {
     paddingBottom: hp(8),
-
   },
   AddList: {
     height: hp(3),
@@ -55,6 +54,14 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
     textTransform: 'capitalize',
     fontFamily: 'Lora-Regular',
+  },
+  ttcLabal: {
+    fontSize: rfs(1.8),
+    fontWeight: '500',
+    textTransform: 'capitalize',
+    fontFamily: 'Lora-Regular',
+    textAlign:'right',
+    paddingBottom:hp(1)
   },
   regTxt: {
     fontSize: rfs(2),
@@ -110,7 +117,7 @@ export const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: hp(2),
+    marginBottom: hp(1),
   },
   search: {
     height: hp(2),
@@ -163,8 +170,8 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     bottom: hp(10),
     right: wp(3),
-    padding:hp(1.5),
-    borderRadius:50,
-    backgroundColor:colors.primary,
+    padding: hp(1.5),
+    borderRadius: 50,
+    backgroundColor: colors.primary,
   },
 });

@@ -59,8 +59,10 @@ const AddItem = () => {
   const [open, setOpen] = useState(false);
   const [openMines, setOpenMines] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
-  const [dateTime, setDateTime] = useState();
-  const [endDateTime, setEndDateTime] = useState();
+  const [date, setDate] = useState();
+  const [endDate, setEndDate] = useState();
+  const [startTime, setStartTime] = useState();
+  const [endTime, setEndTime] = useState();
   const [index, setIndex] = useState(1);
   const [listUid, setListUid] = useState();
   const [loadVisible, setLoaderVisible] = useState(false);
@@ -79,10 +81,12 @@ const AddItem = () => {
   const [minesError, setMinesError] = useState(false);
 
   useEffect(() => {
-    let scheduledDeparture_Time = new Date();
-    let dt2 = moment(scheduledDeparture_Time);
-    setDateTime(dt2.format('DD/MM/YYYY'));
-    setEndDateTime(dt2.format('DD/MM/YYYY'));
+    let scheduledDeparture_Date = new Date();
+    let dt1 = moment(scheduledDeparture_Date);
+    setDate(dt1.format('DD/MM/YYYY'));
+    setEndDate(dt1.format('DD/MM/YYYY'));
+    setStartTime(dt1.format('h:mm:ss A'));
+    setEndTime(dt1.format('h:mm:ss A'));
     setDisabled(!name || !vehicleNumber || !images || !companyName || !number);
     setListUid();
   });
@@ -116,13 +120,12 @@ const AddItem = () => {
   const handleBlankField = () => {
     setName(''),
       setNumber(''),
-      setDateTime(''),
+      setDate(''),
       setImages(''),
       setCompanyName(''),
       setVehicleNumber('');
   };
   const handleValidation = () => {
-
     if (!name) {
       setNameError(true);
     } else {
@@ -130,18 +133,19 @@ const AddItem = () => {
     }
     if (!number) {
       setNumberError(true);
-    } else if(number && number.length < 10) {
+    } else if (number && number.length < 10) {
       setNumberError(true);
-    }else if(number && number.length == 10){
-      setNumberError(false)
+      return false;
+    } else if (number && number.length == 10) {
+      setNumberError(false);
     }
 
     if (!vehicleNumber) {
       setVehicleNumberError(true);
-    } else if(vehicleNumber && vehicleNumber.length < 10){
+    } else if (vehicleNumber && vehicleNumber.length < 10) {
       setVehicleNumberError(true);
-    }else if(vehicleNumber && vehicleNumber.length == 10){
-      setVehicleNumberError(false)
+    } else if (vehicleNumber && vehicleNumber.length == 10) {
+      setVehicleNumberError(false);
     }
     if (!status) {
       setStatusError(true);
@@ -175,7 +179,7 @@ const AddItem = () => {
       !name ||
       !number ||
       !images ||
-      // !imageWithSlip || 
+      // !imageWithSlip ||
       !vehicleNumber ||
       !companyName ||
       !status ||
@@ -189,7 +193,7 @@ const AddItem = () => {
       setLoaderVisible(true);
       try {
         const dataList = await firestore()
-          .collection('items')
+          .collection('new')
           .doc(route.params?.data.itemId)
           .update({
             name,
@@ -200,7 +204,8 @@ const AddItem = () => {
             images,
             status,
             number,
-            endDateTime: dateTime,
+            endDate: date,
+            endTime,
             itemId: route.params?.data.itemId,
           });
         // Alert.alert('List added succussfully');
@@ -213,7 +218,7 @@ const AddItem = () => {
     } else {
       try {
         setLoaderVisible(true);
-        const dataList = await firestore().collection('items').doc(itemId).set({
+        const dataList = await firestore().collection('new').doc(itemId).set({
           name,
           vehicleNumber,
           companyName,
@@ -222,7 +227,8 @@ const AddItem = () => {
           images,
           status,
           number,
-          dateTime,
+          date,
+          startTime,
           itemId: itemId,
         });
         // Alert.alert('List added succussfully');
@@ -302,8 +308,6 @@ const AddItem = () => {
     try {
       const querySnap = await firestore().collection('DestinationList').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
-      let list = res.map(e => console.log(e, 'e'));
-      // setDestinationList(res[0]?.DestinationList);
     } catch (error) {
       console.log(error, 'error');
     }
@@ -319,143 +323,143 @@ const AddItem = () => {
         </TouchableOpacity>
         <Title style={styles.title}>{'Create\nNew Task'}</Title>
       </View>
-        <ThemeInput
-          autoFocus={true}
-          style={styles.bottomSpace}
-          value={name}
-          placeholder={'Full Name'}
-          onChangeText={txt => setName(txt)}
-        />
-        {nameError ? (
-          <Text style={styles.errorMsg}>{'Enter your full name!'}</Text>
-        ) : (
-          <View style={styles.errorMsg} />
-        )}
+      <ThemeInput
+        autoFocus={true}
+        style={styles.bottomSpace}
+        value={name}
+        placeholder={'Full Name'}
+        onChangeText={txt => setName(txt)}
+      />
+      {nameError ? (
+        <Text style={styles.errorMsg}>{'Enter your full name!'}</Text>
+      ) : (
+        <View style={styles.errorMsg} />
+      )}
 
-        <ThemeInput
-          style={styles.bottomSpace}
-          value={number}
-          maxLength={10}
-          keyboardType={'number-pad'}
-          placeholder={'Phone Number'}
-          onChangeText={txt => setNumber(txt)}
-        />
-        {numberError ? (
-          <Text style={styles.errorMsg}>
-            {'Enter your phone number 10 digits!'}
-          </Text>
-        ) : (
-          <View style={styles.errorMsg} />
-        )}
+      <ThemeInput
+        style={styles.bottomSpace}
+        value={number}
+        maxLength={10}
+        keyboardType={'number-pad'}
+        placeholder={'Phone Number'}
+        onChangeText={txt => setNumber(txt)}
+      />
+      {numberError ? (
+        <Text style={styles.errorMsg}>
+          {'Enter your phone number 10 digits!'}
+        </Text>
+      ) : (
+        <View style={styles.errorMsg} />
+      )}
 
-        <ThemeInput
-          style={[styles.bottomSpace]}
-          value={vehicleNumber}
-          ariaValuemin={4}
-          placeholder={'Vehicle Number'}
-          maxLength={10}
-          onChangeText={txt => setVehicleNumber(txt)}
+      <ThemeInput
+        style={[styles.bottomSpace]}
+        value={vehicleNumber}
+        ariaValuemin={4}
+        placeholder={'Vehicle Number'}
+        maxLength={10}
+        onChangeText={txt => setVehicleNumber(txt)}
+      />
+      {vehicleNumberError ? (
+        <Text style={styles.errorMsg}>
+          {'Enter correct your vehicle number!'}
+        </Text>
+      ) : (
+        <View style={styles.errorMsg} />
+      )}
+      <DropDownPicker
+        style={[styles.dropDownPicker, styles.bottomSpace]}
+        open={openStatus}
+        value={status}
+        selectedItemLabelStyle={styles.selectedStyle}
+        selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
+        tickIconStyle={{tintColor: '#fff'}}
+        placeholderStyle={styles.LoraRegular}
+        dropDownContainerStyle={styles.LoraRegular}
+        itemSeparatorStyle={styles.LoraRegular}
+        dropDownDirection="TOP"
+        labelStyle={styles.LoraRegular}
+        textStyle={styles.LoraRegular}
+        placeholder={'Select Status'}
+        items={itemStatus}
+        setOpen={setOpenStatus}
+        setValue={setStatus}
+        setItems={setItemStatus}
+      />
+      {statusError ? (
+        <Text style={styles.errorMsg}>{'Select any one status!'}</Text>
+      ) : (
+        <View style={styles.errorMsg} />
+      )}
+      {/* <Text>{DestinationList}</Text> */}
+      <DropDownPicker
+        style={[styles.dropDownPicker, styles.bottomSpace]}
+        searchable
+        open={open}
+        value={companyName}
+        items={items}
+        tickIconStyle={{tintColor: '#fff'}}
+        selectedItemLabelStyle={styles.selectedStyle}
+        selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
+        labelStyle={styles.LoraRegular}
+        textStyle={styles.LoraRegular}
+        setOpen={setOpen}
+        dropDownDirection="TOP"
+        disableBorderRadius={0}
+        placeholder={'Select Destination'}
+        placeholderStyle={styles.LoraRegular}
+        setValue={setCompanyName}
+        setItems={setItems}
+      />
+      {companyNameError ? (
+        <Text style={styles.errorMsg}>{'Select any one for destination!'}</Text>
+      ) : (
+        <View style={styles.errorMsg} />
+      )}
+      <DropDownPicker
+        style={[styles.dropDownPicker, styles.bottomSpace]}
+        searchable
+        open={openMines}
+        value={mines}
+        scrollViewProps={'always'}
+        items={minesItems}
+        tickIconStyle={{tintColor: '#fff'}}
+        selectedItemLabelStyle={styles.selectedStyle}
+        selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
+        labelStyle={styles.LoraRegular}
+        textStyle={styles.LoraRegular}
+        setOpen={setOpenMines}
+        dropDownDirection="TOP"
+        disableBorderRadius={0}
+        placeholder={'Select Mines'}
+        placeholderStyle={styles.LoraRegular}
+        setValue={setMines}
+        setItems={setMinesItems}
+      />
+      {minesError ? (
+        <Text style={styles.errorMsg}>{'Select any one for mines!'}</Text>
+      ) : (
+        <View style={styles.errorMsg} />
+      )}
+      <TouchableOpacity
+        onPress={() => requestCameraPermission()}
+        style={styles.imageBox}>
+        <Image
+          source={images ? {uri: images} : globalImagePath.camera}
+          style={images ? styles.VImages : styles.normalImage}
         />
-        {vehicleNumberError ? (
-          <Text style={styles.errorMsg}>
-            {'Enter correct your vehicle number!'}
-          </Text>
-        ) : (
-          <View style={styles.errorMsg} />
+        {images ? null : (
+          <Text style={styles.regTxt}>{'Image with truck number'}</Text>
         )}
-        <DropDownPicker
-          style={[styles.dropDownPicker, styles.bottomSpace]}
-          open={openStatus}
-          value={status}
-          selectedItemLabelStyle={styles.selectedStyle}
-          selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
-          tickIconStyle={{tintColor: '#fff'}}
-          placeholderStyle={styles.LoraRegular}
-          dropDownContainerStyle={styles.LoraRegular}
-          itemSeparatorStyle={styles.LoraRegular}
-          dropDownDirection="TOP"
-          labelStyle={styles.LoraRegular}
-          textStyle={styles.LoraRegular}
-          placeholder={'Select Status'}
-          items={itemStatus}
-          setOpen={setOpenStatus}
-          setValue={setStatus}
-          setItems={setItemStatus}
-        />
-        {statusError ? (
-          <Text style={styles.errorMsg}>{'Select any one status!'}</Text>
-        ) : (
-          <View style={styles.errorMsg} />
-        )}
-        {/* <Text>{DestinationList}</Text> */}
-        <DropDownPicker
-          style={[styles.dropDownPicker, styles.bottomSpace]}
-          searchable
-          open={open}
-          value={companyName}
-          items={items}
-          tickIconStyle={{tintColor: '#fff'}}
-          selectedItemLabelStyle={styles.selectedStyle}
-          selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
-          labelStyle={styles.LoraRegular}
-          textStyle={styles.LoraRegular}
-          setOpen={setOpen}
-          dropDownDirection="TOP"
-          disableBorderRadius={0}
-          placeholder={'Select Destination'}
-          placeholderStyle={styles.LoraRegular}
-          setValue={setCompanyName}
-          setItems={setItems}
-        />
-        {companyNameError ? (
-          <Text style={styles.errorMsg}>
-            {'Select any one for destination!'}
-          </Text>
-        ) : (
-          <View style={styles.errorMsg} />
-        )}
-        <DropDownPicker
-          style={[styles.dropDownPicker, styles.bottomSpace]}
-          searchable
-          open={openMines}
-          value={mines}
-          scrollViewProps={'always'}
-          items={minesItems}
-          tickIconStyle={{tintColor: '#fff'}}
-          selectedItemLabelStyle={styles.selectedStyle}
-          selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
-          labelStyle={styles.LoraRegular}
-          textStyle={styles.LoraRegular}
-          setOpen={setOpenMines}
-          dropDownDirection="TOP"
-          disableBorderRadius={0}
-          placeholder={'Select Mines'}
-          placeholderStyle={styles.LoraRegular}
-          setValue={setMines}
-          setItems={setMinesItems}
-        />
-        {minesError ? (
-          <Text style={styles.errorMsg}>{'Select any one for mines!'}</Text>
-        ) : (
-          <View style={styles.errorMsg} />
-        )}
-        <TouchableOpacity
-          onPress={() => requestCameraPermission()}
-          style={styles.imageBox}>
-          <Image
-            source={images ? {uri: images} : globalImagePath.camera}
-            style={images ? styles.VImages : styles.normalImage}
-          />
-          {images ?null : <Text style={styles.regTxt}>{'Image with truck number'}</Text> }
-        </TouchableOpacity>
-        {imageError ? (
-          <Text style={styles.errorMsg}>
-            {'Add your truck image with number display!'}
-          </Text>
-        ) : (
-          <View style={styles.errorMsg} />
-        )}
-        {/* <TouchableOpacity
+      </TouchableOpacity>
+      {imageError ? (
+        <Text style={styles.errorMsg}>
+          {'Add your truck image with number display!'}
+        </Text>
+      ) : (
+        <View style={styles.errorMsg} />
+      )}
+      {/* <TouchableOpacity
           onPress={() => handleOpenCameraSlip()}
           style={styles.imageBox}>
           <Image

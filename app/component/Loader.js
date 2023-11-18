@@ -11,7 +11,7 @@ const Loader = ({visible}) => {
   return (
     <Modal animationType="slide" visible={visible} transparent>
       <View style={styles.parentContainer}>
-        <Pressable style={{height: '100%', width: '100%'}}></Pressable>
+        {/* <Pressable style={{height: '100%', width: '100%'}}></Pressable> */}
         <View style={styles.parentWrapper}>
           <View style={styles.modalWrapper}>
             <ActivityIndicator />
