@@ -401,8 +401,9 @@ const AddItem = () => {
           options={itemStatus}
           // showSearch
           onSelect={(idx, value) => setStatus(value)}
-          dropdownTextStyle={[styles.dropdownText]}
-          style={styles.dropDownPickerNew}
+          dropdownStyle={{height:hp(11)}}
+          dropdownTextStyle={[styles.dropdownText,]}
+          style={[styles.dropDownPickerNew]}
           dropdownTextHighlightStyle={{
             backgroundColor: colors.primaryOpacity,
             color: '#fff',
