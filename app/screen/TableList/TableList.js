@@ -26,7 +26,7 @@ const TableList = () => {
   const handleGetData = async () => {
     setLoaderVisible(true);
     try {
-      const querySnap = await firestore().collection('items').get();
+      const querySnap = await firestore().collection('new').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
       setDataList(res);
       setLoaderVisible(false);
@@ -65,13 +65,13 @@ const TableList = () => {
           <Subheading style={styles.alignLeft}>{item.vehicleNumber}</Subheading>
           <Subheading style={styles.label}>
             Dispatch Date :-{' '}
-            <Subheading style={styles.boldText}>{item.dateTime}</Subheading>
+            <Subheading style={styles.boldText}>{`${item.date} ${item.startTime}` }</Subheading>
           </Subheading>
-          {item.status === 'Close' && item?.endDateTime ? (
+          {item.status === 'Close' && item?.endDate ? (
             <Subheading style={styles.label}>
               Delivery Date :-{' '}
               <Subheading style={styles.boldText}>
-                {item.endDateTime}
+              {`${item.endDate} ${item.endTime}`}
               </Subheading>
             </Subheading>
           ) : null}
@@ -85,7 +85,7 @@ const TableList = () => {
           </Subheading>
         </View>
         <TouchableOpacity
-          onPress={() => handleShowImage(item.images)}
+          onPress={() => handleShowImage(item.images || item.imageWithSlip)}
           style={{width: '15%', backgroundColor: colors.primary}}>
           <Image source={{uri: item.images}} style={styles.image} />
         </TouchableOpacity>

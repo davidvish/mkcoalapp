@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: hp(2),
+    paddingHorizontal: hp(0),
   },
   AddList: {
     height: hp(3),
@@ -81,17 +81,15 @@ export const styles = StyleSheet.create({
   },
 
   boxWrapper: {
-    padding: hp(3),
     borderRadius: 8,
     flex: 1,
-    justifyContent: 'space-between',
     backgroundColor: '#f5f5f5',
   },
   imageBox: {
     justifyContent: 'center',
     alignItems: 'center',
     height: hp(20),
-    marginTop: hp(2),
+    marginTop: hp(0),
     borderRadius: 8,
     borderWidth: 1,
   },
@@ -118,6 +116,13 @@ export const styles = StyleSheet.create({
     borderWidth: 0,
     width: '100%',
   },
+  dropDownPickerNew:{
+    backgroundColor: 'transparent',
+    borderBottomWidth: 1,
+    borderWidth: 0,
+    width: '100%',
+    paddingBottom:hp(1.5)
+  },
   selectedStyle: {
     color: '#fff',
     width: '100%',
@@ -134,4 +139,13 @@ export const styles = StyleSheet.create({
     height: 40,
     width: '99%',
   },
+  inputHeight:{
+    height: hp(5),
+  },
+  dropdownText:{
+    fontSize:rfs(1.8),
+    fontFamily: 'Lora-Regular',
+    color:'#000'
+
+  }
 });

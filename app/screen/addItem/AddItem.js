@@ -11,7 +11,7 @@ import ThemeInput from '../../component/ThemeInput';
 import ThemeButton from '../../component/ThemeButton';
 import DropDownPicker from 'react-native-dropdown-picker';
 import moment from 'moment';
-
+import ModalDropdown from 'react-native-modal-dropdown';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
@@ -24,6 +24,8 @@ import Loader from '../../component/Loader';
 import {styles} from './style';
 import {CompanyDestination} from '../../assets/data/DestinationList';
 import {MinesList} from '../../assets/data/MinesList';
+import {responsiveHeight as hp} from 'react-native-responsive-dimensions';
+import { StatusList } from '../../assets/data/Status';
 
 const AddItem = () => {
   const route = useRoute();
@@ -37,18 +39,17 @@ const AddItem = () => {
     route?.params?.type == 'edit' ? route.params.data.vehicleNumber : '',
   );
   const [companyName, setCompanyName] = useState(
-    route?.params?.type == 'edit' ? route.params.data.companyName : '',
+    route?.params?.type == 'edit' ? route.params.data.companyName : 'Select Destination',
   );
   const [mines, setMines] = useState(
-    route?.params?.type == 'edit' ? route.params.data.mines : '',
+    route?.params?.type == 'edit'
+      ? route.params.data.mines
+      : 'Select Mines',
   );
   const [status, setStatus] = useState(
-    route?.params?.type == 'edit' ? route.params.data.status : '',
+    route?.params?.type == 'edit' ? route.params.data.status : 'Select Status',
   );
-  const [itemStatus, setItemStatus] = useState([
-    {label: 'open', value: 'Open'},
-    {label: 'close', value: 'Close'},
-  ]);
+  const [itemStatus, setItemStatus] = useState(StatusList);
   const [images, setImages] = useState(
     route?.params?.type == 'edit' ? route.params.data.images : '',
   );
@@ -56,9 +57,6 @@ const AddItem = () => {
     route?.params?.type == 'edit' ? route.params.data.imageWithSlip : '',
   );
   const [disabled, setDisabled] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [openMines, setOpenMines] = useState(false);
-  const [openStatus, setOpenStatus] = useState(false);
   const [date, setDate] = useState();
   const [endDate, setEndDate] = useState();
   const [startTime, setStartTime] = useState();
@@ -85,14 +83,14 @@ const AddItem = () => {
     let dt1 = moment(scheduledDeparture_Date);
     setDate(dt1.format('DD/MM/YYYY'));
     setEndDate(dt1.format('DD/MM/YYYY'));
-    setStartTime(dt1.format('h:mm:ss A'));
-    setEndTime(dt1.format('h:mm:ss A'));
+    setStartTime(dt1.format('h:mm A'));
+    setEndTime(dt1.format('h:mm A'));
     setDisabled(!name || !vehicleNumber || !images || !companyName || !number);
     setListUid();
   });
   useEffect(() => {
     handleDestinationList();
-  }, []);
+  });
   const requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -167,11 +165,11 @@ const AddItem = () => {
     } else {
       setMinesError(false);
     }
-    // if (!imageWithSlip) {
-    //   setImageWithSlipError(true);
-    // } else {
-    //   setImageWithSlipError(false);
-    // }
+    if (!imageWithSlip) {
+      setImageWithSlipError(true);
+    } else {
+      setImageWithSlipError(false);
+    }
   };
   const handlePostData = async () => {
     handleValidation();
@@ -179,7 +177,7 @@ const AddItem = () => {
       !name ||
       !number ||
       !images ||
-      // !imageWithSlip ||
+      !imageWithSlip ||
       !vehicleNumber ||
       !companyName ||
       !status ||
@@ -304,18 +302,26 @@ const AddItem = () => {
     });
   };
 
+  const renderSeparator = (sectionID, rowID, adjacentRowHighlighted) => {
+    if (rowID == items.length - 1) return;
+    return <View style={{height: 1, width: 0, backgroundColor: 'gray'}} />;
+  };
+
   const handleDestinationList = async () => {
     try {
-      const querySnap = await firestore().collection('DestinationList').get();
+      const querySnap = await firestore().collection('MinesList').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
+      setMinesItems(res[0]?.MinesList);
     } catch (error) {
       console.log(error, 'error');
     }
   };
-
+  const handleOptionSelect = (index, value) => {
+    setMines(value);
+  };
   return (
     <View style={styles.boxWrapper}>
-      <View>
+      <View style={{paddingHorizontal: hp(3), paddingTop: hp(3)}}>
         <TouchableOpacity
           style={styles.leftBackBtn}
           onPress={() => navigation.goBack()}>
@@ -323,100 +329,133 @@ const AddItem = () => {
         </TouchableOpacity>
         <Title style={styles.title}>{'Create\nNew Task'}</Title>
       </View>
-      <ThemeInput
-        autoFocus={true}
-        style={styles.bottomSpace}
-        value={name}
-        placeholder={'Full Name'}
-        onChangeText={txt => setName(txt)}
-      />
-      {nameError ? (
-        <Text style={styles.errorMsg}>{'Enter your full name!'}</Text>
-      ) : (
-        <View style={styles.errorMsg} />
-      )}
+      <ScrollView style={{paddingHorizontal: hp(3)}}>
+        <ThemeInput
+          style={styles.bottomSpace}
+          value={name}
+          placeholder={'Full Name'}
+          onChangeText={txt => setName(txt)}
+        />
+        {nameError ? (
+          <Text style={styles.errorMsg}>{'Enter your full name!'}</Text>
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
 
-      <ThemeInput
-        style={styles.bottomSpace}
-        value={number}
-        maxLength={10}
-        keyboardType={'number-pad'}
-        placeholder={'Phone Number'}
-        onChangeText={txt => setNumber(txt)}
-      />
-      {numberError ? (
-        <Text style={styles.errorMsg}>
-          {'Enter your phone number 10 digits!'}
-        </Text>
-      ) : (
-        <View style={styles.errorMsg} />
-      )}
+        <ThemeInput
+          style={styles.bottomSpace}
+          value={number}
+          maxLength={10}
+          keyboardType={'number-pad'}
+          placeholder={'Phone Number'}
+          onChangeText={txt => setNumber(txt)}
+        />
+        {numberError ? (
+          <Text style={styles.errorMsg}>
+            {'Enter your phone number 10 digits!'}
+          </Text>
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
 
-      <ThemeInput
-        style={[styles.bottomSpace]}
-        value={vehicleNumber}
-        ariaValuemin={4}
-        placeholder={'Vehicle Number'}
-        maxLength={10}
-        onChangeText={txt => setVehicleNumber(txt)}
-      />
-      {vehicleNumberError ? (
-        <Text style={styles.errorMsg}>
-          {'Enter correct your vehicle number!'}
-        </Text>
-      ) : (
-        <View style={styles.errorMsg} />
-      )}
-      <DropDownPicker
-        style={[styles.dropDownPicker, styles.bottomSpace]}
-        open={openStatus}
-        value={status}
-        selectedItemLabelStyle={styles.selectedStyle}
-        selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
-        tickIconStyle={{tintColor: '#fff'}}
-        placeholderStyle={styles.LoraRegular}
-        dropDownContainerStyle={styles.LoraRegular}
-        itemSeparatorStyle={styles.LoraRegular}
-        dropDownDirection="TOP"
-        labelStyle={styles.LoraRegular}
-        textStyle={styles.LoraRegular}
-        placeholder={'Select Status'}
-        items={itemStatus}
-        setOpen={setOpenStatus}
-        setValue={setStatus}
-        setItems={setItemStatus}
-      />
-      {statusError ? (
-        <Text style={styles.errorMsg}>{'Select any one status!'}</Text>
-      ) : (
-        <View style={styles.errorMsg} />
-      )}
-      {/* <Text>{DestinationList}</Text> */}
-      <DropDownPicker
-        style={[styles.dropDownPicker, styles.bottomSpace]}
-        searchable
-        open={open}
-        value={companyName}
-        items={items}
-        tickIconStyle={{tintColor: '#fff'}}
-        selectedItemLabelStyle={styles.selectedStyle}
-        selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
-        labelStyle={styles.LoraRegular}
-        textStyle={styles.LoraRegular}
-        setOpen={setOpen}
-        dropDownDirection="TOP"
-        disableBorderRadius={0}
-        placeholder={'Select Destination'}
-        placeholderStyle={styles.LoraRegular}
-        setValue={setCompanyName}
-        setItems={setItems}
-      />
-      {companyNameError ? (
-        <Text style={styles.errorMsg}>{'Select any one for destination!'}</Text>
-      ) : (
-        <View style={styles.errorMsg} />
-      )}
-      <DropDownPicker
+        <ThemeInput
+          style={[styles.bottomSpace]}
+          value={vehicleNumber}
+          ariaValuemin={4}
+          placeholder={'Vehicle Number'}
+          maxLength={10}
+          onChangeText={txt => setVehicleNumber(txt)}
+        />
+        {vehicleNumberError ? (
+          <Text style={styles.errorMsg}>
+            {'Enter correct your vehicle number!'}
+          </Text>
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
+        {/* <DropDownPicker
+          style={[styles.dropDownPicker, styles.bottomSpace]}
+          open={openStatus}
+          value={status}
+          selectedItemLabelStyle={styles.selectedStyle}
+          selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
+          tickIconStyle={{tintColor: '#fff'}}
+          placeholderStyle={styles.LoraRegular}
+          dropDownContainerStyle={styles.LoraRegular}
+          itemSeparatorStyle={styles.LoraRegular}
+          dropDownDirection="TOP"
+          labelStyle={styles.LoraRegular}
+          textStyle={styles.LoraRegular}
+          placeholder={'Select Status'}
+          items={itemStatus}
+          setOpen={setOpenStatus}
+          setValue={setStatus}
+          setItems={setItemStatus}
+        /> */}
+         <ModalDropdown
+          isFullWidth
+          // renderSearch={(text)=> setMines(text)}
+          defaultValue={status}
+          textStyle={styles.regTxt}
+          renderSeparator={rowID => renderSeparator(rowID)}
+          options={itemStatus}
+          // showSearch
+          onSelect={(idx, value) => setStatus(value)}
+          dropdownTextStyle={[styles.dropdownText]}
+          style={styles.dropDownPickerNew}
+          dropdownTextHighlightStyle={{
+            backgroundColor: colors.primaryOpacity,
+            color: '#fff',
+          }}
+        />
+        {statusError ? (
+          <Text style={styles.errorMsg}>{'Select any one status!'}</Text>
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
+        {/* <DropDownPicker
+          style={[styles.dropDownPicker, styles.bottomSpace]}
+          searchable
+          open={open}
+          value={companyName}
+          items={items}
+          tickIconStyle={{tintColor: '#fff'}}
+          selectedItemLabelStyle={styles.selectedStyle}
+          selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
+          labelStyle={styles.LoraRegular}
+          textStyle={styles.LoraRegular}
+          setOpen={setOpen}
+          dropDownDirection="TOP"
+          disableBorderRadius={0}
+          placeholder={'Select Destination'}
+          placeholderStyle={styles.LoraRegular}
+          setValue={setCompanyName}
+          setItems={setItems}
+        /> */}
+         <ModalDropdown
+          isFullWidth
+          // renderSearch={(text)=> setMines(text)}
+          defaultValue={companyName}
+          textStyle={styles.regTxt}
+          renderSeparator={rowID => renderSeparator(rowID)}
+          options={items}
+          // showSearch
+          onSelect={(idx, value) => setCompanyName(value)}
+          dropdownTextStyle={[styles.dropdownText]}
+          style={styles.dropDownPickerNew}
+          dropdownTextHighlightStyle={{
+            backgroundColor: colors.primaryOpacity,
+            color: '#fff',
+          }}
+        />
+        {companyNameError ? (
+          <Text style={styles.errorMsg}>
+            {'Select any one for destination!'}
+          </Text>
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
+        {/* <DropDownPicker
         style={[styles.dropDownPicker, styles.bottomSpace]}
         searchable
         open={openMines}
@@ -435,31 +474,48 @@ const AddItem = () => {
         placeholderStyle={styles.LoraRegular}
         setValue={setMines}
         setItems={setMinesItems}
-      />
-      {minesError ? (
-        <Text style={styles.errorMsg}>{'Select any one for mines!'}</Text>
-      ) : (
-        <View style={styles.errorMsg} />
-      )}
-      <TouchableOpacity
-        onPress={() => requestCameraPermission()}
-        style={styles.imageBox}>
-        <Image
-          source={images ? {uri: images} : globalImagePath.camera}
-          style={images ? styles.VImages : styles.normalImage}
+      /> */}
+        <ModalDropdown
+          isFullWidth
+          // renderSearch={(text)=> setMines(text)}
+          defaultValue={mines}
+          textStyle={styles.regTxt}
+          renderSeparator={rowID => renderSeparator(rowID)}
+          options={minesItems}
+          // showSearch
+          onSelect={(idx, value) => setMines(value)}
+          dropdownTextStyle={[styles.dropdownText]}
+          style={styles.dropDownPickerNew}
+          dropdownTextHighlightStyle={{
+            backgroundColor: colors.primaryOpacity,
+            color: '#fff',
+          }}
         />
-        {images ? null : (
-          <Text style={styles.regTxt}>{'Image with truck number'}</Text>
+
+        {minesError ? (
+          <Text style={styles.errorMsg}>{'Select any one for mines!'}</Text>
+        ) : (
+          <View style={styles.errorMsg} />
         )}
-      </TouchableOpacity>
-      {imageError ? (
-        <Text style={styles.errorMsg}>
-          {'Add your truck image with number display!'}
-        </Text>
-      ) : (
-        <View style={styles.errorMsg} />
-      )}
-      {/* <TouchableOpacity
+        <TouchableOpacity
+          onPress={() => requestCameraPermission()}
+          style={styles.imageBox}>
+          <Image
+            source={images ? {uri: images} : globalImagePath.camera}
+            style={images ? styles.VImages : styles.normalImage}
+          />
+          {images ? null : (
+            <Text style={styles.regTxt}>{'Image with truck number'}</Text>
+          )}
+        </TouchableOpacity>
+        {imageError ? (
+          <Text style={styles.errorMsg}>
+            {'Add your truck image with number display!'}
+          </Text>
+        ) : (
+          <View style={styles.errorMsg} />
+        )}
+        <TouchableOpacity
           onPress={() => handleOpenCameraSlip()}
           style={styles.imageBox}>
           <Image
@@ -468,24 +524,28 @@ const AddItem = () => {
             }
             style={imageWithSlip ? styles.VImages : styles.normalImage}
           />
-          {imageWithSlip ? null : <Text style={styles.regTxt}>{'Image with slip'}</Text>}
+          {imageWithSlip ? null : (
+            <Text style={styles.regTxt}>{'Image with slip'}</Text>
+          )}
         </TouchableOpacity>
         {imageWithSlipError ? (
           <Text style={styles.errorMsg}>{'Add image with slip!'}</Text>
         ) : (
           <View style={styles.errorMsg} />
-        )} */}
+        )}
 
-      <ThemeButton
-        // disabled={disabled ? true : false}
-        style={{
-          backgroundColor: colors.primary,
-          borderColor: colors.primary,
-        }}
-        onPress={handlePostData}
-        children={route?.params?.type === 'edit' ? 'UPDATE' : 'CREATE TASK'}
-        btnStyle={{color: '#fff', textTransform: 'uppercase'}}
-      />
+        <ThemeButton
+          // disabled={disabled ? true : false}
+          style={{
+            backgroundColor: colors.primary,
+            borderColor: colors.primary,
+            marginBottom: hp(3.5),
+          }}
+          onPress={handlePostData}
+          children={route?.params?.type === 'edit' ? 'UPDATE' : 'CREATE TASK'}
+          btnStyle={{color: '#fff', textTransform: 'uppercase'}}
+        />
+      </ScrollView>
       <Loader visible={loadVisible} />
     </View>
   );

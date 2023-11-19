@@ -75,8 +75,8 @@ export const styles = StyleSheet.create({
     fontFamily: 'Lora-Bold',
   },
   images: {
-    height: hp(25),
-    width: '100%',
+    height: hp(20),
+    width: '50%',
     marginTop: hp(2),
     borderRadius: 8,
   },

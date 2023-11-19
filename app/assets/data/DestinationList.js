@@ -28,17 +28,15 @@
 // const styles = StyleSheet.create({});
 
 export const CompanyDestination = [
-  {label: 'Gondwali', value: 'Gondwali'},
-  {label: 'GajraBahra', value: 'GajraBahra'},
-  {label: 'Sarai', value: 'Sarai'},
-  {label: 'Bargawan', value: 'Bargawan'},
-  {label: 'Mahadeya', value: 'Mahadeya'},
-  {label: 'Morwa', value: 'Morwa'},
-  {label: 'Krishnahila', value: 'Krishnahila'},
-  {label: ' Mahan TPP', value: ' Mahan TPP'},
-  {label: 'Hindalco Mahan', value: 'Hindalco Mahan'},
-  {label: 'Lanco TPP', value: 'Lanco TPP'},
-  {label: 'Anpara TPP', value: 'Anpara TPP'},
+  'Gondwali',
+  'GajraBahra',
+  'Sarai',
+  'Bargawan',
+  'Mahadeya',
+  'Morwa',
+  'Krishnahila',
+  ' Mahan TPP',
+  'Hindalco Mahan',
+  'Lanco TPP',
+  'Anpara TPP',
 ];
-
-
