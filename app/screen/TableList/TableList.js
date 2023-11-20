@@ -65,13 +65,16 @@ const TableList = () => {
           <Subheading style={styles.alignLeft}>{item.vehicleNumber}</Subheading>
           <Subheading style={styles.label}>
             Dispatch Date :-{' '}
-            <Subheading style={styles.boldText}>{`${item.date} ${item.startTime}` }</Subheading>
+            <Subheading
+              style={
+                styles.boldText
+              }>{`${item.date} ${item.startTime}`}</Subheading>
           </Subheading>
           {item.status === 'Close' && item?.endDate ? (
             <Subheading style={styles.label}>
               Delivery Date :-{' '}
               <Subheading style={styles.boldText}>
-              {`${item.endDate} ${item.endTime}`}
+                {`${item.endDate} ${item.endTime}`}
               </Subheading>
             </Subheading>
           ) : null}
@@ -84,11 +87,20 @@ const TableList = () => {
             {item.status.toUpperCase()}
           </Subheading>
         </View>
-        <TouchableOpacity
-          onPress={() => handleShowImage(item.images || item.imageWithSlip)}
-          style={{width: '15%', backgroundColor: colors.primary}}>
-          <Image source={{uri: item.images}} style={styles.image} />
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity
+            onPress={() => handleShowImage(item.images)}
+            style={{width: '100%', backgroundColor: colors.primary}}>
+            <Image source={{uri: item.images}} style={styles.image} />
+          </TouchableOpacity>
+          {item.imageWithSlip ? (
+            <TouchableOpacity
+              onPress={() => handleShowImage(item.imageWithSlip)}
+              style={{width: '100%', backgroundColor: colors.primary, marginTop:10}}>
+              <Image source={{uri: item.imageWithSlip}} style={styles.image} />
+            </TouchableOpacity>
+          ) : null}
+        </View>
       </View>
     );
   };

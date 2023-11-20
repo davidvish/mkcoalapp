@@ -165,7 +165,7 @@ const TabsList = () => {
             <Image source={{uri: item.images}} style={styles.images} />
           ) : null}
           {item.imageWithSlip ? (
-            <Image source={{uri: item.imageWithSlip}} style={styles.images} />
+            <Image source={{uri: item.imageWithSlip}} style={[styles.images,{marginLeft:5}]} />
           ) : null}
         </View>
       </Card>

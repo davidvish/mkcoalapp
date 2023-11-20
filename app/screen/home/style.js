@@ -76,7 +76,7 @@ export const styles = StyleSheet.create({
   },
   images: {
     height: hp(20),
-    width: '50%',
+    width: '49%',
     marginTop: hp(2),
     borderRadius: 8,
   },
