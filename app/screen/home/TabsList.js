@@ -25,6 +25,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {colors} from '../../assets/colors/colors';
 import moment from 'moment';
 import {responsiveFontSize as rfs} from 'react-native-responsive-dimensions';
+import ThumbPopup from '../../component/ThummPopup';
 
 const TabsList = () => {
   let listRef;
@@ -37,8 +38,11 @@ const TabsList = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [filterData, setFilterData] = useState(dataList);
   const [todayTotalItem, setTodayTotalItem] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const [chooseImage, setChooseImage] = useState();
+
   const handleGetData = async () => {
     setLoaderVisible(true);
     try {
@@ -52,7 +56,7 @@ const TabsList = () => {
     }
   };
   const handleCountItem = () => {
-    const dateCount = filterData.map(e => e.endDate ? e.endDate :  e.date );
+    const dateCount = filterData.map(e => (e.endDate ? e.endDate : e.date));
     const handleTotalTodayItems = (array, value) => {
       var count = 0;
       dateCount.forEach(v => v === value && count++);
@@ -85,7 +89,7 @@ const TabsList = () => {
   useEffect(() => {
     handleGetData();
     handleCountItem();
-  }, [isFocused,todayTotalItem]);
+  }, [isFocused, todayTotalItem]);
   const handleScrollToTop = () => {
     listRef?.scrollToOffset({offset: 0, animated: true});
   };
@@ -110,6 +114,14 @@ const TabsList = () => {
       setFilterData(filteredAddr);
     } else setFilterData(oldDataList);
   };
+  const handleClose = () => {
+    setShowPopup(false);
+  };
+  const handleShowImage = image => {
+    setChooseImage(image);
+    setShowPopup(true);
+  };
+
   const renderItem = ({item}) => {
     return (
       <Card style={[styles.card]}>
@@ -134,12 +146,18 @@ const TabsList = () => {
 
         <Subheading style={styles.label}>
           Dispatch Date :-{' '}
-          <Subheading style={styles.regTxt}>{`${item.date} ${item.startTime}` }</Subheading>
+          <Subheading
+            style={
+              styles.regTxt
+            }>{`${item.date} ${item.startTime}`}</Subheading>
         </Subheading>
         {item.status === 'Close' && item?.endDate ? (
           <Subheading style={styles.label}>
             Delivery Date :-{' '}
-            <Subheading style={styles.regTxt}>{`${item.endDate} ${item.endTime}`}</Subheading>
+            <Subheading
+              style={
+                styles.regTxt
+              }>{`${item.endDate} ${item.endTime}`}</Subheading>
           </Subheading>
         ) : null}
         <Subheading style={styles.label}>
@@ -162,10 +180,18 @@ const TabsList = () => {
         </Subheading>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           {item.images ? (
-            <Image source={{uri: item.images}} style={styles.images} />
+            <TouchableOpacity
+              style={{width: '49%'}}
+              onPress={() => handleShowImage(item.images)}>
+              <Image source={{uri: item.images}} style={styles.images} />
+            </TouchableOpacity>
           ) : null}
           {item.imageWithSlip ? (
-            <Image source={{uri: item.imageWithSlip}} style={[styles.images,{marginLeft:5}]} />
+            <TouchableOpacity
+              style={{width: '49%', marginLeft: 5}}
+              onPress={() => handleShowImage(item.imageWithSlip)}>
+              <Image source={{uri: item.imageWithSlip}} style={styles.images} />
+            </TouchableOpacity>
           ) : null}
         </View>
       </Card>
@@ -229,6 +255,13 @@ const TabsList = () => {
             color={'#fff'}
           />
         </TouchableOpacity>
+      ) : null}
+      {showPopup ? (
+        <ThumbPopup
+          image={chooseImage}
+          imageType={'url'}
+          onClose={handleClose}
+        />
       ) : null}
       <Loader visible={loaderVisible} />
     </View>

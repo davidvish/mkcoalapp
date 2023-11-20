@@ -135,8 +135,8 @@ const TableList = () => {
           maxToRenderPerBatch={10}
           initialNumToRender={10}
           refreshing={isRefreshing}
-          keyExtractor={(item, index) => item.uid + index}
-          data={dataList.sort((a, b) => a.name.localeCompare(b.name))}
+          keyExtractor={(e, index) => index.toString()}
+          data={dataList}
           renderItem={renderItem}
         />
       </View>

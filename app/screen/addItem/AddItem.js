@@ -83,8 +83,8 @@ const AddItem = () => {
     let dt1 = moment(scheduledDeparture_Date);
     setDate(dt1.format('DD/MM/YYYY'));
     setEndDate(dt1.format('DD/MM/YYYY'));
-    setStartTime(dt1.format('h:mm A'));
-    setEndTime(dt1.format('h:mm A'));
+    setStartTime(dt1.format('H:MM A'));
+    setEndTime(dt1.format('H:MM A'));
     setDisabled(!name || !vehicleNumber || !images || !companyName || !number);
     setListUid();
   });
