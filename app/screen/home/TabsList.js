@@ -30,10 +30,10 @@ import ThumbPopup from '../../component/ThummPopup';
 const TabsList = () => {
   let listRef;
   const route = useRoute();
+  const [isConnected, setIsConnected] = useState(false);
   const [index, setIndex] = useState(0);
   const [dataList, setDataList] = useState([]);
   const [oldDataList, setOldDataList] = useState([]);
-  const [isConnected, setIsConnected] = useState(false);
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [filterData, setFilterData] = useState(dataList);
@@ -200,69 +200,76 @@ const TabsList = () => {
 
   return (
     <View style={styles.container}>
-      {filterData.length > 0 ? (
-        <>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={{width: '100%', backgroundColor: 'transparent'}}
-              onChangeText={handleSearchList}
-              placeholder={'Search Item'}
-              right={<TextInput.Icon name="plus" size={50} color={'red'} />}
+      {isConnected ? (
+        <View style={{flex:1}}>
+          {filterData.length > 0 ? (
+            <>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={{width: '100%', backgroundColor: 'transparent'}}
+                  onChangeText={handleSearchList}
+                  placeholder={'Search Item'}
+                  right={<TextInput.Icon name="plus" size={50} color={'red'} />}
+                />
+              </View>
+              <Text style={[styles.ttcLabal]}>
+                Total List:- {filterData?.length}/
+                <Text style={{fontFamily: 'Lora-Bold', fontSize: rfs(2)}}>
+                  {todayTotalItem}
+                </Text>
+              </Text>
+            </>
+          ) : null}
+          {filterData?.length == 0 ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}>
+              <Text style={[styles.label, {textAlign: 'center'}]}>
+                {'No data found'}
+              </Text>
+            </View>
+          ) : null}
+          <FlatList
+            extraData={filterData}
+            ref={ref => {
+              listRef = ref;
+            }}
+            initialScrollIndex={index}
+            onRefresh={onRefresh}
+            // ListHeaderComponent={ListHeaderComponent}
+            refreshing={isRefreshing}
+            contentContainerStyle={styles.listBottom}
+            keyExtractor={(e, index) => index.toString()}
+            data={filterData}
+            renderItem={renderItem}
+          />
+          {dataList.length > 1 ? (
+            <TouchableOpacity
+              onPress={handleScrollToTop}
+              style={styles.topWrapper}>
+              <MaterialCommunityIcons
+                size={25}
+                name="arrow-up-bold"
+                color={'#fff'}
+              />
+            </TouchableOpacity>
+          ) : null}
+          {showPopup ? (
+            <ThumbPopup
+              image={chooseImage}
+              imageType={'url'}
+              onClose={handleClose}
             />
-          </View>
-          <Text style={[styles.ttcLabal]}>
-            Total List:- {filterData?.length}/
-            <Text style={{fontFamily: 'Lora-Bold', fontSize: rfs(2)}}>
-              {todayTotalItem}
-            </Text>
-          </Text>
-        </>
-      ) : null}
-
-      {filterData?.length == 0 ? (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-          }}>
-          <Text style={[styles.label, {textAlign: 'center'}]}>
-            {'No data found'}
-          </Text>
+          ) : null}
         </View>
       ) : null}
-
-      <FlatList
-        extraData={filterData}
-        ref={ref => {
-          listRef = ref;
-        }}
-        initialScrollIndex={index}
-        onRefresh={onRefresh}
-        // ListHeaderComponent={ListHeaderComponent}
-        refreshing={isRefreshing}
-        contentContainerStyle={styles.listBottom}
-        keyExtractor={(e, index) => index.toString()}
-        data={filterData}
-        renderItem={renderItem}
+      <CheckInteretConnect
+        isConnected={isConnected}
+        setIsConnected={setIsConnected}
       />
-
-      {dataList.length > 1 ? (
-        <TouchableOpacity onPress={handleScrollToTop} style={styles.topWrapper}>
-          <MaterialCommunityIcons
-            size={25}
-            name="arrow-up-bold"
-            color={'#fff'}
-          />
-        </TouchableOpacity>
-      ) : null}
-      {showPopup ? (
-        <ThumbPopup
-          image={chooseImage}
-          imageType={'url'}
-          onClose={handleClose}
-        />
-      ) : null}
       <Loader visible={loaderVisible} />
     </View>
   );
