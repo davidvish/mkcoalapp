@@ -15,7 +15,6 @@ import {
 import {globalImagePath} from '../assets/Images/gloableImagePath';
 import {colors} from '../assets/colors/colors';
 import {useNavigation} from '@react-navigation/native';
-import Home from '../screen/home/Home';
 import {CurvedBottomBarExpo} from 'react-native-curved-bottom-bar';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import TabsList from '../screen/home/TabsList';

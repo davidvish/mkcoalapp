@@ -2,8 +2,6 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import React, {useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Splash from '../screen/splash/Splash';
-import {colors} from '../assets/colors/colors';
-import {responsiveHeight as hp} from 'react-native-responsive-dimensions';
 import CustomTab from './CustomTab';
 import AddItem from '../screen/addItem/AddItem';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';

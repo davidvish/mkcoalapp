@@ -1,13 +1,12 @@
 import {
   FlatList,
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
   Image,
   ScrollView,
 } from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import {
   useRoute,
@@ -15,17 +14,17 @@ import {
   useIsFocused,
   useFocusEffect,
 } from '@react-navigation/native';
-import {Card, Headline, Subheading, TextInput} from 'react-native-paper';
-import {globalImagePath} from '../../assets/Images/gloableImagePath';
-import {styles} from './style';
+import { Card, Headline, Subheading, TextInput } from 'react-native-paper';
+import { globalImagePath } from '../../assets/Images/gloableImagePath';
+import { styles } from './style';
 import Loader from '../../component/Loader';
 import CheckInteretConnect from '../checkInternet/CheckInteretConnect';
-import ThemeInput from '../../component/ThemeInput';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {colors} from '../../assets/colors/colors';
 import moment from 'moment';
-import {responsiveFontSize as rfs} from 'react-native-responsive-dimensions';
+import { responsiveFontSize as rfs } from 'react-native-responsive-dimensions';
 import ThumbPopup from '../../component/ThummPopup';
+import Carousel from 'react-native-snap-carousel';
+
 
 const TabsList = () => {
   let listRef;
@@ -89,9 +88,10 @@ const TabsList = () => {
   useEffect(() => {
     handleGetData();
     handleCountItem();
+
   }, [isFocused, todayTotalItem]);
   const handleScrollToTop = () => {
-    listRef?.scrollToOffset({offset: 0, animated: true});
+    listRef?.scrollToOffset({ offset: 0, animated: true });
   };
 
   const onRefresh = () => {
@@ -122,7 +122,7 @@ const TabsList = () => {
     setShowPopup(true);
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <Card style={[styles.card]}>
         <View style={styles.flexRow}>
@@ -130,7 +130,7 @@ const TabsList = () => {
           <TouchableOpacity
             // disabled={item.status === 'Open' ? false : true}
             onPress={() =>
-              navigation.navigate('AddItem', {data: item, type: 'edit'})
+              navigation.navigate('AddItem', { data: item, type: 'edit' })
             }>
             <Image source={globalImagePath.edit} style={styles.editEvent} />
           </TouchableOpacity>
@@ -178,22 +178,25 @@ const TabsList = () => {
             {item.status.toUpperCase()}
           </Subheading>
         </Subheading>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           {item.images ? (
             <TouchableOpacity
-              style={{width: '49%'}}
+              style={{ width: '49%' }}
               onPress={() => handleShowImage(item.images)}>
-              <Image source={{uri: item.images}} style={styles.images} />
+              <Image source={{ uri: item.images }} style={styles.images} />
             </TouchableOpacity>
           ) : null}
           {item.imageWithSlip ? (
             <TouchableOpacity
-              style={{width: '49%', marginLeft: 5}}
+              style={{ width: '49%', marginLeft: 5 }}
               onPress={() => handleShowImage(item.imageWithSlip)}>
-              <Image source={{uri: item.imageWithSlip}} style={styles.images} />
+              <Image source={{ uri: item.imageWithSlip }} style={styles.images} />
             </TouchableOpacity>
           ) : null}
+
         </View>
+
+
       </Card>
     );
   };
@@ -201,12 +204,12 @@ const TabsList = () => {
   return (
     <View style={styles.container}>
       {isConnected ? (
-        <View style={{flex:1}}>
+        <View style={{ flex: 1 }}>
           {filterData.length > 0 ? (
             <>
               <View style={styles.inputContainer}>
                 <TextInput
-                  style={{width: '100%', backgroundColor: 'transparent'}}
+                  style={{ width: '100%', backgroundColor: 'transparent' }}
                   onChangeText={handleSearchList}
                   placeholder={'Search Item'}
                   right={<TextInput.Icon name="plus" size={50} color={'red'} />}
@@ -214,7 +217,7 @@ const TabsList = () => {
               </View>
               <Text style={[styles.ttcLabal]}>
                 Total List:- {filterData?.length}/
-                <Text style={{fontFamily: 'Lora-Bold', fontSize: rfs(2)}}>
+                <Text style={{ fontFamily: 'Lora-Bold', fontSize: rfs(2) }}>
                   {todayTotalItem}
                 </Text>
               </Text>
@@ -227,7 +230,7 @@ const TabsList = () => {
                 justifyContent: 'flex-end',
                 alignItems: 'center',
               }}>
-              <Text style={[styles.label, {textAlign: 'center'}]}>
+              <Text style={[styles.label, { textAlign: 'center' }]}>
                 {'No data found'}
               </Text>
             </View>
