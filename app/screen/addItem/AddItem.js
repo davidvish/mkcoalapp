@@ -26,6 +26,7 @@ import {CompanyDestination} from '../../assets/data/DestinationList';
 import {MinesList} from '../../assets/data/MinesList';
 import {responsiveHeight as hp} from 'react-native-responsive-dimensions';
 import { StatusList } from '../../assets/data/Status';
+import ImagePicter from 'react-native-image-crop-picker'
 
 const AddItem = () => {
   const route = useRoute();
@@ -301,6 +302,8 @@ const AddItem = () => {
       );
     });
   };
+
+  
 
   const renderSeparator = (sectionID, rowID, adjacentRowHighlighted) => {
     if (rowID == items.length - 1) return;

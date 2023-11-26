@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   message: {
     fontSize: rfs(2.2),
     color: 'red',
-    fontWeight: 'Lora-SemiBold',
+    fontFamily: 'Lora-SemiBold',
     textAlign: 'center',
     paddingVertical: hp(1),
   },

@@ -24,6 +24,8 @@ import moment from 'moment';
 import { responsiveFontSize as rfs } from 'react-native-responsive-dimensions';
 import ThumbPopup from '../../component/ThummPopup';
 import Carousel from 'react-native-snap-carousel';
+import ImageCropPicker from 'react-native-image-crop-picker';
+import CarouselCards from '../../component/CraouselCard';
 
 
 const TabsList = () => {
@@ -201,6 +203,20 @@ const TabsList = () => {
     );
   };
 
+  const openImagePicter = ()=> {
+
+    const imageList = [];
+    ImageCropPicker.openPicker({options:{
+      waitAnimationEnd:true,
+      multiple:true,
+      includeExif:true,
+      maxFiles:10,
+      mediaType:'any',
+      includeBase64:true
+    }}).then(response => {
+      console.log(response,"abc")
+    })
+  }
   return (
     <View style={styles.container}>
       {isConnected ? (
@@ -269,6 +285,7 @@ const TabsList = () => {
           ) : null}
         </View>
       ) : null}
+     
       <CheckInteretConnect
         isConnected={isConnected}
         setIsConnected={setIsConnected}
