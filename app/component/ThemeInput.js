@@ -13,6 +13,7 @@ const ThemeInput = ({
   disabled,
   onBlur,
   label,
+  secureTextEntry,
   autoFocus,
   maxLength,
   ariaValuemin
@@ -29,6 +30,7 @@ const ThemeInput = ({
       numberOfLines={numberOfLines}
       placeholder={placeholder}
       error={error}
+      secureTextEntry={secureTextEntry}
       aria-valuemin={ariaValuemin}
       placeholderTextColor={'#000'}
       disabled={disabled}
