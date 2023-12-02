@@ -8,13 +8,13 @@ import {
 import {colors} from '../assets/colors/colors';
 import { globalImagePath } from '../assets/Images/gloableImagePath';
 
-const ThemeButton = ({children, style, onPress, btnStyle, disabled}) => {
+const ThemeButton = ({children, style, onPress, btnStyle, disabled ,icon}) => {
   return (
     <TouchableOpacity
       disabled={disabled}
       style={[styles.button, style]}
       onPress={onPress}>
-        <Image source={globalImagePath.plus} style={styles.plus} />
+        {icon ? <Image source={globalImagePath.plus} style={styles.plus} /> : null}
       <Text style={[styles.btnTxt, btnStyle]}>{children}</Text>
     </TouchableOpacity>
   );

@@ -373,25 +373,6 @@ const AddItem = () => {
         ) : (
           <View style={styles.errorMsg} />
         )}
-        {/* <DropDownPicker
-          style={[styles.dropDownPicker, styles.bottomSpace]}
-          open={openStatus}
-          value={status}
-          selectedItemLabelStyle={styles.selectedStyle}
-          selectedItemContainerStyle={{backgroundColor: colors.primaryOpacity}}
-          tickIconStyle={{tintColor: '#fff'}}
-          placeholderStyle={styles.LoraRegular}
-          dropDownContainerStyle={styles.LoraRegular}
-          itemSeparatorStyle={styles.LoraRegular}
-          dropDownDirection="TOP"
-          labelStyle={styles.LoraRegular}
-          textStyle={styles.LoraRegular}
-          placeholder={'Select Status'}
-          items={itemStatus}
-          setOpen={setOpenStatus}
-          setValue={setStatus}
-          setItems={setItemStatus}
-        /> */}
          <ModalDropdown
           isFullWidth
           // renderSearch={(text)=> setMines(text)}
@@ -542,6 +523,7 @@ const AddItem = () => {
             borderColor: colors.primary,
             marginBottom: hp(3.5),
           }}
+          icon={true}
           onPress={handlePostData}
           children={route?.params?.type === 'edit' ? 'UPDATE' : 'CREATE TASK'}
           btnStyle={{color: '#fff', textTransform: 'uppercase'}}
