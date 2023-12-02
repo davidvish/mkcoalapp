@@ -40,14 +40,14 @@ const Login = () => {
         <ThemeInput
           placeholder={'Email'}
           value={email}
+          keyboardType={'email-address'}
           onChangeText={txt => setEmail(txt)}
           style={{marginBottom: 10}}
         />
         <View style={styles.row}>
           <ThemeInput
-            placeholder={'password'}
+            placeholder={'Password'}
             value={password}
-            keyboardType={'email-address'}
             secureTextEntry={hidePass ? true : false}
             onChangeText={txt => setPassworsd(txt)}
             style={styles.marginBottom}
