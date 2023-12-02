@@ -117,4 +117,13 @@ export const styles = StyleSheet.create({
     borderRadius:50,
     backgroundColor:colors.primary,
   },
+  logoutBtn:{
+    bottom:hp(9),
+    left:hp(2),
+    width:'30%',
+    backgroundColor:colors.primary,
+    padding:hp(1.5),
+    borderRadius:hp(1)
+
+  }
 });

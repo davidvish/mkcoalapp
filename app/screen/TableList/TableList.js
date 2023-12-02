@@ -1,4 +1,11 @@
-import {Text, View, TouchableOpacity, FlatList, Image} from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  Alert,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from '../../component/Header';
 import firestore from '@react-native-firebase/firestore';
@@ -11,6 +18,10 @@ import ThumbPopup from '../../component/ThummPopup';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
 import {colors} from '../../assets/colors/colors';
 import Loader from '../../component/Loader';
+import Login from '../Login';
+import auth from '@react-native-firebase/auth';
+import ThemeButton from '../../component/ThemeButton';
+
 const TableList = () => {
   let listRef;
   const [dataList, setDataList] = useState([]);
@@ -19,10 +30,15 @@ const TableList = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [chooseImage, setChooseImage] = useState();
   const [loaderVisible, setLoaderVisible] = useState(false);
+  // Set an initializing state whilst Firebase connects
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
 
-  useEffect(() => {
-    handleGetData();
-  }, [isFocused]);
+  // Handle user state changes
+  const onAuthStateChanged = user => {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  };
   const handleGetData = async () => {
     setLoaderVisible(true);
     try {
@@ -34,6 +50,17 @@ const TableList = () => {
       console.log(error, 'error');
     }
   };
+  useEffect(() => {
+    handleGetData();
+  }, [isFocused]);
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  if (initializing) return null;
+
   const handleShowImage = image => {
     setChooseImage(image);
     setShowPopup(true);
@@ -96,7 +123,11 @@ const TableList = () => {
           {item.imageWithSlip ? (
             <TouchableOpacity
               onPress={() => handleShowImage(item.imageWithSlip)}
-              style={{width: '100%', backgroundColor: colors.primary, marginTop:10}}>
+              style={{
+                width: '100%',
+                backgroundColor: colors.primary,
+                marginTop: 10,
+              }}>
               <Image source={{uri: item.imageWithSlip}} style={styles.image} />
             </TouchableOpacity>
           ) : null}
@@ -104,6 +135,18 @@ const TableList = () => {
       </View>
     );
   };
+  const handleLogout = async () => {
+    await auth()
+      .signOut()
+      .then(() => {
+        Alert.alert('Logout Successfully');
+      });
+  };
+
+  if (!user) {
+    return <Login />;
+  }
+
   return (
     <View style={{flex: 1}}>
       <Header title={'List'} />
@@ -135,7 +178,7 @@ const TableList = () => {
           maxToRenderPerBatch={10}
           initialNumToRender={10}
           refreshing={isRefreshing}
-          keyExtractor={(e, index) => index.toString()}
+          keyExtractor={(e, index) => e.status == 'Open'}
           data={dataList}
           renderItem={renderItem}
         />
@@ -158,6 +201,11 @@ const TableList = () => {
         </TouchableOpacity>
       ) : null}
       <Loader visible={loaderVisible} />
+      <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+        <Text style={[styles.regTxt, {color: '#fff', textAlign: 'center'}]}>
+          Logout
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

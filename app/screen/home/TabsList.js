@@ -109,6 +109,8 @@ const TabsList = () => {
           list?.date.includes(searchText) ||
           // list?.endDate.includes(searchText) ||
           list?.companyName.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.mines.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.number.toLowerCase().includes(searchText.toLowerCase()) ||
           list?.vehicleNumber.toLowerCase().includes(searchText.toLowerCase()),
       );
       setFilterData(filteredAddr);

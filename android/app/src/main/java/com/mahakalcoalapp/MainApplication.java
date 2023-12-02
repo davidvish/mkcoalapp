@@ -11,7 +11,7 @@ import com.facebook.soloader.SoLoader;
 import java.util.List;
 import com.reactnativerestart.RestartPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-
+import io.invertase.firebase.auth.ReactNativeFirebaseAuthPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
