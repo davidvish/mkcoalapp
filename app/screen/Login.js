@@ -14,7 +14,7 @@ const Login = () => {
     await auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        Alert.alert('Login successgully');
+        Alert.alert('Login successfully!');
       })
       .catch(err => {
         console.log('error', err);

@@ -13,7 +13,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import {useIsFocused} from '@react-navigation/native';
 import {styles} from './style';
-import {DataTable, Subheading, Title} from 'react-native-paper';
+import {DataTable, Subheading, Title, TextInput} from 'react-native-paper';
 import ThumbPopup from '../../component/ThummPopup';
 import {globalImagePath} from '../../assets/Images/gloableImagePath';
 import {colors} from '../../assets/colors/colors';
@@ -33,6 +33,7 @@ const TableList = () => {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
+  const [oldDataList, setOldDataList] = useState([]);
 
   // Handle user state changes
   const onAuthStateChanged = user => {
@@ -45,10 +46,26 @@ const TableList = () => {
       const querySnap = await firestore().collection('new').get();
       const res = (await querySnap).docs.map(docsSnap => docsSnap.data());
       setDataList(res);
+      setOldDataList(res);
       setLoaderVisible(false);
     } catch (error) {
       console.log(error, 'error');
     }
+  };
+  const handleSearchList = searchText => {
+    if (searchText?.length) {
+      let filteredAddr = dataList.filter(
+        list =>
+          list?.name.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.date.includes(searchText) ||
+          // list?.endDate.includes(searchText) ||
+          list?.companyName.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.mines.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.number.toLowerCase().includes(searchText.toLowerCase()) ||
+          list?.vehicleNumber.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      setDataList(filteredAddr);
+    } else setDataList(oldDataList);
   };
   useEffect(() => {
     handleGetData();
@@ -150,12 +167,21 @@ const TableList = () => {
   return (
     <View style={{flex: 1}}>
       <Header title={'List'} />
+
       <View style={styles.container}>
         <DataTable.Header style={styles.headerList}>
           <Subheading style={styles.label}>Name</Subheading>
           <Subheading style={styles.label}>Description</Subheading>
           <Subheading style={styles.label}>Image</Subheading>
         </DataTable.Header>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={{width: '100%', backgroundColor: 'transparent'}}
+            onChangeText={handleSearchList}
+            placeholder={'Search Item'}
+            right={<TextInput.Icon name="plus" size={50} color={'red'} />}
+          />
+        </View>
         {dataList?.length == 0 ? (
           <View
             style={{

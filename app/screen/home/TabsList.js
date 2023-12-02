@@ -207,7 +207,6 @@ const TabsList = () => {
     <View style={styles.container}>
       {isConnected ? (
         <View style={{ flex: 1 }}>
-          {filterData.length > 0 ? (
             <>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -224,7 +223,6 @@ const TabsList = () => {
                 </Text>
               </Text>
             </>
-          ) : null}
           {filterData?.length == 0 ? (
             <View
               style={{

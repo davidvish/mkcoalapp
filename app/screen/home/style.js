@@ -168,8 +168,8 @@ export const styles = StyleSheet.create({
   },
   topWrapper: {
     position: 'absolute',
-    bottom: hp(10),
-    right: wp(3),
+    bottom: hp(8.8),
+    right: wp(0),
     padding: hp(1.5),
     borderRadius: 50,
     backgroundColor: colors.primary,

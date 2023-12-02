@@ -111,7 +111,7 @@ export const styles = StyleSheet.create({
   },
   topWrapper: {
     position: 'absolute',
-    bottom: hp(10),
+    bottom: hp(8.8),
     right: wp(3),
     padding:hp(1.5),
     borderRadius:50,
@@ -125,5 +125,10 @@ export const styles = StyleSheet.create({
     padding:hp(1.5),
     borderRadius:hp(1)
 
-  }
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: hp(1),
+  },
 });
